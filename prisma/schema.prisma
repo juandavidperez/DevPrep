@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  name          String?
+  image         String?
+  sessions      Session[]
+  bookmarks     Bookmark[]
+  settings      UserSettings?
+  createdAt     DateTime       @default(now())
+}
+
+model UserSettings {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id])
+  uiLanguage        String   @default("en")          // "en" | "es"
+  questionLanguage  String   @default("en")          // independent of UI
+  defaultDifficulty String   @default("mid")
+  defaultCategories String[] @default(["technical", "coding", "system_design", "behavioral"])
+  targetStack       String[] @default(["angular", "spring_boot", "postgresql"])
+  outputModality    String   @default("text")        // "text" | "voice" | "avatar"
+  voiceSpeed        Float    @default(1.0)           // Phase 2
+  avatarCharacter   String   @default("professional") // Phase 3
+}
+
+model Session {
+  id             String            @id @default(cuid())
+  userId         String
+  user           User              @relation(fields: [userId], references: [id])
+  category       String            // "technical" | "coding" | "system_design" | "behavioral" | "mixed"
+  difficulty     String
+  targetStack    String[]
+  language       String            @default("en")
+  inputModality  String            @default("text")   // "text" | "voice"
+  totalQuestions  Int
+  completedAt    DateTime?
+  score          Float?
+  duration       Int?              // seconds
+  messages       SessionMessage[]
+  createdAt      DateTime          @default(now())
+}
+
+model SessionMessage {
+  id            String    @id @default(cuid())
+  sessionId     String
+  session       Session   @relation(fields: [sessionId], references: [id])
+  role          String    // "interviewer" | "candidate"
+  content       String    @db.Text
+  codeContent   String?   @db.Text             // code from Monaco editor
+  messageType   String    @default("message")  // "message" | "question" | "evaluation" | "follow_up"
+  questionIndex Int?                            // which question number (1, 2, 3...)
+  score         Float?                          // only on evaluation messages
+  criteria      Json?                           // score breakdown
+  feedback      String?   @db.Text
+  modelAnswer   String?   @db.Text
+  audioUrl      String?                        // Phase 2: stored audio
+  createdAt     DateTime  @default(now())
+
+  bookmark      Bookmark?
+
+  @@index([sessionId, createdAt])
+}
+
+model Bookmark {
+  id            String          @id @default(cuid())
+  userId        String
+  user          User            @relation(fields: [userId], references: [id])
+  messageId     String          @unique
+  message       SessionMessage  @relation(fields: [messageId], references: [id])
+  notes         String?         @db.Text
+  reviewCount   Int             @default(0)
+  nextReviewAt  DateTime?
+  createdAt     DateTime        @default(now())
+
+  @@index([userId, nextReviewAt])
+}
+
+model QuestionBank {
+  id            String   @id @default(cuid())
+  category      String   // "technical" | "coding" | "system_design" | "behavioral"
+  difficulty    String   // "junior" | "mid" | "senior"
+  tags          String[] // ["angular", "spring_boot", "postgresql", "ngrx", ...]
+  language      String   @default("en")   // "en" | "es"
+
+  questionText  String   @db.Text
+  hints         String[] // Optional hints for the candidate
+  modelAnswer   String?  @db.Text         // Reference ideal answer
+  evaluationCriteria String[]             // What the AI should check
+  timeEstimate  Int      @default(180)    // Suggested seconds
+
+  // For coding questions
+  codeTemplate  String?  @db.Text         // Starter code
+  testCases     Json?                     // [{ input: "...", expected: "..." }]
+  codeLanguage  String?                   // "typescript" | "java" | "kotlin" | "sql"
+
+  // For system design
+  constraints   Json?                     // { users: "10M", latency: "100ms", ... }
+
+  // Tracking
+  timesServed   Int      @default(0)      // How many times this question has been used
+  avgScore      Float?                    // Average score across all users
+  source        String?                   // "curated" | "ai_generated" | "community"
+  isActive      Boolean  @default(true)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([category, difficulty, language])
+  @@index([tags])
+}
