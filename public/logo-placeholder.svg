@@ -1,0 +1,22 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradient Background -->
+  <rect width="512" height="512" rx="128" fill="url(#paint0_linear)"/>
+  
+  <!-- Outer Chat Bubble (Shadow/Glass) -->
+  <path d="M256 120C178.68 120 116 177.373 116 248C116 288.749 137.607 324.965 171.196 348.68L160 400L216.511 368.146C229.079 373.232 242.428 376 256 376C333.32 376 396 318.627 396 248C396 177.373 333.32 120 256 120Z" fill="white" fill-opacity="0.2"/>
+  
+  <!-- Inner Chat Bubble (Main) -->
+  <path d="M256 160C202.981 160 160 202.981 160 256C160 286.953 174.639 314.504 197.352 332.128L188 368L225.541 346.012C235.19 349.896 245.419 352 256 352C309.019 352 352 309.019 352 256C352 202.981 309.019 160 256 160Z" fill="white"/>
+  
+  <!-- Terminal/Code Lines Interaction -->
+  <rect x="220" y="220" width="72" height="12" rx="6" fill="#3B82F6"/>
+  <rect x="220" y="244" width="72" height="12" rx="6" fill="#6366F1"/>
+  <rect x="220" y="268" width="48" height="12" rx="6" fill="#8B5CF6"/>
+  
+  <defs>
+    <linearGradient id="paint0_linear" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3B82F6"/>
+      <stop offset="1" stop-color="#8B5CF6"/>
+    </linearGradient>
+  </defs>
+</svg>
