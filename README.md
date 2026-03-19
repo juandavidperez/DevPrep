@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/logo-placeholder.svg" alt="DevPrep" width="80" />
+  <img src="public/logo-devprep.svg" alt="DevPrep" width="80" />
 </p>
 
 <h1 align="center">DevPrep</h1>
@@ -44,7 +44,6 @@ AI:  Score: 82/100
 - Chat-style UI — feels like a real conversation, not a quiz
 - Four question categories: technical concepts, live coding, system design, behavioral
 - Configurable sessions: difficulty (junior/mid/senior), target stack, question count, language
-- Monaco code editor embedded in chat for coding questions
 
 **AI Evaluation**
 - Per-question scoring (0–100) with criteria breakdown
@@ -52,24 +51,19 @@ AI:  Score: 82/100
 - Evaluation criteria varies by category (correctness vs. STAR structure vs. scalability trade-offs)
 
 **Hybrid Question System**
-- 200+ curated questions from real interviews, organized by category, difficulty, and technology
+- Curated question bank (~40 questions, growing) organized by category, difficulty, and technology
 - AI generates additional questions when the bank runs out for a specific combination
-- Spaced repetition: previously failed questions resurface at optimal intervals
-
-**Progress Tracking**
-- Session history with scores and duration
-- Category-level score trends over time
-- Weak areas detection (AI analyzes patterns across sessions)
-- Daily practice streak
-
-**Bilingual Support**
-- Full EN/ES support for both UI and questions
-- AI evaluates in the language the question was asked in
 
 **Multi-Provider AI**
 - Swappable AI providers: Ollama (local/free), Claude Haiku, GPT-4o Mini, Gemini Flash
-- Smart routing: different providers for different question categories
 - Develop offline with Ollama, deploy with cloud APIs
+
+**Planned**
+- Monaco code editor embedded in chat for coding questions
+- Spaced repetition for previously failed questions
+- Progress dashboard with score trends and weak areas detection
+- Bilingual support (EN/ES) for UI and questions
+- Smart routing: different AI providers for different question categories
 
 ## Demo
 
@@ -91,11 +85,8 @@ AI:  Score: 82/100
 | Styling | Tailwind CSS |
 | Database | PostgreSQL (Supabase) |
 | ORM | Prisma |
-| Auth | NextAuth.js v5 (Google OAuth) |
 | AI (dev) | Ollama + Llama 3.1 8B (local, free) |
 | AI (prod) | Claude Haiku 4.5 (recommended) |
-| Code Editor | Monaco Editor |
-| i18n | next-intl |
 | Deploy | Vercel |
 
 ## Getting Started
@@ -117,20 +108,14 @@ npm install
 ### 2. Set up environment variables
 
 ```bash
-cp .env.example .env.local
+cp .env.example .env
 ```
 
-Edit `.env.local` with your credentials:
+Edit `.env` with your credentials:
 
 ```env
 # Database
 DATABASE_URL="postgresql://..."
-
-# Auth
-NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="your-secret"
-GOOGLE_CLIENT_ID="your-google-client-id"
-GOOGLE_CLIENT_SECRET="your-google-client-secret"
 
 # AI Provider — choose one:
 AI_PROVIDER="ollama"                        # "ollama" | "anthropic" | "openai" | "gemini"
@@ -138,16 +123,13 @@ AI_PROVIDER="ollama"                        # "ollama" | "anthropic" | "openai" 
 # Ollama (local, free — default for development)
 OLLAMA_BASE_URL="http://localhost:11434"
 OLLAMA_MODEL="llama3.1:8b"
-
-# Or Anthropic (recommended for production)
-# ANTHROPIC_API_KEY="sk-ant-..."
 ```
 
 ### 3. Set up the database
 
 ```bash
 npx prisma migrate dev
-npx prisma db seed          # Seeds the question bank (~200 questions)
+npx prisma db seed          # Seeds the question bank (~40 questions)
 ```
 
 ### 4. Set up local AI (optional)
@@ -209,28 +191,29 @@ devprep/
 │   └── seeds/                     # Curated question JSON files
 ├── src/
 │   ├── app/                       # Next.js App Router pages + API routes
-│   ├── components/
-│   │   ├── chat/                  # ChatContainer, MessageBubble, EvaluationCard
-│   │   ├── code/                  # Monaco Editor wrapper
-│   │   ├── dashboard/             # ProgressChart, StreakCounter, WeakAreas
-│   │   └── session/               # SessionConfigurator, SessionHeader
-│   ├── lib/
-│   │   ├── ai/                    # Provider abstraction + implementations
-│   │   │   └── providers/         # ollama.ts, anthropic.ts, openai.ts, gemini.ts
-│   │   ├── questions/             # Bank selector, spaced repetition
-│   │   └── interaction/           # InteractionManager (text → voice → avatar)
-│   └── hooks/                     # useChat, useTimer, useProgress
-└── public/locales/                # EN/ES translations
+│   │   └── api/chat/              # Ollama proxy endpoint
+│   └── lib/
+│       ├── ai/                    # Provider abstraction (factory + Ollama impl)
+│       │   └── providers/
+│       └── interaction/           # InteractionManager (modality abstraction)
+└── public/                        # Static assets (logos)
 ```
 
 ## Roadmap
 
 - [x] Project structure and architecture design
+- [x] Next.js + Tailwind + TypeScript + Prisma setup
+- [x] AI provider abstraction with Ollama implementation
+- [x] Question bank schema + seed system (~40 questions)
 - [ ] **Phase 1 — Text Chat (MVP)** ← current
-  - [ ] Foundation: Next.js + Prisma + Auth + Question Bank
-  - [ ] Chat core: AI evaluation loop + session flow
+  - [ ] Database migration + Prisma client singleton
+  - [ ] Chat UI: ChatContainer, MessageBubble, ChatInput
+  - [ ] Session flow: configure → chat → evaluate → results
+  - [ ] API routes for sessions and chat
+  - [ ] Auth (NextAuth + Google OAuth)
   - [ ] Code editor: Monaco integration for coding questions
   - [ ] Progress: Dashboard, streak, weak areas, bookmarks
+  - [ ] Bilingual support (next-intl)
 - [ ] **Phase 2 — Voice Interaction**
   - [ ] Speech-to-text (Web Speech API → Whisper)
   - [ ] Text-to-speech (Web Speech API → ElevenLabs)
