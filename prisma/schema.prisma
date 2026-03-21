@@ -2,12 +2,15 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+  schemas   = ["devprep"]
 }
 
 model User {
@@ -15,10 +18,34 @@ model User {
   email         String         @unique
   name          String?
   image         String?
+  emailVerified DateTime?
+  accounts      Account[]
   sessions      Session[]
   bookmarks     Bookmark[]
   settings      UserSettings?
   createdAt     DateTime       @default(now())
+
+  @@schema("devprep")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@schema("devprep")
 }
 
 model UserSettings {
@@ -33,6 +60,8 @@ model UserSettings {
   outputModality    String   @default("text")        // "text" | "voice" | "avatar"
   voiceSpeed        Float    @default(1.0)           // Phase 2
   avatarCharacter   String   @default("professional") // Phase 3
+
+  @@schema("devprep")
 }
 
 model Session {
@@ -50,6 +79,8 @@ model Session {
   duration       Int?              // seconds
   messages       SessionMessage[]
   createdAt      DateTime          @default(now())
+
+  @@schema("devprep")
 }
 
 model SessionMessage {
@@ -71,6 +102,7 @@ model SessionMessage {
   bookmark      Bookmark?
 
   @@index([sessionId, createdAt])
+  @@schema("devprep")
 }
 
 model Bookmark {
@@ -85,6 +117,7 @@ model Bookmark {
   createdAt     DateTime        @default(now())
 
   @@index([userId, nextReviewAt])
+  @@schema("devprep")
 }
 
 model QuestionBank {
@@ -119,4 +152,5 @@ model QuestionBank {
 
   @@index([category, difficulty, language])
   @@index([tags])
+  @@schema("devprep")
 }
