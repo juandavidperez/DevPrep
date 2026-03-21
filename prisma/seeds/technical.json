@@ -1,0 +1,1396 @@
+[
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": [
+      "angular",
+      "components"
+    ],
+    "language": "en",
+    "questionText": "What are standalone components in Angular, and how do they differ from traditional NgModule-based components?",
+    "hints": [
+      "Think about the standalone flag in the component decorator",
+      "Consider how imports are handled differently"
+    ],
+    "modelAnswer": "Standalone components are Angular components declared with `standalone: true` in their decorator, which means they do not need to be declared in an NgModule. Instead of relying on NgModule imports, standalone components import their dependencies directly in their own `imports` array. This simplifies the application structure by removing the need for many NgModules. They can still be used alongside NgModule-based components and can be lazy-loaded directly via the router without a module wrapper.",
+    "evaluationCriteria": [
+      "Explains the standalone: true flag",
+      "Mentions that imports are declared directly in the component",
+      "Understands that NgModules become optional",
+      "Knows standalone components can coexist with module-based components"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": [
+      "angular",
+      "lifecycle"
+    ],
+    "language": "en",
+    "questionText": "Describe the Angular component lifecycle hooks. Which hooks are called during initialization, and in what order?",
+    "hints": [
+      "Start with the constructor, then think about what Angular sets up first",
+      "Consider when inputs become available"
+    ],
+    "modelAnswer": "Angular components go through a defined lifecycle managed by Angular itself. During initialization, the order is: constructor (not a hook, but runs first), ngOnChanges (called when input bindings are set or changed), ngOnInit (called once after the first ngOnChanges), ngDoCheck, ngAfterContentInit, ngAfterContentChecked, ngAfterViewInit, ngAfterViewChecked. The constructor is used for dependency injection, while ngOnInit is the recommended place for initialization logic because @Input() values are not yet available in the constructor. ngOnDestroy is called when the component is removed from the DOM and should be used for cleanup like unsubscribing from observables.",
+    "evaluationCriteria": [
+      "Lists the main lifecycle hooks in correct order",
+      "Explains the difference between constructor and ngOnInit",
+      "Mentions that @Input values are available in ngOnInit but not in constructor",
+      "Mentions ngOnDestroy for cleanup"
+    ],
+    "timeEstimate": 180
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": [
+      "angular",
+      "dependency_injection"
+    ],
+    "language": "en",
+    "questionText": "What is dependency injection in Angular? How do you provide a service so that it is available application-wide?",
+    "hints": [
+      "Think about the @Injectable decorator",
+      "Consider the providedIn property"
+    ],
+    "modelAnswer": "Dependency injection (DI) is a design pattern where a class receives its dependencies from an external source rather than creating them itself. In Angular, the DI framework manages the creation and delivery of services to components. To make a service available application-wide, you decorate the class with `@Injectable({ providedIn: 'root' })`, which registers it as a singleton in the root injector. Alternatively, you can add the service to the providers array of the root AppModule or a standalone component's providers, though providedIn: 'root' is preferred because it enables tree-shaking of unused services.",
+    "evaluationCriteria": [
+      "Defines dependency injection correctly",
+      "Mentions @Injectable decorator with providedIn: 'root'",
+      "Understands singleton behavior at root level",
+      "Mentions tree-shaking benefit of providedIn"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": [
+      "angular",
+      "routing"
+    ],
+    "language": "en",
+    "questionText": "How do you set up routing in an Angular application? What is the purpose of <router-outlet> and routerLink?",
+    "hints": [
+      "Think about the Routes array configuration",
+      "Consider how Angular knows where to render the routed component"
+    ],
+    "modelAnswer": "Routing in Angular is configured by defining a Routes array where each route maps a URL path to a component. You import RouterModule.forRoot(routes) in the root module or use provideRouter(routes) for standalone applications. The <router-outlet> directive acts as a placeholder in the template where Angular renders the component that matches the current URL. The routerLink directive is used on HTML elements (typically anchor tags) to navigate between routes without a full page reload, enabling single-page application behavior. You can also pass parameters via route paths like '/user/:id' and access them with ActivatedRoute.",
+    "evaluationCriteria": [
+      "Describes the Routes configuration array",
+      "Explains the role of router-outlet as a placeholder",
+      "Explains routerLink for navigation",
+      "Mentions route parameters or ActivatedRoute"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": [
+      "angular",
+      "reactive_forms"
+    ],
+    "language": "en",
+    "questionText": "What is the difference between template-driven forms and reactive forms in Angular? When would you choose one over the other?",
+    "hints": [
+      "Think about where the form logic lives in each approach",
+      "Consider testability and complexity"
+    ],
+    "modelAnswer": "Template-driven forms use directives like ngModel in the template to create and manage the form model implicitly, making them simpler for basic forms. Reactive forms use explicit FormGroup and FormControl instances created in the component class, giving you programmatic control over the form model. Reactive forms are preferred for complex forms because they offer easier validation logic, dynamic form fields, and better testability since the form logic is in TypeScript rather than the template. Template-driven forms are suitable for simple forms like login pages where minimal validation is needed.",
+    "evaluationCriteria": [
+      "Correctly differentiates where form logic resides (template vs class)",
+      "Mentions FormGroup/FormControl for reactive forms",
+      "Mentions ngModel for template-driven forms",
+      "Provides guidance on when to use each approach"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "angular",
+      "rxjs"
+    ],
+    "language": "en",
+    "questionText": "Explain the difference between switchMap, mergeMap, concatMap, and exhaustMap in RxJS. Provide a practical Angular use case for each.",
+    "hints": [
+      "Think about what happens to the inner observable when a new outer value arrives",
+      "Consider HTTP request scenarios: search, form submit, polling, button clicks"
+    ],
+    "modelAnswer": "These are all higher-order mapping operators that subscribe to inner observables but differ in how they handle concurrency. switchMap cancels the previous inner observable when a new value arrives, making it ideal for search typeahead where only the latest result matters. mergeMap subscribes to all inner observables concurrently without canceling, suitable for fire-and-forget operations like logging analytics events. concatMap queues inner observables and processes them sequentially, perfect for ordered operations like saving multiple form steps where order matters. exhaustMap ignores new values while the current inner observable is still running, ideal for preventing duplicate form submissions when a user clicks a submit button multiple times. Choosing the wrong operator can lead to race conditions (using mergeMap for search) or lost requests (using switchMap for POST operations).",
+    "evaluationCriteria": [
+      "Correctly describes the cancellation/concurrency behavior of each operator",
+      "Provides a practical Angular use case for each",
+      "Mentions race condition or duplication risks of using the wrong operator",
+      "Demonstrates understanding of when NOT to use a particular operator"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "angular",
+      "signals"
+    ],
+    "language": "en",
+    "questionText": "What are Angular Signals, and how do they improve reactivity compared to the traditional Zone.js-based change detection?",
+    "hints": [
+      "Think about fine-grained reactivity vs dirty checking the entire component tree",
+      "Consider computed() and effect() as part of the Signals API"
+    ],
+    "modelAnswer": "Angular Signals are a reactive primitive introduced to provide fine-grained reactivity. A signal is a wrapper around a value that notifies consumers when it changes. Unlike Zone.js-based change detection, which monkey-patches async APIs and triggers change detection across the entire component tree, Signals track exactly which parts of the template depend on which data. This allows Angular to update only the affected DOM nodes. The API includes signal() for writable signals, computed() for derived values that automatically recalculate when dependencies change, and effect() for running side effects when signals change. Signals pave the way for Angular to eventually become Zone-less, reducing bundle size and improving performance. They integrate with the existing framework through the template binding syntax and can coexist with Observables using toSignal() and toObservable() interop functions.",
+    "evaluationCriteria": [
+      "Explains what a signal is and its reactive nature",
+      "Contrasts with Zone.js change detection (fine-grained vs tree-wide)",
+      "Mentions computed() and effect()",
+      "Mentions interop with Observables (toSignal/toObservable)"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "angular",
+      "change_detection"
+    ],
+    "language": "en",
+    "questionText": "How does Angular's change detection mechanism work? What are the benefits of using ChangeDetectionStrategy.OnPush, and what pitfalls should you watch out for?",
+    "hints": [
+      "Think about Zone.js and how Angular knows when to check components",
+      "Consider immutability requirements with OnPush"
+    ],
+    "modelAnswer": "Angular's change detection uses Zone.js to intercept asynchronous operations (setTimeout, HTTP calls, DOM events) and trigger a check of the entire component tree from top to bottom. Each component's template bindings are re-evaluated to detect changes. With ChangeDetectionStrategy.OnPush, Angular only checks a component when: its @Input references change (shallow comparison), a DOM event originates from the component or its children, an async pipe emits a new value, or change detection is triggered manually via ChangeDetectorRef.markForCheck() or detectChanges(). The main benefit is performance, as Angular can skip large subtrees. However, pitfalls include: mutating objects in place (the reference does not change so OnPush will not detect it), forgetting to use the async pipe for observables, and nested components not updating when a parent mutates shared state. Developers must adopt immutable data patterns when using OnPush.",
+    "evaluationCriteria": [
+      "Explains the role of Zone.js in triggering change detection",
+      "Lists the conditions under which OnPush re-checks a component",
+      "Mentions performance benefits of skipping subtrees",
+      "Identifies pitfalls like object mutation and shallow reference checks"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "angular",
+      "ngrx",
+      "state_management"
+    ],
+    "language": "en",
+    "questionText": "What is NgRx, and what are its core concepts? When would you choose NgRx over simpler state management approaches like a BehaviorSubject service?",
+    "hints": [
+      "Think about the Redux pattern: store, actions, reducers, selectors, effects",
+      "Consider the trade-off between boilerplate and predictability"
+    ],
+    "modelAnswer": "NgRx is a reactive state management library for Angular based on the Redux pattern. Its core concepts are: Store (single source of truth holding application state), Actions (events describing what happened), Reducers (pure functions that take current state and an action to produce new state), Selectors (functions to query specific slices of state with memoization), and Effects (for handling side effects like HTTP calls). NgRx provides predictable state transitions, excellent debugging with Redux DevTools and time-travel debugging, and enforces a unidirectional data flow. However, it introduces significant boilerplate. You should choose NgRx over a simple BehaviorSubject service when: the application has complex shared state across many components, multiple actors can modify the same state, you need audit trails of state changes, or the team needs strict architectural patterns. For small to medium apps with localized state, a BehaviorSubject service is simpler and sufficient.",
+    "evaluationCriteria": [
+      "Correctly names and explains core NgRx concepts (store, actions, reducers, selectors, effects)",
+      "Mentions the Redux/unidirectional data flow pattern",
+      "Discusses when NgRx is appropriate vs overkill",
+      "Mentions debugging capabilities like DevTools or time-travel"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "angular",
+      "rxjs",
+      "debugging"
+    ],
+    "language": "en",
+    "questionText": "You have an Angular component that subscribes to an Observable in ngOnInit, but users report that the same HTTP request fires multiple times when navigating back and forth. What is likely causing this, and how would you fix it?",
+    "hints": [
+      "Think about what happens when the component is destroyed and recreated",
+      "Consider the takeUntilDestroyed operator or async pipe"
+    ],
+    "modelAnswer": "The most likely cause is that the component subscribes to the Observable in ngOnInit but never unsubscribes in ngOnDestroy. Each time the user navigates to the component, a new subscription is created on top of the existing ones, causing duplicate HTTP requests. There are several fixes: (1) Use the async pipe in the template, which automatically subscribes and unsubscribes. (2) Use the takeUntilDestroyed() operator from @angular/core/rxjs-interop, which completes the observable when the component is destroyed. (3) Use a Subject with takeUntil and complete it in ngOnDestroy. (4) Store the subscription and call unsubscribe() in ngOnDestroy. The async pipe is the most idiomatic Angular approach, while takeUntilDestroyed is the modern recommended pattern for imperative subscriptions. Additionally, if the HTTP call does not need to re-execute, you could cache the result using shareReplay(1) in a service.",
+    "evaluationCriteria": [
+      "Identifies missing unsubscribe as the root cause",
+      "Provides multiple valid solutions (async pipe, takeUntilDestroyed, takeUntil pattern)",
+      "Recommends async pipe or takeUntilDestroyed as preferred approaches",
+      "Mentions shareReplay for caching or service-level solutions"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "technical",
+    "difficulty": "senior",
+    "tags": [
+      "angular",
+      "performance",
+      "optimization"
+    ],
+    "language": "en",
+    "questionText": "You are tasked with improving the performance of a large Angular application that has become sluggish. Describe your systematic approach to diagnosing and fixing performance issues, covering both runtime and bundle size optimizations.",
+    "hints": [
+      "Think about Chrome DevTools profiler, Angular DevTools, and webpack-bundle-analyzer",
+      "Consider change detection, lazy loading, virtual scrolling, and tree-shaking"
+    ],
+    "modelAnswer": "I would start with diagnosis using multiple tools: Chrome DevTools Performance tab to identify long tasks and excessive re-renders, Angular DevTools profiler to see which components are being checked most frequently, and webpack-bundle-analyzer or source-map-explorer to audit bundle size. For runtime optimizations: switch components to OnPush change detection strategy to avoid unnecessary checks, use trackBy with *ngFor to prevent DOM recreation, implement virtual scrolling (CDK ScrollingModule) for large lists, debounce user inputs that trigger expensive operations, use Angular Signals or computed() to minimize recalculations, and ensure observables are properly unsubscribed. For bundle size: implement lazy loading for feature modules using loadComponent or loadChildren in routes, audit and remove unused dependencies, use tree-shakable providers (providedIn: 'root'), enable production build optimizations, and consider deferred loading with @defer blocks for below-the-fold content. I would also check for common anti-patterns: function calls in templates (which re-execute every change detection cycle), unnecessary async pipes creating multiple subscriptions, large third-party libraries that could be replaced with lighter alternatives, and missing preloading strategies for likely navigation targets. Finally, I would set up a performance budget and Core Web Vitals monitoring to prevent regressions.",
+    "evaluationCriteria": [
+      "Describes a systematic diagnosis approach using appropriate tools",
+      "Covers both runtime and bundle size optimizations",
+      "Mentions OnPush, trackBy, virtual scrolling, and lazy loading",
+      "Identifies anti-patterns like function calls in templates",
+      "Discusses monitoring and prevention of regressions"
+    ],
+    "timeEstimate": 360
+  },
+  {
+    "category": "technical",
+    "difficulty": "senior",
+    "tags": [
+      "angular",
+      "architecture",
+      "signals",
+      "rxjs"
+    ],
+    "language": "en",
+    "questionText": "How would you architect the reactive data flow in a large Angular application that uses both Signals and RxJS? When would you use each, and how do you handle interop between them?",
+    "hints": [
+      "Think about synchronous vs asynchronous data flows",
+      "Consider toSignal(), toObservable(), and the boundaries between them"
+    ],
+    "modelAnswer": "In a large Angular application, I would establish clear boundaries for when to use Signals versus RxJS. Signals excel for synchronous, UI-bound state: component-level state, derived computations for templates, and simple shared state via signal-based services. RxJS remains superior for asynchronous and event-driven workflows: HTTP requests, WebSocket streams, complex event composition (debounce, throttle, retry), and orchestrating multiple async operations. For architecture, I would use a layered approach: the data access layer uses RxJS (HttpClient returns Observables), the state management layer converts to Signals using toSignal() for template consumption, and components primarily interact with Signals. The interop functions toSignal() and toObservable() bridge the two worlds. Key considerations: toSignal() requires an initial value or the requireSync option, it subscribes immediately and manages the subscription lifecycle, and it runs in an injection context. I would avoid mixing paradigms within a single layer, establish team conventions documented in architectural decision records, and use computed() for derived state rather than creating new observables for simple transformations. For complex state management, a signal-based store pattern (similar to NgRx SignalStore) provides structure without the full Redux ceremony.",
+    "evaluationCriteria": [
+      "Clearly delineates when to use Signals vs RxJS",
+      "Describes a layered architecture with clear boundaries",
+      "Explains toSignal() and toObservable() interop with their caveats",
+      "Mentions practical considerations like injection context and initial values",
+      "Discusses team conventions and architectural decisions"
+    ],
+    "timeEstimate": 300
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": [
+      "java",
+      "java17"
+    ],
+    "language": "en",
+    "questionText": "What are Java Records, introduced in Java 16 and refined in Java 17? How do they differ from regular classes?",
+    "hints": [
+      "Think about boilerplate code that records eliminate",
+      "Consider what methods are auto-generated"
+    ],
+    "modelAnswer": "Java Records are a special kind of class designed to hold immutable data with minimal boilerplate. You declare a record with `record Person(String name, int age) {}`, and the compiler automatically generates a constructor, getter methods (name() and age(), not getXxx()), equals(), hashCode(), and toString(). Records are implicitly final, so they cannot be extended. Their fields are implicitly final too, making them immutable by default. Records differ from regular classes in that you cannot declare instance fields beyond the record components, and they cannot extend other classes (though they can implement interfaces). They are ideal for DTOs, API response models, and value objects where you just need to carry data.",
+    "evaluationCriteria": [
+      "Explains that records reduce boilerplate for data classes",
+      "Lists auto-generated methods (constructor, getters, equals, hashCode, toString)",
+      "Mentions immutability (final fields, final class)",
+      "Provides examples of appropriate use cases like DTOs"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": [
+      "java",
+      "java17"
+    ],
+    "language": "en",
+    "questionText": "What are sealed classes and interfaces in Java 17? What problem do they solve?",
+    "hints": [
+      "Think about controlling which classes can extend a base class",
+      "Consider the permits keyword"
+    ],
+    "modelAnswer": "Sealed classes and interfaces restrict which other classes or interfaces can extend or implement them. You declare a sealed class with the `sealed` keyword and use `permits` to list the allowed subclasses: `sealed class Shape permits Circle, Rectangle, Triangle {}`. Each permitted subclass must be declared as `final`, `sealed`, or `non-sealed`. This solves the problem of controlling class hierarchies, enabling exhaustive pattern matching in switch expressions since the compiler knows all possible subtypes. Before sealed classes, you could either leave a class open to any extension or make it final with no extension at all. Sealed classes give a middle ground, particularly useful for domain modeling where a fixed set of variants is known at compile time.",
+    "evaluationCriteria": [
+      "Explains the sealed and permits keywords",
+      "Mentions that subclasses must be final, sealed, or non-sealed",
+      "Understands the benefit for exhaustive pattern matching",
+      "Compares with the previous options (open or final)"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": [
+      "java",
+      "spring_boot"
+    ],
+    "language": "en",
+    "questionText": "What is Spring Boot auto-configuration, and how does it decide which beans to create automatically?",
+    "hints": [
+      "Think about the @SpringBootApplication annotation and what it includes",
+      "Consider the role of classpath scanning and conditional annotations"
+    ],
+    "modelAnswer": "Spring Boot auto-configuration automatically configures beans based on the dependencies present on the classpath and the properties defined in your configuration. The @SpringBootApplication annotation includes @EnableAutoConfiguration, which triggers this process. Spring Boot uses @Conditional annotations (like @ConditionalOnClass, @ConditionalOnMissingBean, @ConditionalOnProperty) in its auto-configuration classes to decide whether to create a bean. For example, if spring-boot-starter-data-jpa is on the classpath and a DataSource is configured, Spring Boot automatically sets up JPA repositories, an EntityManagerFactory, and transaction management. You can override any auto-configured bean by defining your own, thanks to @ConditionalOnMissingBean.",
+    "evaluationCriteria": [
+      "Explains that auto-configuration is based on classpath and properties",
+      "Mentions @EnableAutoConfiguration or @SpringBootApplication",
+      "References @Conditional annotations",
+      "Understands that custom beans override auto-configured ones"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": [
+      "java",
+      "spring_boot",
+      "dependency_injection"
+    ],
+    "language": "en",
+    "questionText": "How does dependency injection work in Spring Boot? What are the differences between @Autowired on a constructor, field, and setter?",
+    "hints": [
+      "Think about immutability and testability",
+      "Consider which approach Spring recommends"
+    ],
+    "modelAnswer": "Spring Boot uses dependency injection to manage object creation and wiring. There are three injection styles: constructor injection (the dependency is passed via the constructor), field injection (the dependency is injected directly into the field using @Autowired), and setter injection (the dependency is injected via a setter method). Constructor injection is the recommended approach because it makes dependencies explicit, allows fields to be declared final (immutable), and makes the class easy to test by passing mock dependencies through the constructor. Field injection is discouraged because it hides dependencies and makes unit testing harder without a Spring context. With constructor injection, if a class has only one constructor, the @Autowired annotation is optional since Spring 4.3.",
+    "evaluationCriteria": [
+      "Describes all three injection types",
+      "Recommends constructor injection with reasons",
+      "Mentions immutability (final fields) as a benefit",
+      "Notes that @Autowired is optional for single-constructor classes"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": [
+      "java",
+      "spring_boot",
+      "rest"
+    ],
+    "language": "en",
+    "questionText": "What annotations do you use to create a REST API endpoint in Spring Boot? Explain the difference between @RestController and @Controller.",
+    "hints": [
+      "Think about @ResponseBody and JSON serialization",
+      "Consider the common HTTP method annotations"
+    ],
+    "modelAnswer": "To create a REST API in Spring Boot, you annotate a class with @RestController and define handler methods with HTTP method annotations: @GetMapping, @PostMapping, @PutMapping, @DeleteMapping, and @PatchMapping. @RestController is a convenience annotation that combines @Controller and @ResponseBody. The key difference is that @Controller returns view names (for server-side rendering with Thymeleaf or JSP), while @RestController automatically serializes return objects to JSON (or XML) and writes them to the HTTP response body. You use @RequestMapping at the class level to define a base path, @PathVariable for URL parameters, @RequestBody to deserialize the request body, and @RequestParam for query parameters.",
+    "evaluationCriteria": [
+      "Explains @RestController as @Controller + @ResponseBody",
+      "Lists common HTTP method annotations",
+      "Understands that @RestController auto-serializes to JSON",
+      "Mentions @PathVariable, @RequestBody, or @RequestParam"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": [
+      "java",
+      "spring_boot",
+      "exception_handling"
+    ],
+    "language": "en",
+    "questionText": "How do you handle exceptions globally in a Spring Boot REST API? What is @ControllerAdvice?",
+    "hints": [
+      "Think about centralizing error handling across all controllers",
+      "Consider @ExceptionHandler methods"
+    ],
+    "modelAnswer": "In Spring Boot, you can handle exceptions globally using @ControllerAdvice (or @RestControllerAdvice), which is a specialization of @Component that applies to all controllers. Inside this class, you define methods annotated with @ExceptionHandler that catch specific exception types and return appropriate HTTP responses. For example, you might handle ResourceNotFoundException to return a 404 status with a custom error body, or MethodArgumentNotValidException to return a 400 with validation error details. This centralizes error handling logic instead of duplicating try-catch blocks in every controller. You typically return a ResponseEntity with a custom error DTO containing a timestamp, message, status code, and path.",
+    "evaluationCriteria": [
+      "Explains @ControllerAdvice or @RestControllerAdvice",
+      "Describes @ExceptionHandler for specific exception types",
+      "Mentions returning appropriate HTTP status codes",
+      "Understands the benefit of centralized error handling"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "java",
+      "spring_boot",
+      "spring_security",
+      "jwt"
+    ],
+    "language": "en",
+    "questionText": "How would you implement JWT-based authentication in a Spring Boot application? Describe the flow from login to accessing a protected endpoint.",
+    "hints": [
+      "Think about the authentication filter chain",
+      "Consider token generation, validation, and the SecurityContext"
+    ],
+    "modelAnswer": "The JWT authentication flow in Spring Boot works as follows: (1) The user sends credentials (username/password) to a /login endpoint. (2) A custom AuthenticationFilter or controller validates credentials against the database using AuthenticationManager and its UserDetailsService. (3) Upon successful authentication, the server generates a JWT token containing the user's claims (subject, roles, expiration) signed with a secret key using a library like jjwt or nimbus-jose-jwt. (4) The token is returned to the client, typically in the response body. (5) For subsequent requests, the client sends the token in the Authorization header as 'Bearer <token>'. (6) A custom JwtAuthenticationFilter (extending OncePerRequestFilter) intercepts each request, extracts and validates the token (signature, expiration, claims), and sets the Authentication in the SecurityContextHolder. (7) Spring Security's filter chain then authorizes the request based on the roles/authorities in the SecurityContext. Configuration involves creating a SecurityFilterChain bean that disables CSRF (for stateless APIs), sets session management to STATELESS, defines which endpoints are public vs protected, and registers the JWT filter before UsernamePasswordAuthenticationFilter.",
+    "evaluationCriteria": [
+      "Describes the complete flow from login to protected endpoint access",
+      "Mentions token generation with claims and signing",
+      "Explains the JWT filter that validates tokens on each request",
+      "Discusses SecurityFilterChain configuration for stateless authentication",
+      "Mentions setting Authentication in SecurityContextHolder"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "java",
+      "spring_boot",
+      "jpa",
+      "hibernate"
+    ],
+    "language": "en",
+    "questionText": "What is the N+1 problem in JPA/Hibernate, and how do you detect and fix it?",
+    "hints": [
+      "Think about what happens when you iterate over a collection of entities with lazy-loaded relationships",
+      "Consider JOIN FETCH, EntityGraph, and batch fetching"
+    ],
+    "modelAnswer": "The N+1 problem occurs when Hibernate executes 1 query to load N parent entities, then N additional queries to load a related collection for each parent (e.g., loading all authors, then one query per author to load their books). This happens with LAZY fetch type when you access the relationship in a loop. Detection methods include: enabling Hibernate SQL logging (spring.jpa.show-sql=true or hibernate.generate_statistics=true), using tools like p6spy, or adding an assertion library like datasource-proxy to fail tests exceeding a query count. Fixes include: (1) JPQL with JOIN FETCH: 'SELECT a FROM Author a JOIN FETCH a.books' loads everything in one query. (2) @EntityGraph annotation on repository methods to specify which associations to fetch eagerly for that specific query. (3) @BatchSize annotation on the collection to load related entities in batches rather than one by one. (4) Projections or DTOs via JPQL constructor expressions to fetch only needed data. The best approach depends on context: JOIN FETCH for known associations, EntityGraph for flexible per-query tuning, and DTOs for read-only views.",
+    "evaluationCriteria": [
+      "Clearly explains the N+1 problem with an example",
+      "Mentions detection methods (SQL logging, statistics)",
+      "Provides multiple fix strategies (JOIN FETCH, EntityGraph, BatchSize)",
+      "Discusses trade-offs between approaches"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "java",
+      "jpa",
+      "hibernate"
+    ],
+    "language": "en",
+    "questionText": "Explain the difference between LAZY and EAGER fetching in JPA. What are the defaults for @OneToMany, @ManyToOne, @OneToOne, and @ManyToMany?",
+    "hints": [
+      "Think about when related data is actually loaded from the database",
+      "Consider the performance implications of each strategy"
+    ],
+    "modelAnswer": "LAZY fetching means the related entities are not loaded from the database until they are explicitly accessed in the code, using a proxy object as a placeholder. EAGER fetching means the related entities are loaded immediately along with the parent entity in the same query (or additional queries). The JPA defaults are: @ManyToOne and @OneToOne default to EAGER (fetches the single related entity immediately), while @OneToMany and @ManyToMany default to LAZY (collections are loaded on demand). Best practice is to use LAZY for almost everything and selectively fetch eagerly only when needed using JOIN FETCH or EntityGraph. Common pitfalls include the LazyInitializationException, which occurs when accessing a lazy-loaded collection outside of a persistence context (e.g., after the transaction has closed). This can be solved with JOIN FETCH in the query, @Transactional on the service method, or using DTOs to project only the needed data within the transaction boundary.",
+    "evaluationCriteria": [
+      "Correctly defines LAZY vs EAGER fetching",
+      "Lists the correct defaults for each relationship annotation",
+      "Recommends LAZY as the default with selective eager fetching",
+      "Mentions LazyInitializationException and how to handle it"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "java",
+      "spring_boot",
+      "jpa"
+    ],
+    "language": "en",
+    "questionText": "How do you model a many-to-many relationship in JPA/Hibernate? What if the join table has additional columns?",
+    "hints": [
+      "Think about @ManyToMany with @JoinTable vs an intermediate entity",
+      "Consider which approach allows extra attributes on the relationship"
+    ],
+    "modelAnswer": "A basic many-to-many relationship is modeled using @ManyToMany on both entities with @JoinTable on the owning side to specify the join table name and column mappings. For example, a Student-Course relationship: Student has `@ManyToMany @JoinTable(name=\"enrollment\", joinColumns=@JoinColumn(name=\"student_id\"), inverseJoinColumns=@JoinColumn(name=\"course_id\")) Set<Course> courses`, and Course has `@ManyToMany(mappedBy=\"courses\") Set<Student> students`. However, if the join table has additional columns (like enrollment date or grade), you must create an explicit intermediate entity (e.g., Enrollment) with an @EmbeddedId or @IdClass for the composite key, and replace the @ManyToMany with two @ManyToOne relationships from Enrollment to Student and Course, and @OneToMany relationships back. This is the recommended approach even without extra columns, as it gives you more control over cascading, fetching, and querying. Using Set instead of List avoids Hibernate's inefficient bag handling for many-to-many relationships.",
+    "evaluationCriteria": [
+      "Describes @ManyToMany with @JoinTable for simple cases",
+      "Explains the intermediate entity approach for join tables with extra columns",
+      "Mentions composite key handling (@EmbeddedId or @IdClass)",
+      "Notes the recommendation to use Set over List for performance"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "java",
+      "spring_boot",
+      "bean_lifecycle"
+    ],
+    "language": "en",
+    "questionText": "Describe the lifecycle of a Spring bean. What are @PostConstruct and @PreDestroy, and when would you use them?",
+    "hints": [
+      "Think about the phases: instantiation, dependency injection, initialization, use, destruction",
+      "Consider the different scopes and how they affect lifecycle"
+    ],
+    "modelAnswer": "The Spring bean lifecycle proceeds through several phases: (1) Instantiation: Spring creates the bean instance using the constructor. (2) Dependency Injection: Spring injects dependencies via constructor, setter, or field injection. (3) Aware interfaces: If the bean implements BeanNameAware, BeanFactoryAware, or ApplicationContextAware, those setter methods are called. (4) BeanPostProcessor.postProcessBeforeInitialization: Any registered BeanPostProcessors run their before-initialization logic. (5) Initialization: @PostConstruct methods run, then InitializingBean.afterPropertiesSet(), then custom init-method. (6) BeanPostProcessor.postProcessAfterInitialization: Post-processors run after initialization (this is where AOP proxies are created). (7) Bean is ready for use. (8) Destruction: @PreDestroy methods run, then DisposableBean.destroy(), then custom destroy-method. @PostConstruct is used for initialization logic that depends on injected dependencies (like loading cache, validating configuration, or starting background tasks). @PreDestroy is used for cleanup (closing connections, flushing caches, stopping schedulers). These only apply to singleton beans by default; prototype beans are not managed through destruction.",
+    "evaluationCriteria": [
+      "Lists the lifecycle phases in correct order",
+      "Explains @PostConstruct and @PreDestroy with practical examples",
+      "Mentions BeanPostProcessor and its role",
+      "Notes that prototype beans do not receive destruction callbacks"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "java",
+      "java17",
+      "pattern_matching"
+    ],
+    "language": "en",
+    "questionText": "Explain pattern matching for instanceof in Java 17. How does it improve code readability compared to the traditional approach?",
+    "hints": [
+      "Think about the traditional cast-after-check pattern",
+      "Consider how the pattern variable scoping works"
+    ],
+    "modelAnswer": "Pattern matching for instanceof (finalized in Java 16, available in Java 17) eliminates the need for explicit casting after an instanceof check. Traditionally, you would write: `if (obj instanceof String) { String s = (String) obj; use(s); }`. With pattern matching, this becomes: `if (obj instanceof String s) { use(s); }`. The variable `s` is automatically cast and scoped to where the pattern match guarantees it is valid. This works with logical operators too: `if (obj instanceof String s && s.length() > 5)` is valid because the compiler knows `s` is only accessible when the instanceof check passes. It also works with negation for early returns: `if (!(obj instanceof String s)) return; use(s);`. This feature is particularly powerful when combined with sealed classes and switch expressions (preview in Java 17, finalized later), allowing exhaustive pattern matching over type hierarchies. It reduces boilerplate, eliminates potential ClassCastException bugs, and makes the code more declarative.",
+    "evaluationCriteria": [
+      "Shows the before/after comparison with traditional instanceof",
+      "Explains the pattern variable and its scoping rules",
+      "Demonstrates usage with logical operators (&&)",
+      "Mentions the connection to sealed classes and switch pattern matching"
+    ],
+    "timeEstimate": 200
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "java",
+      "spring_boot",
+      "rest",
+      "best_practices"
+    ],
+    "language": "en",
+    "questionText": "What are RESTful API best practices you follow when designing Spring Boot APIs? Cover URL design, HTTP methods, status codes, and error handling.",
+    "hints": [
+      "Think about resource-oriented URLs and proper HTTP semantics",
+      "Consider pagination, versioning, and consistent error responses"
+    ],
+    "modelAnswer": "When designing RESTful APIs in Spring Boot, I follow these practices: URL design uses plural nouns for resources (/api/users, /api/users/{id}/orders), avoids verbs in URLs (use HTTP methods instead), and keeps nesting to a maximum of two levels. HTTP methods match their semantic meaning: GET for retrieval (idempotent), POST for creation, PUT for full replacement, PATCH for partial update, DELETE for removal. Status codes are used correctly: 200 for success, 201 for resource creation (with Location header), 204 for successful deletion with no body, 400 for validation errors, 401 for unauthenticated, 403 for unauthorized, 404 for not found, 409 for conflicts, and 500 for server errors. Error responses follow a consistent structure using @RestControllerAdvice with a standard error DTO containing timestamp, status, error code, message, and path. Additional practices include: API versioning (via URL path /api/v1/ or Accept header), pagination with page/size/sort query parameters returning metadata (totalElements, totalPages), HATEOAS links for discoverability, request validation with @Valid and Bean Validation annotations, and using DTOs to decouple the API contract from internal entities.",
+    "evaluationCriteria": [
+      "Describes resource-oriented URL design with plural nouns",
+      "Correctly maps HTTP methods to CRUD operations",
+      "Lists appropriate HTTP status codes for different scenarios",
+      "Mentions pagination, versioning, and DTO patterns",
+      "Discusses consistent error response structure"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "java",
+      "spring_boot",
+      "debugging"
+    ],
+    "language": "en",
+    "questionText": "Your Spring Boot application throws a 'Circular dependency' error on startup. What causes this, and how do you resolve it?",
+    "hints": [
+      "Think about what happens when Bean A depends on Bean B and Bean B depends on Bean A",
+      "Consider design changes rather than workarounds"
+    ],
+    "modelAnswer": "A circular dependency occurs when Bean A requires Bean B to be injected and Bean B requires Bean A, creating a cycle that Spring cannot resolve during initialization. Since Spring Boot 2.6+, circular dependencies are not allowed by default and will cause a startup failure. Resolution strategies in order of preference: (1) Refactor the design: Extract the shared logic into a third service that both can depend on, breaking the cycle. This is the best approach as circular dependencies often indicate a design flaw. (2) Use @Lazy on one of the injection points, which defers the creation of that bean until it is first accessed: `@Lazy @Autowired private ServiceB serviceB;`. (3) Use setter injection instead of constructor injection on one side, allowing Spring to create the beans first and inject later. (4) Use ApplicationContext.getBean() to fetch the dependency programmatically at runtime (not recommended, as it is a service locator anti-pattern). (5) As a last resort, you can set spring.main.allow-circular-references=true, but this hides the underlying design issue and is discouraged.",
+    "evaluationCriteria": [
+      "Clearly explains what causes circular dependencies",
+      "Recommends refactoring as the primary solution",
+      "Mentions @Lazy as a practical workaround",
+      "Notes that Spring Boot 2.6+ disallows circular dependencies by default",
+      "Discourages simply enabling allow-circular-references"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "technical",
+    "difficulty": "senior",
+    "tags": [
+      "java",
+      "spring_boot",
+      "architecture",
+      "microservices"
+    ],
+    "language": "en",
+    "questionText": "You are designing a Spring Boot microservices architecture for an e-commerce platform. How would you handle inter-service communication, distributed transactions, and data consistency?",
+    "hints": [
+      "Think about synchronous vs asynchronous communication patterns",
+      "Consider the Saga pattern, event sourcing, and eventual consistency"
+    ],
+    "modelAnswer": "For inter-service communication, I would use a mix of synchronous and asynchronous patterns based on the use case. Synchronous communication via REST (using WebClient or RestClient) or gRPC is suitable for real-time queries where the caller needs an immediate response, with circuit breakers (Resilience4j) to handle failures gracefully. Asynchronous communication via message brokers (Apache Kafka or RabbitMQ) is preferred for commands that do not need an immediate response and for event-driven architectures, providing better decoupling and resilience. For distributed transactions, I would avoid two-phase commit (2PC) as it creates tight coupling and availability issues. Instead, I would implement the Saga pattern, either choreography-based (each service publishes events and other services react) for simple flows, or orchestration-based (a central saga coordinator manages the flow) for complex business processes involving many services. Each step in the saga has a compensating action for rollback. For data consistency, I would embrace eventual consistency with the Outbox pattern: when a service updates its database, it also writes an event to an outbox table in the same transaction, and a separate process (Change Data Capture with Debezium, or a poller) publishes these events to the message broker. This ensures atomicity between the database change and the event publication. Idempotency keys on consumers prevent duplicate processing. I would use an API Gateway (Spring Cloud Gateway) for routing and cross-cutting concerns, service discovery (Eureka or Kubernetes DNS), and distributed tracing (Micrometer + Zipkin/Jaeger) for observability across services.",
+    "evaluationCriteria": [
+      "Differentiates between synchronous and asynchronous communication patterns",
+      "Explains the Saga pattern with choreography vs orchestration",
+      "Describes the Outbox pattern for atomicity of events and DB changes",
+      "Mentions circuit breakers, idempotency, and eventual consistency",
+      "Covers observability and cross-cutting concerns"
+    ],
+    "timeEstimate": 360
+  },
+  {
+    "category": "technical",
+    "difficulty": "senior",
+    "tags": [
+      "java",
+      "spring_boot",
+      "security",
+      "architecture"
+    ],
+    "language": "en",
+    "questionText": "How would you design a comprehensive security architecture for a Spring Boot application that handles sensitive user data? Cover authentication, authorization, data protection, and common vulnerability prevention.",
+    "hints": [
+      "Think beyond just authentication to defense in depth",
+      "Consider OWASP Top 10, encryption at rest and in transit, and audit logging"
+    ],
+    "modelAnswer": "I would implement security in layers following a defense-in-depth approach. Authentication: OAuth 2.0 / OpenID Connect with an identity provider (Keycloak or Auth0) for SSO, JWT tokens for stateless API authentication with short expiration (15 min) and refresh token rotation, multi-factor authentication for sensitive operations, and account lockout after failed attempts with rate limiting via Spring Cloud Gateway or a library like Bucket4j. Authorization: Role-based access control (RBAC) with method-level security using @PreAuthorize/@Secured, combined with attribute-based access control (ABAC) for fine-grained policies (e.g., users can only access their own resources). Implement at both the API gateway and service level. Data protection: TLS everywhere (even between internal services via mTLS in service mesh), encryption at rest for sensitive fields using JPA AttributeConverters with AES-256, hashing passwords with BCrypt (strength 12+), masking PII in logs using Logback patterns, and storing secrets in a vault (HashiCorp Vault or AWS Secrets Manager) instead of environment variables. Vulnerability prevention: CSRF protection for session-based clients, Content Security Policy headers, input validation with Bean Validation at the API boundary, parameterized queries (already handled by JPA but important for native queries), output encoding, security headers via Spring Security (X-Frame-Options, X-Content-Type-Options, Strict-Transport-Security). Audit logging of all authentication events, authorization failures, and data access using Spring AOP or Hibernate Envers for entity change tracking. Regular dependency scanning with OWASP Dependency-Check or Snyk in the CI/CD pipeline.",
+    "evaluationCriteria": [
+      "Covers authentication, authorization, and data protection comprehensively",
+      "Mentions OAuth 2.0/OIDC and JWT with refresh token rotation",
+      "Discusses encryption at rest and in transit",
+      "Addresses OWASP vulnerabilities and prevention strategies",
+      "Includes audit logging and dependency scanning"
+    ],
+    "timeEstimate": 360
+  },
+  {
+    "category": "technical",
+    "difficulty": "senior",
+    "tags": [
+      "java",
+      "spring_boot",
+      "jpa",
+      "performance"
+    ],
+    "language": "en",
+    "questionText": "You notice that a Spring Boot API endpoint that returns a list of products with their categories and reviews has a response time of 5 seconds. Walk me through how you would diagnose and optimize this.",
+    "hints": [
+      "Start with profiling and query analysis before jumping to caching",
+      "Think about N+1, missing indexes, connection pool, and serialization"
+    ],
+    "modelAnswer": "I would follow a systematic approach starting with diagnosis. Step 1 - Measure: Enable Hibernate statistics (hibernate.generate_statistics=true) to see query count and timing, check application logs for slow queries, and use Spring Boot Actuator metrics for endpoint timing. Step 2 - Identify the bottleneck: Common culprits in this scenario are N+1 queries (loading products, then one query per product for categories, another per product for reviews). I would check the Hibernate log output: if I see dozens of SELECT statements for what should be one query, that confirms N+1. Step 3 - Fix N+1: Use JPQL with JOIN FETCH for the associations, or @EntityGraph on the repository method. Be careful not to use multiple JOIN FETCH on collections simultaneously (Cartesian product issue), instead use @BatchSize or separate queries for multiple collections. Step 4 - Database optimization: Run EXPLAIN ANALYZE on the actual SQL to check for sequential scans, add appropriate indexes (B-tree on foreign keys, composite indexes for common filter/sort combinations), and consider whether pagination is implemented (never return unbounded result sets). Step 5 - Application-level optimizations: Use DTO projections instead of returning full entities (avoids fetching unnecessary columns and prevents serialization of the entire object graph), implement pagination with Pageable, configure HikariCP connection pool tuning (maximumPoolSize, connectionTimeout), and add Redis caching with @Cacheable for data that changes infrequently. Step 6 - Serialization: Check for circular references in JSON serialization (use @JsonIgnore or DTOs), consider using Jackson streaming for large payloads. Step 7 - Prevent regression: Add a test with datasource-proxy asserting the maximum query count for this endpoint.",
+    "evaluationCriteria": [
+      "Follows a systematic diagnosis approach rather than guessing",
+      "Identifies N+1 as a primary suspect and explains the fix",
+      "Mentions EXPLAIN ANALYZE and indexing at the database level",
+      "Recommends DTO projections and pagination",
+      "Includes caching, connection pool tuning, and regression prevention"
+    ],
+    "timeEstimate": 300
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": [
+      "postgresql",
+      "sql",
+      "joins"
+    ],
+    "language": "en",
+    "questionText": "Explain the difference between INNER JOIN, LEFT JOIN, RIGHT JOIN, and FULL OUTER JOIN in PostgreSQL. Provide a simple example.",
+    "hints": [
+      "Think about what happens to rows that do not have a match in the other table",
+      "Use a concrete example like users and orders"
+    ],
+    "modelAnswer": "INNER JOIN returns only the rows where there is a match in both tables. LEFT JOIN returns all rows from the left table and matched rows from the right table, filling NULLs where there is no match. RIGHT JOIN is the opposite: all rows from the right table with NULLs for unmatched left rows. FULL OUTER JOIN returns all rows from both tables, with NULLs on either side where there is no match. For example, with a users table and an orders table: INNER JOIN shows only users who have placed orders. LEFT JOIN shows all users including those with no orders (order columns will be NULL). FULL OUTER JOIN would also show any orphan orders without a valid user.",
+    "evaluationCriteria": [
+      "Correctly describes all four join types",
+      "Explains what happens to unmatched rows in each case",
+      "Provides a concrete example or scenario",
+      "Mentions NULLs for unmatched rows"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": [
+      "postgresql",
+      "sql",
+      "indexing"
+    ],
+    "language": "en",
+    "questionText": "What is an index in PostgreSQL, and why does it improve query performance? When might an index hurt performance?",
+    "hints": [
+      "Think of a book index analogy",
+      "Consider the overhead of maintaining indexes on write operations"
+    ],
+    "modelAnswer": "An index in PostgreSQL is a data structure (by default a B-tree) that stores a sorted reference to rows based on one or more columns, allowing the database to find rows without scanning the entire table. It works like a book index: instead of reading every page, you look up the topic and go directly to the relevant page. Indexes dramatically speed up SELECT queries with WHERE clauses, JOINs, and ORDER BY operations. However, indexes hurt performance in write-heavy scenarios because every INSERT, UPDATE, or DELETE must also update the index, adding overhead. Indexes also consume disk space. You should avoid creating indexes on columns with very low selectivity (like a boolean column with only two values), on small tables where a sequential scan is faster, or on columns that are rarely used in queries.",
+    "evaluationCriteria": [
+      "Explains what an index is and its underlying structure (B-tree)",
+      "Describes the performance benefit for read operations",
+      "Identifies the write overhead cost",
+      "Mentions scenarios where indexes are not beneficial"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "postgresql",
+      "sql",
+      "query_optimization"
+    ],
+    "language": "en",
+    "questionText": "How do you use EXPLAIN ANALYZE in PostgreSQL to optimize a slow query? What key elements do you look for in the output?",
+    "hints": [
+      "Think about the difference between EXPLAIN and EXPLAIN ANALYZE",
+      "Consider Seq Scan vs Index Scan, actual vs estimated rows, and cost"
+    ],
+    "modelAnswer": "EXPLAIN shows the query plan the planner intends to use without executing the query, while EXPLAIN ANALYZE actually executes the query and shows real timing and row count data alongside the plan. When analyzing the output, I look for: (1) Scan types: Sequential Scan (Seq Scan) on large tables indicates a missing index; Index Scan or Bitmap Index Scan are preferred for selective queries. (2) Actual rows vs estimated rows: Large discrepancies indicate outdated statistics (run ANALYZE to update them) which can cause the planner to choose suboptimal plans. (3) Nested Loop joins with high row counts may indicate an N+1-like issue at the database level; Hash Join or Merge Join are typically more efficient for large datasets. (4) Sort operations without an index (Sort Method: external merge disk) indicate expensive disk-based sorts that could be eliminated with an appropriate index. (5) Actual time: The actual time on each node helps identify which step is the bottleneck. Additional flags like EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT) show buffer cache hits vs disk reads. Common optimizations include adding indexes on filtered/joined columns, rewriting subqueries as JOINs, adding composite indexes matching WHERE clause combinations, and using partial indexes for frequently filtered subsets.",
+    "evaluationCriteria": [
+      "Distinguishes between EXPLAIN and EXPLAIN ANALYZE",
+      "Identifies key elements to look for (scan types, row estimates, join types)",
+      "Explains what outdated statistics mean and how to fix them",
+      "Provides actionable optimization strategies based on the output"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "postgresql",
+      "sql",
+      "transactions"
+    ],
+    "language": "en",
+    "questionText": "Explain transaction isolation levels in PostgreSQL. What problems do each level prevent, and what is the default?",
+    "hints": [
+      "Think about dirty reads, non-repeatable reads, and phantom reads",
+      "PostgreSQL's default is Read Committed"
+    ],
+    "modelAnswer": "PostgreSQL supports four transaction isolation levels that control what data changes a transaction can see from other concurrent transactions. Read Uncommitted: In theory allows dirty reads (seeing uncommitted changes from other transactions), but PostgreSQL actually treats this as Read Committed. Read Committed (the default): Each statement within a transaction sees only data committed before that statement began, preventing dirty reads but allowing non-repeatable reads (re-reading a row may return different data if another transaction committed changes). Repeatable Read: The transaction sees a snapshot of data as of the start of the transaction, preventing dirty reads and non-repeatable reads. However, PostgreSQL will throw a serialization error if the transaction tries to update a row modified by another concurrent transaction, requiring a retry. Serializable: The strictest level, which ensures that the result of concurrent transactions is the same as if they had run sequentially. It uses serializable snapshot isolation (SSI) and may throw serialization errors requiring retries. Phantom reads (new rows appearing in a re-executed query) are prevented at the Repeatable Read level in PostgreSQL, which is stricter than the SQL standard requires. The trade-off is between consistency and concurrency/performance: stricter levels may require more retries.",
+    "evaluationCriteria": [
+      "Lists and explains all four isolation levels",
+      "Defines dirty reads, non-repeatable reads, and phantom reads",
+      "Correctly identifies Read Committed as PostgreSQL's default",
+      "Mentions serialization errors and retry requirements at higher levels",
+      "Notes PostgreSQL-specific behaviors vs SQL standard"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "postgresql",
+      "sql",
+      "indexing"
+    ],
+    "language": "en",
+    "questionText": "What are the different index types in PostgreSQL (B-tree, GIN, GiST, BRIN), and when would you use each?",
+    "hints": [
+      "Think about the data types and query patterns each index type optimizes",
+      "Consider full-text search, JSON data, and range queries"
+    ],
+    "modelAnswer": "PostgreSQL offers several index types optimized for different use cases. B-tree (default): Best for equality and range comparisons (=, <, >, BETWEEN, ORDER BY) on scalar types. Suitable for most general-purpose indexing needs. GIN (Generalized Inverted Index): Designed for values that contain multiple elements. Ideal for full-text search (tsvector columns), JSONB containment queries (@>, ?), array operations (ANY, @>), and trigram similarity searches. GIN indexes are slower to build and update but fast for lookups. GiST (Generalized Search Tree): Supports complex data types like geometric data, range types, and full-text search (alternative to GIN, faster to build but slower to query). Used for operations like overlaps (&&), contains (@>), and nearest-neighbor searches (<->). BRIN (Block Range Index): Stores summary information per physical block range, extremely small in size. Ideal for very large tables with naturally ordered data (like timestamps on append-only tables) where the physical order correlates with the column values. BRIN is much smaller than B-tree but only effective when data has physical correlation with the indexed column. Additionally, Hash indexes are available for simple equality comparisons but are rarely preferred over B-tree. Choosing the right index type depends on your data type, query patterns, and table size.",
+    "evaluationCriteria": [
+      "Explains B-tree, GIN, GiST, and BRIN with correct use cases",
+      "Mentions full-text search and JSONB for GIN",
+      "Describes BRIN's advantage for large ordered datasets",
+      "Discusses trade-offs between index types (build time, size, query speed)"
+    ],
+    "timeEstimate": 230
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "postgresql",
+      "sql",
+      "normalization"
+    ],
+    "language": "en",
+    "questionText": "What is database normalization? Explain the first three normal forms (1NF, 2NF, 3NF) with examples, and when you might choose to denormalize.",
+    "hints": [
+      "Think about reducing data redundancy at each level",
+      "Consider performance as a reason to denormalize"
+    ],
+    "modelAnswer": "Database normalization is the process of organizing tables to reduce data redundancy and improve data integrity. First Normal Form (1NF): Each column contains atomic (indivisible) values, and each row is unique. Violating example: a 'phone_numbers' column storing '555-1234, 555-5678'. Fix: create a separate phone_numbers table with one number per row. Second Normal Form (2NF): Must be in 1NF, and every non-key column must depend on the entire primary key (no partial dependencies). Relevant for composite keys. Violating example: table (student_id, course_id, student_name, grade) where student_name depends only on student_id, not on the full composite key. Fix: move student_name to a separate students table. Third Normal Form (3NF): Must be in 2NF, and no transitive dependencies (non-key columns should not depend on other non-key columns). Violating example: order table with (order_id, customer_id, customer_city) where customer_city depends on customer_id, not directly on order_id. Fix: store customer_city only in the customers table. Denormalization is appropriate when read performance is critical and joins are expensive, such as in reporting/analytics tables, materialized views for dashboards, caching aggregate data to avoid costly runtime calculations, or read-heavy microservice databases optimized for specific query patterns.",
+    "evaluationCriteria": [
+      "Correctly defines 1NF, 2NF, and 3NF with examples",
+      "Explains what type of dependency each form eliminates",
+      "Provides valid reasons for denormalization",
+      "Mentions practical trade-offs between normalization and performance"
+    ],
+    "timeEstimate": 230
+  },
+  {
+    "category": "technical",
+    "difficulty": "senior",
+    "tags": [
+      "postgresql",
+      "sql",
+      "performance",
+      "optimization"
+    ],
+    "language": "en",
+    "questionText": "You have a PostgreSQL database with a table containing 50 million rows, and a report query that joins 4 tables is taking over 30 seconds. Walk me through your approach to diagnosing and optimizing this query.",
+    "hints": [
+      "Start with EXPLAIN ANALYZE and work through the execution plan",
+      "Consider partitioning, materialized views, and parallel query execution"
+    ],
+    "modelAnswer": "I would approach this systematically. Phase 1 - Analyze: Run EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT) on the query to see the actual execution plan. Check for sequential scans on large tables that should use indexes, estimated vs actual row discrepancies (run ANALYZE on the tables to update statistics), and which join or scan node consumes the most time. Phase 2 - Index optimization: Ensure all JOIN columns and WHERE clause columns have appropriate indexes. Consider composite indexes that match the query's filter+sort pattern (covering indexes to avoid table lookups). Use partial indexes if the query always filters on a specific condition (e.g., WHERE status = 'active'). For columns used in LIKE queries, consider trigram (pg_trgm) indexes. Phase 3 - Query rewriting: Check if subqueries can be rewritten as JOINs or CTEs. Ensure that functions in WHERE clauses are not preventing index usage (use expression indexes if needed). Check if DISTINCT or GROUP BY can be optimized. Phase 4 - Table structure: Consider table partitioning (range partitioning by date is common for time-series data) to enable partition pruning, reducing the data scanned. For very wide tables, consider vertical partitioning. Phase 5 - Materialized views: If the report is not real-time, create a materialized view that pre-computes the join and refresh it on a schedule (REFRESH MATERIALIZED VIEW CONCURRENTLY for zero-downtime refreshes). Phase 6 - PostgreSQL tuning: Ensure work_mem is sufficient for sorts and hash joins (increase it for the session: SET work_mem = '256MB'), check effective_cache_size reflects available memory, enable parallel query execution (max_parallel_workers_per_gather), and ensure shared_buffers is appropriately sized (typically 25% of RAM). Phase 7 - Monitor: Use pg_stat_statements to track query performance over time and detect regressions.",
+    "evaluationCriteria": [
+      "Starts with EXPLAIN ANALYZE as the diagnostic tool",
+      "Covers indexing strategies including composite and partial indexes",
+      "Mentions partitioning and materialized views for large-scale data",
+      "Discusses PostgreSQL configuration tuning (work_mem, parallel workers)",
+      "Follows a systematic approach rather than guessing at solutions"
+    ],
+    "timeEstimate": 360
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": [
+      "docker",
+      "devops"
+    ],
+    "language": "en",
+    "questionText": "What is Docker, and what is the difference between a Docker image and a Docker container? How do you create a basic Dockerfile for a Java application?",
+    "hints": [
+      "Think of images as blueprints and containers as running instances",
+      "Consider the FROM, COPY, and CMD instructions"
+    ],
+    "modelAnswer": "Docker is a platform for packaging and running applications in isolated environments called containers. A Docker image is a read-only template containing the application code, runtime, libraries, and dependencies, built from a Dockerfile. A container is a running instance of an image, isolated with its own filesystem, network, and process space. You can create many containers from one image. A basic Dockerfile for a Java application looks like: `FROM eclipse-temurin:17-jre` as the base image, `WORKDIR /app` to set the working directory, `COPY target/myapp.jar app.jar` to copy the built JAR, `EXPOSE 8080` to document the port, and `CMD [\"java\", \"-jar\", \"app.jar\"]` to define the startup command. You build it with `docker build -t myapp .` and run it with `docker run -p 8080:8080 myapp`.",
+    "evaluationCriteria": [
+      "Clearly distinguishes between image and container",
+      "Explains that images are read-only templates",
+      "Shows basic Dockerfile instructions (FROM, COPY, CMD)",
+      "Mentions how to build and run the container"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": [
+      "git",
+      "devops"
+    ],
+    "language": "en",
+    "questionText": "What is the difference between git merge and git rebase? When would you use each?",
+    "hints": [
+      "Think about how each integrates changes and what the commit history looks like",
+      "Consider the golden rule of rebasing"
+    ],
+    "modelAnswer": "Git merge creates a new merge commit that combines two branches, preserving the complete history of both branches including the divergence point. Git rebase replays the commits from your branch on top of the target branch, rewriting commit history to create a linear sequence. Merge is safer for shared branches because it does not rewrite history, and the merge commit shows when and where branches were integrated. Rebase creates a cleaner, linear history that is easier to read and navigate. You should use merge for integrating feature branches into main (or via pull requests), and use rebase to update your feature branch with the latest changes from main before merging. The golden rule: never rebase commits that have been pushed to a shared branch, because it rewrites history and will cause conflicts for other developers.",
+    "evaluationCriteria": [
+      "Explains the mechanics of merge (creates merge commit) vs rebase (replays commits)",
+      "Describes the resulting history shape (branching vs linear)",
+      "Provides guidance on when to use each",
+      "Mentions the golden rule of not rebasing shared/public branches"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": [
+      "git",
+      "devops"
+    ],
+    "language": "en",
+    "questionText": "How do you resolve a merge conflict in Git? Walk me through the process.",
+    "hints": [
+      "Think about the conflict markers that Git inserts",
+      "Consider the steps from encountering the conflict to completing the merge"
+    ],
+    "modelAnswer": "When Git cannot automatically merge changes because both branches modified the same lines, it creates a merge conflict. The process to resolve it is: (1) Git marks the conflicted files with conflict markers: <<<<<<< HEAD shows your current changes, ======= separates them, and >>>>>>> branch-name shows the incoming changes. (2) Open each conflicted file and decide which changes to keep: you can keep yours, theirs, both, or write something entirely new. Remove all conflict markers. (3) After editing, stage the resolved files with `git add <filename>`. (4) Complete the merge with `git commit` (Git will provide a default merge commit message). You can use tools like VS Code's built-in merge editor, `git mergetool`, or IntelliJ's merge tool to make this easier. To prevent frequent conflicts, pull and merge from the main branch often, keep feature branches short-lived, and communicate with teammates about shared files.",
+    "evaluationCriteria": [
+      "Describes the conflict markers (<<<, ===, >>>)",
+      "Explains the resolution process step by step",
+      "Mentions staging resolved files and completing the merge",
+      "Suggests prevention strategies or merge tools"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "docker",
+      "devops",
+      "optimization"
+    ],
+    "language": "en",
+    "questionText": "What are multi-stage builds in Docker, and why are they important? Show an example for a Java Spring Boot application.",
+    "hints": [
+      "Think about the difference between build-time and runtime dependencies",
+      "Consider image size and security"
+    ],
+    "modelAnswer": "Multi-stage builds allow you to use multiple FROM statements in a single Dockerfile, where each FROM starts a new build stage. You can copy artifacts from one stage to another while leaving behind unnecessary build tools and intermediate files. This is important because it drastically reduces the final image size and attack surface. For a Spring Boot application, the first stage uses a Maven/Gradle image to build the JAR: `FROM maven:3.9-eclipse-temurin-17 AS build`, `WORKDIR /app`, `COPY pom.xml .`, `RUN mvn dependency:go-offline` (caches dependencies in a separate layer), `COPY src ./src`, `RUN mvn package -DskipTests`. The second stage uses only a JRE image: `FROM eclipse-temurin:17-jre-alpine`, `COPY --from=build /app/target/*.jar app.jar`, `EXPOSE 8080`, `CMD [\"java\", \"-jar\", \"app.jar\"]`. The build stage image (with Maven, JDK, source code) is discarded, and the final image only contains the JRE and the JAR. This can reduce image size from 800MB+ to under 200MB. Additional best practices: use .dockerignore to exclude unnecessary files, order COPY instructions to maximize layer caching (dependencies before source code), use specific image tags instead of 'latest', and run as a non-root user for security.",
+    "evaluationCriteria": [
+      "Explains multi-stage builds with multiple FROM statements",
+      "Demonstrates the build stage vs runtime stage pattern",
+      "Mentions image size reduction and security benefits",
+      "Includes best practices like layer caching and non-root user"
+    ],
+    "timeEstimate": 220
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "docker",
+      "docker_compose",
+      "devops"
+    ],
+    "language": "en",
+    "questionText": "What is docker-compose, and how would you use it to set up a local development environment with a Spring Boot app, PostgreSQL, and Redis?",
+    "hints": [
+      "Think about the docker-compose.yml structure with services, networks, and volumes",
+      "Consider health checks, environment variables, and dependency ordering"
+    ],
+    "modelAnswer": "Docker Compose is a tool for defining and running multi-container Docker applications using a YAML configuration file. For a local dev environment, you would create a docker-compose.yml with three services: the Spring Boot app, PostgreSQL, and Redis. The postgres service uses the `postgres:16-alpine` image with environment variables for POSTGRES_DB, POSTGRES_USER, and POSTGRES_PASSWORD, a named volume for data persistence, and a healthcheck (`pg_isready`). The redis service uses `redis:7-alpine` with its own volume and healthcheck (`redis-cli ping`). The app service either builds from a Dockerfile (`build: .`) or uses an image, with environment variables pointing to the other services by their service names (e.g., `DATABASE_URL=jdbc:postgresql://postgres:5432/mydb`), and `depends_on` with `condition: service_healthy` to ensure databases are ready before the app starts. All services are on a shared network (created automatically). You run everything with `docker-compose up -d`, view logs with `docker-compose logs -f`, and tear down with `docker-compose down` (add `-v` to also remove volumes). For development, you can mount source code as a volume for hot-reload and override configurations with docker-compose.override.yml.",
+    "evaluationCriteria": [
+      "Describes the docker-compose.yml structure clearly",
+      "Configures all three services with appropriate images and settings",
+      "Mentions health checks and depends_on for startup ordering",
+      "Includes volumes for persistence and networking between services"
+    ],
+    "timeEstimate": 220
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "github_actions",
+      "ci_cd",
+      "devops"
+    ],
+    "language": "en",
+    "questionText": "How do you set up a CI/CD pipeline using GitHub Actions for a Spring Boot application? Describe the workflow file structure and key steps.",
+    "hints": [
+      "Think about triggers, jobs, steps, and common actions",
+      "Consider building, testing, and deploying as separate stages"
+    ],
+    "modelAnswer": "A GitHub Actions workflow is defined in a YAML file in `.github/workflows/`. The key structure includes: `name` for the workflow, `on` for triggers (push to main, pull_request), and `jobs` containing one or more jobs that run on specified runners. For a Spring Boot CI/CD pipeline, I would create two jobs: build-and-test (runs on every push/PR) and deploy (runs only on push to main, depends on the test job). The build-and-test job: runs on `ubuntu-latest`, uses `actions/setup-java@v4` with `distribution: 'temurin'` and `java-version: '17'`, caches Maven dependencies with `actions/cache@v4` on `~/.m2/repository`, runs `mvn verify` to compile, test, and package, and uploads the JAR as an artifact using `actions/upload-artifact@v4`. For integration tests, you can add a PostgreSQL service container: `services: postgres: image: postgres:16, env: POSTGRES_DB: testdb, ports: 5432:5432, options: --health-cmd pg_isready`. The deploy job: uses `needs: build-and-test`, downloads the artifact, builds and pushes a Docker image to a container registry (using `docker/build-push-action`), and deploys to the target environment. Secrets (database credentials, registry tokens) are stored in GitHub repository secrets and accessed via `${{ secrets.MY_SECRET }}`. Branch protection rules should require the CI checks to pass before merging.",
+    "evaluationCriteria": [
+      "Describes the YAML structure (name, on, jobs, steps)",
+      "Includes build, test, and deploy stages with proper dependencies",
+      "Mentions service containers for integration testing",
+      "Covers secrets management and artifact handling"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "git",
+      "devops",
+      "branching"
+    ],
+    "language": "en",
+    "questionText": "Describe a Git branching strategy you have used or would recommend for a team of 5-10 developers. How do you handle feature development, bug fixes, and releases?",
+    "hints": [
+      "Think about GitFlow, GitHub Flow, or trunk-based development",
+      "Consider the trade-offs between simplicity and structure"
+    ],
+    "modelAnswer": "For a team of 5-10 developers, I would recommend GitHub Flow or a simplified GitFlow depending on the release cadence. GitHub Flow (preferred for continuous deployment): The main branch is always deployable. Developers create short-lived feature branches from main (feature/add-user-auth, fix/login-error), make small focused commits, open a pull request for code review, run CI checks automatically, and merge to main via squash merge. Deployments happen automatically from main. Hotfixes follow the same flow but with priority review. This works well for SaaS products with frequent deployments. For projects with scheduled releases: Use a main branch (production), develop branch (integration), feature branches (from develop), release branches (release/1.2.0 from develop for stabilization), and hotfix branches (from main for urgent fixes). Feature branches merge to develop, release branches merge to both main and develop after testing, and hotfixes merge to both main and develop. Regardless of strategy, key practices include: branch naming conventions (type/description), pull request reviews with at least one approval, CI running tests on every PR, no direct pushes to main/develop (branch protection), keeping feature branches under 2-3 days of work to reduce merge conflicts, and deleting branches after merging.",
+    "evaluationCriteria": [
+      "Describes at least one branching strategy clearly",
+      "Explains how features, bug fixes, and releases are handled",
+      "Mentions pull requests, code review, and CI integration",
+      "Discusses branch naming conventions and branch protection"
+    ],
+    "timeEstimate": 220
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "aws",
+      "cloud",
+      "devops"
+    ],
+    "language": "en",
+    "questionText": "Explain the basic AWS services a developer should know: S3, EC2, RDS, and IAM. How do they work together in a typical web application deployment?",
+    "hints": [
+      "Think about each service's role: storage, compute, database, security",
+      "Consider how they connect in a real architecture"
+    ],
+    "modelAnswer": "S3 (Simple Storage Service): Object storage for files like images, static assets, backups, and logs. Offers virtually unlimited storage with high durability (99.999999999%). Can host static websites and serve files via CloudFront CDN. EC2 (Elastic Compute Cloud): Virtual servers in the cloud. You choose an instance type (CPU, memory, storage) and an AMI (Amazon Machine Image) with your OS. EC2 runs your application code. You can configure auto-scaling groups to handle traffic spikes and use load balancers (ALB) to distribute traffic. RDS (Relational Database Service): Managed database service supporting PostgreSQL, MySQL, and others. Handles backups, patching, replication, and failover automatically. You configure the instance size, storage, and multi-AZ deployment for high availability. IAM (Identity and Access Management): Controls who can access what. IAM users, groups, and roles define permissions through policies (JSON documents). Follows the principle of least privilege. In a typical deployment: users hit a load balancer which routes to EC2 instances running the Spring Boot app. The app connects to an RDS PostgreSQL instance in a private subnet. Static assets (images, frontend bundles) are stored in S3 and served through CloudFront. IAM roles assigned to EC2 instances grant them permission to access S3 and RDS without hardcoding credentials. Security groups act as firewalls controlling network traffic between services.",
+    "evaluationCriteria": [
+      "Correctly explains all four services (S3, EC2, RDS, IAM)",
+      "Describes how they work together in a deployment architecture",
+      "Mentions security concepts (IAM roles, security groups, least privilege)",
+      "Discusses key features like auto-scaling, managed backups, or CDN"
+    ],
+    "timeEstimate": 230
+  },
+  {
+    "category": "technical",
+    "difficulty": "senior",
+    "tags": [
+      "docker",
+      "devops",
+      "ci_cd",
+      "architecture"
+    ],
+    "language": "en",
+    "questionText": "You are setting up the DevOps pipeline for a new microservices project with 5 Spring Boot services. Describe your complete CI/CD strategy, including containerization, testing, deployment, and monitoring.",
+    "hints": [
+      "Think about monorepo vs polyrepo, shared pipelines, environment promotion",
+      "Consider infrastructure as code, blue-green/canary deployments, and observability"
+    ],
+    "modelAnswer": "I would design the pipeline in layers. Repository structure: Polyrepo with one repository per service for independent deployment cycles, plus a shared infrastructure repo. Each repo has a standardized structure with Dockerfile, GitHub Actions workflows, and Helm charts. CI Pipeline (per service): Triggered on PR and push to main. Steps: (1) Lint and static analysis (Checkstyle, SpotBugs, SonarQube). (2) Unit tests with JUnit 5 and Mockito (fail fast). (3) Integration tests using Testcontainers for database and messaging dependencies (avoiding mocks for infrastructure). (4) Build Docker image using multi-stage builds. (5) Security scanning with Trivy for container vulnerabilities and OWASP dependency-check for library CVEs. (6) Push image to ECR/GitHub Container Registry with semantic versioning tags. CD Pipeline: Environment promotion strategy with dev, staging, and production. Dev deploys automatically on merge to main. Staging deploys with automated E2E tests (contract tests with Pact, and API tests). Production uses canary deployment: route 5% of traffic to the new version, monitor error rates and latency for 10 minutes, then gradually increase to 100% or roll back automatically. Infrastructure: Kubernetes (EKS) with Helm charts for deployment manifests, Terraform for infrastructure as code (VPC, EKS cluster, RDS, ElastiCache), and sealed secrets or External Secrets Operator for secret management. Monitoring and observability: Distributed tracing with OpenTelemetry and Jaeger, centralized logging with the EFK stack (Elasticsearch, Fluentd, Kibana), metrics with Prometheus and Grafana dashboards, and alerting based on SLOs (error rate <0.1%, p99 latency <500ms). Each service exposes Spring Boot Actuator health and metrics endpoints. PagerDuty or OpsGenie for on-call rotation. Shared concerns: A common CI workflow template (GitHub Actions reusable workflows) ensures consistency across all services for build, test, scan, and deploy steps.",
+    "evaluationCriteria": [
+      "Covers the complete pipeline: CI, CD, and monitoring",
+      "Includes testing strategy (unit, integration, contract, E2E)",
+      "Describes deployment strategy (canary, blue-green, or similar)",
+      "Mentions infrastructure as code and container orchestration",
+      "Includes observability (tracing, logging, metrics, alerting)"
+    ],
+    "timeEstimate": 360
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": [
+      "testing",
+      "junit",
+      "java"
+    ],
+    "language": "en",
+    "questionText": "What is the purpose of unit testing, and how do you write a basic unit test in Java using JUnit 5?",
+    "hints": [
+      "Think about the @Test annotation and assertion methods",
+      "Consider the Arrange-Act-Assert pattern"
+    ],
+    "modelAnswer": "Unit testing verifies that individual units of code (typically methods or classes) work correctly in isolation. The purpose is to catch bugs early, enable safe refactoring, and serve as documentation for expected behavior. In JUnit 5, you create a test class with methods annotated with @Test. Tests follow the Arrange-Act-Assert pattern: set up input data, call the method under test, and verify the result. For example: `@Test void shouldCalculateTotalPrice() { var cart = new ShoppingCart(); cart.addItem(new Item(\"Book\", 25.00)); assertEquals(25.00, cart.getTotal()); }`. JUnit 5 provides assertions like assertEquals, assertTrue, assertThrows (for expected exceptions), and assertAll (for grouped assertions). You use @BeforeEach for setup that runs before each test, @AfterEach for cleanup, and @DisplayName for readable test descriptions.",
+    "evaluationCriteria": [
+      "Explains the purpose and benefits of unit testing",
+      "Shows the @Test annotation and Arrange-Act-Assert pattern",
+      "Mentions common assertions (assertEquals, assertThrows)",
+      "References setup/teardown annotations (@BeforeEach, @AfterEach)"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "testing",
+      "mockito",
+      "java",
+      "spring_boot"
+    ],
+    "language": "en",
+    "questionText": "How do you use Mockito in Spring Boot to test a service that depends on a repository? Explain the difference between @Mock, @MockBean, and @InjectMocks.",
+    "hints": [
+      "Think about when you need the Spring context and when you do not",
+      "Consider when() and verify() methods"
+    ],
+    "modelAnswer": "Mockito creates mock objects that simulate dependencies, allowing you to test a class in isolation. @Mock (from Mockito) creates a mock instance without a Spring context, used with @InjectMocks which creates the class under test and injects the mocks into it. This is the fastest approach since no Spring context is loaded. Example: `@Mock UserRepository userRepo; @InjectMocks UserService userService;`. @MockBean (from Spring Boot Test) replaces a bean in the Spring application context with a mock, used in @SpringBootTest or @WebMvcTest integration tests when you need the Spring context but want to mock a specific dependency. To define mock behavior, use `when(userRepo.findById(1L)).thenReturn(Optional.of(testUser))`, and to verify interactions, use `verify(userRepo, times(1)).save(any(User.class))`. Best practice is to prefer @Mock + @InjectMocks for unit tests (fast, no Spring context) and reserve @MockBean for integration tests where you need Spring's dependency injection, security filters, or other framework features. Use @ExtendWith(MockitoExtension.class) to enable Mockito annotations in JUnit 5.",
+    "evaluationCriteria": [
+      "Explains @Mock, @MockBean, and @InjectMocks with their differences",
+      "Shows when() for stubbing and verify() for interaction verification",
+      "Distinguishes between unit tests (no Spring) and integration tests (with Spring)",
+      "Mentions @ExtendWith(MockitoExtension.class) for JUnit 5"
+    ],
+    "timeEstimate": 220
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "testing",
+      "jasmine",
+      "jest",
+      "angular"
+    ],
+    "language": "en",
+    "questionText": "How do you test Angular components? Explain the TestBed utility and the difference between shallow and deep testing.",
+    "hints": [
+      "Think about TestBed.configureTestingModule and ComponentFixture",
+      "Consider when to mock child components vs rendering them"
+    ],
+    "modelAnswer": "Angular components are tested using TestBed, which creates a testing module that mimics an Angular module. You configure it with TestBed.configureTestingModule(), declaring the component under test and providing mock dependencies. TestBed.createComponent() returns a ComponentFixture that gives access to the component instance and its rendered DOM via fixture.nativeElement or fixture.debugElement. Shallow testing renders only the component under test, replacing child components with stubs or using NO_ERRORS_SCHEMA to ignore unknown elements. This isolates the component's logic and template without the complexity of child components. Deep testing renders the full component tree including children, useful for testing component interactions. For services injected into the component, provide mock implementations using jasmine.createSpyObj() or jest.fn(). For example: `providers: [{ provide: UserService, useValue: jasmine.createSpyObj('UserService', ['getUser']) }]`. Call fixture.detectChanges() to trigger change detection after setup or state changes. Use fakeAsync/tick for testing asynchronous operations, and flush() to resolve pending timers. For components using OnPush change detection, you may need to call fixture.componentRef.setInput() or trigger change detection explicitly.",
+    "evaluationCriteria": [
+      "Explains TestBed configuration and ComponentFixture",
+      "Differentiates between shallow and deep testing",
+      "Shows how to mock services provided to the component",
+      "Mentions fixture.detectChanges() and async testing utilities"
+    ],
+    "timeEstimate": 230
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "clean_code",
+      "solid",
+      "best_practices"
+    ],
+    "language": "en",
+    "questionText": "Explain the SOLID principles with practical examples. How do they help in building maintainable software?",
+    "hints": [
+      "Give a concrete code example or scenario for each principle",
+      "Think about how violations of each principle cause problems"
+    ],
+    "modelAnswer": "SOLID is an acronym for five design principles that promote maintainable, flexible code. Single Responsibility Principle (SRP): A class should have only one reason to change. Example: separate a UserService (business logic) from UserValidator (validation) and UserRepository (data access) instead of putting everything in one class. This makes each class easier to test and modify. Open/Closed Principle (OCP): Classes should be open for extension but closed for modification. Example: use a PaymentProcessor interface with CreditCardProcessor, PayPalProcessor implementations. Adding Bitcoin support means creating a new class, not modifying existing ones. Liskov Substitution Principle (LSP): Subtypes must be substitutable for their base types without breaking behavior. Classic violation: Square extending Rectangle where setting width should not unexpectedly change height. Solution: use separate classes or a Shape interface. Interface Segregation Principle (ISP): Clients should not depend on interfaces they do not use. Example: instead of one large AnimalBehavior interface with fly(), swim(), walk(), create separate Flyable, Swimmable, Walkable interfaces. A Dog should not be forced to implement fly(). Dependency Inversion Principle (DIP): High-level modules should depend on abstractions, not concrete implementations. Example: OrderService depends on NotificationSender interface, not directly on EmailService. This allows swapping email for SMS or push notifications without changing OrderService. Together, these principles reduce coupling, increase cohesion, make code testable, and allow changes in one area without cascading effects through the system.",
+    "evaluationCriteria": [
+      "Correctly explains all five SOLID principles",
+      "Provides a practical example for each principle",
+      "Explains the problem that each principle solves",
+      "Discusses the overall benefit for maintainability"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": [
+      "angular",
+      "rxjs"
+    ],
+    "language": "en",
+    "questionText": "What is an Observable in RxJS, and how does it differ from a Promise? Why does Angular use Observables for HTTP requests?",
+    "hints": [
+      "Think about single vs multiple values and lazy vs eager execution",
+      "Consider cancellation capabilities"
+    ],
+    "modelAnswer": "An Observable is a lazy, push-based data stream that can emit zero, one, or multiple values over time. A Promise represents a single future value and is eager (starts executing immediately when created). Key differences: Observables are lazy (they do not execute until subscribed to), can emit multiple values, support cancellation (unsubscribe), and provide powerful operators for transformation (map, filter, switchMap). Promises are eager, emit once, and cannot be cancelled natively. Angular uses Observables for HTTP requests because they support cancellation (navigating away can cancel pending requests), they integrate naturally with Angular's async pipe for automatic subscription management, and operators like retry, debounceTime, and switchMap enable complex patterns like search typeahead with minimal code.",
+    "evaluationCriteria": [
+      "Defines Observable as a lazy, multi-value data stream",
+      "Lists key differences from Promises (lazy vs eager, multi vs single, cancellation)",
+      "Explains why Angular chose Observables for HTTP",
+      "Mentions operators or async pipe as practical benefits"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "java",
+      "spring_boot",
+      "transactions"
+    ],
+    "language": "en",
+    "questionText": "How does the @Transactional annotation work in Spring Boot? What are its key attributes, and what are common pitfalls?",
+    "hints": [
+      "Think about proxy-based AOP and self-invocation",
+      "Consider propagation, isolation, and rollback behavior"
+    ],
+    "modelAnswer": "The @Transactional annotation in Spring Boot manages database transactions declaratively using AOP proxies. When a method annotated with @Transactional is called, Spring creates a proxy that starts a transaction before the method executes and commits it after successful completion, or rolls it back on exceptions. Key attributes: propagation (REQUIRED by default, creates a new transaction if none exists or joins the current one; REQUIRES_NEW creates a new independent transaction), isolation (database isolation level), readOnly (optimization hint for read-only queries), timeout (transaction timeout in seconds), and rollbackFor/noRollbackFor (which exceptions trigger rollback; by default only unchecked exceptions cause rollback). Common pitfalls: (1) Self-invocation: calling a @Transactional method from within the same class bypasses the proxy, so the transaction is not applied. Fix: extract to a separate service or inject the proxy. (2) Applying @Transactional to private methods has no effect because proxies cannot intercept private methods. (3) Not specifying rollbackFor=Exception.class when you want checked exceptions to trigger rollback. (4) Using @Transactional on a method that performs both reads and writes when readOnly=true is set, causing unexpected behavior. (5) Long-running transactions holding database connections from the pool.",
+    "evaluationCriteria": [
+      "Explains how @Transactional works via AOP proxies",
+      "Describes key attributes (propagation, isolation, readOnly, rollbackFor)",
+      "Identifies the self-invocation pitfall and its solution",
+      "Mentions that only unchecked exceptions cause rollback by default"
+    ],
+    "timeEstimate": 230
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "postgresql",
+      "sql",
+      "debugging"
+    ],
+    "language": "en",
+    "questionText": "You run a query in PostgreSQL and it is using a sequential scan instead of an index scan on a table with millions of rows, even though the relevant index exists. What could cause this, and how do you fix it?",
+    "hints": [
+      "Think about statistics, data distribution, and planner cost estimates",
+      "Consider the percentage of rows being returned"
+    ],
+    "modelAnswer": "Several factors can cause PostgreSQL's query planner to choose a sequential scan over an index scan even when an index exists. (1) Outdated statistics: The planner uses table statistics to estimate row counts. If statistics are stale (e.g., after bulk inserts), it may underestimate selectivity. Fix: run ANALYZE on the table to update statistics. (2) Low selectivity: If the query returns a large percentage of rows (typically over 5-10%), a sequential scan is actually faster than an index scan because the random I/O of index lookups is more expensive than a sequential read. This is correct planner behavior. (3) Data type mismatch: If the WHERE clause uses a different data type than the indexed column (e.g., comparing an integer column with a string), the implicit cast prevents index usage. (4) Function on indexed column: Using a function on the column in the WHERE clause (e.g., WHERE LOWER(name) = 'john') prevents B-tree index usage. Fix: create an expression index: CREATE INDEX idx_name_lower ON users (LOWER(name)). (5) The planner's cost parameters (random_page_cost, seq_page_cost) may not match the actual hardware. For SSD storage, lowering random_page_cost from 4 to 1.1 can make the planner favor index scans. You can verify by running SET enable_seqscan = off temporarily to force an index scan and compare actual performance with EXPLAIN ANALYZE to determine if the planner's choice was actually correct.",
+    "evaluationCriteria": [
+      "Lists multiple valid reasons for unexpected sequential scans",
+      "Mentions running ANALYZE to update statistics",
+      "Explains that sequential scan can be the correct choice for low selectivity",
+      "Discusses expression indexes for function-on-column issues",
+      "Mentions using EXPLAIN ANALYZE to compare plans"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "angular",
+      "debugging",
+      "performance"
+    ],
+    "language": "en",
+    "questionText": "You notice that an Angular application becomes very slow when rendering a long list of 5,000 items. What are the possible causes, and how would you optimize it?",
+    "hints": [
+      "Think about DOM rendering, change detection, and virtual scrolling",
+      "Consider trackBy and OnPush change detection"
+    ],
+    "modelAnswer": "Rendering 5,000 items in Angular is slow because each item creates DOM elements and participates in change detection. The primary optimizations are: (1) Virtual scrolling using Angular CDK ScrollingModule: only renders the items visible in the viewport plus a small buffer, dramatically reducing DOM nodes. Use `<cdk-virtual-scroll-viewport itemSize=\"50\">` with `*cdkVirtualFor`. (2) trackBy function with *ngFor: prevents Angular from destroying and recreating DOM elements when the list changes by tracking items by a unique identifier instead of object reference. Example: `trackBy: trackById` where `trackById(index, item) { return item.id; }`. (3) OnPush change detection on the list item component: ensures Angular only re-checks each item when its input reference changes. (4) Pagination or infinite scroll: load items in chunks from the server instead of loading all 5,000 at once. (5) Avoid complex computations in templates: use pure pipes or computed signals instead of method calls for any transformation logic, since method calls re-execute on every change detection cycle. (6) Debounce any filter/search input that triggers list re-rendering. The combination of virtual scrolling + trackBy + OnPush typically resolves most list performance issues.",
+    "evaluationCriteria": [
+      "Identifies DOM size and change detection as the root causes",
+      "Recommends virtual scrolling as the primary solution",
+      "Mentions trackBy and OnPush change detection",
+      "Discusses server-side pagination as an alternative"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "technical",
+    "difficulty": "senior",
+    "tags": [
+      "java",
+      "spring_boot",
+      "concurrency",
+      "performance"
+    ],
+    "language": "en",
+    "questionText": "How would you handle high concurrency in a Spring Boot application? Discuss thread management, connection pooling, caching strategies, and how to identify and resolve bottlenecks.",
+    "hints": [
+      "Think about virtual threads (Java 21+), HikariCP, Redis caching, and async processing",
+      "Consider how to identify bottlenecks with profiling tools"
+    ],
+    "modelAnswer": "Handling high concurrency requires optimization at multiple layers. Thread management: Spring Boot uses a Tomcat thread pool (default 200 threads). For I/O-bound workloads, consider increasing the pool or switching to reactive (WebFlux) for non-blocking I/O. With Java 21+, virtual threads (enabled via spring.threads.virtual.enabled=true) allow millions of lightweight threads, ideal for blocking I/O operations. Use @Async with a configured ThreadPoolTaskExecutor for fire-and-forget operations like sending emails. Connection pooling: HikariCP (Spring Boot's default) manages database connections. Key tuning parameters: maximumPoolSize (typically 10-20 per instance, formula: connections = (2 * CPU cores) + disk spindles), connectionTimeout, and minimumIdle. Monitor pool metrics via Spring Boot Actuator. If the pool is saturated, queries queue up causing cascading latency. Caching: Implement multi-level caching: in-process cache (Caffeine) for hot data with short TTL, distributed cache (Redis) for shared data across instances. Use @Cacheable, @CacheEvict, @CachePut annotations. Cache invalidation strategies: TTL-based for tolerance of stale data, event-driven invalidation via message broker for consistency. Cache-aside pattern is most common. Async processing: Move non-critical work to message queues (Kafka, RabbitMQ). This decouples the request from processing, improves response times, and provides natural backpressure. Bottleneck identification: Use Spring Boot Actuator for JVM and pool metrics, distributed tracing (Micrometer/Zipkin) to find slow spans, thread dump analysis to detect lock contention, database slow query logs and EXPLAIN ANALYZE, load testing with Gatling or k6 to simulate concurrent users, and profiling with async-profiler or JFR (Java Flight Recorder) for CPU and allocation hotspots. Rate limiting (Bucket4j or API Gateway) protects against traffic spikes, and circuit breakers (Resilience4j) prevent cascading failures to downstream services.",
+    "evaluationCriteria": [
+      "Covers thread management including virtual threads",
+      "Discusses connection pool configuration with specific parameters",
+      "Describes multi-level caching strategy",
+      "Explains async processing for decoupling",
+      "Provides specific tools and techniques for bottleneck identification"
+    ],
+    "timeEstimate": 360
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": [
+      "angular",
+      "http",
+      "rxjs"
+    ],
+    "language": "en",
+    "questionText": "How do you make HTTP requests in Angular? What is the HttpClient service, and how do you handle errors in HTTP calls?",
+    "hints": [
+      "Think about importing HttpClientModule and using the HttpClient service",
+      "Consider the catchError operator and error handling patterns"
+    ],
+    "modelAnswer": "Angular provides the HttpClient service for making HTTP requests. You import provideHttpClient() in your application config (or HttpClientModule in module-based apps) and inject HttpClient into your service. HttpClient methods (get, post, put, delete) return Observables that emit the response when the request completes. Example: `this.http.get<User[]>('/api/users').subscribe(users => this.users = users)`. For error handling, use the catchError operator from RxJS in a pipe: `this.http.get<User[]>('/api/users').pipe(catchError(error => { console.error('Request failed', error); return of([]); }))`. You can also create an HTTP interceptor to handle errors globally, logging them or showing toast notifications. The error object contains the status code, message, and other details. Best practice is to handle HTTP calls in services (not components) and use the async pipe in templates for automatic subscription management.",
+    "evaluationCriteria": [
+      "Explains HttpClient setup and injection",
+      "Shows how to make a typed HTTP request",
+      "Demonstrates error handling with catchError",
+      "Mentions interceptors for global error handling"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": [
+      "testing",
+      "clean_code",
+      "best_practices"
+    ],
+    "language": "en",
+    "questionText": "What are the key principles of Clean Code as described by Robert C. Martin? Give three examples of code smells and how to fix them.",
+    "hints": [
+      "Think about naming, function size, and the DRY principle",
+      "Consider long methods, magic numbers, and commented-out code"
+    ],
+    "modelAnswer": "Clean Code emphasizes writing code that is easy to read, understand, and maintain. Key principles include: meaningful names (variables and methods should reveal their purpose), small functions (each function should do one thing and do it well), DRY (Don't Repeat Yourself), and minimizing comments (code should be self-documenting). Three code smells and fixes: (1) Magic numbers: using `if (status == 3)` instead of a named constant. Fix: define `static final int STATUS_APPROVED = 3` or use an enum. This makes the code self-documenting. (2) Long methods: a method with 100+ lines handling validation, business logic, and database calls. Fix: extract into smaller methods with descriptive names like validateInput(), calculateDiscount(), and saveOrder(). Each method should be 10-20 lines. (3) Duplicated code: the same validation logic copy-pasted in three controllers. Fix: extract into a shared validation service or utility method, applying the DRY principle. This ensures bug fixes only need to be made in one place.",
+    "evaluationCriteria": [
+      "Lists key Clean Code principles (naming, small functions, DRY)",
+      "Provides three concrete code smell examples",
+      "Explains how to fix each code smell",
+      "Demonstrates understanding of why clean code matters"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "java",
+      "spring_boot",
+      "spring_security"
+    ],
+    "language": "en",
+    "questionText": "Explain the Spring Security filter chain. How does a request get authenticated and authorized in a Spring Boot application?",
+    "hints": [
+      "Think about the chain of filters that process each request",
+      "Consider the SecurityContext and how authentication information is stored"
+    ],
+    "modelAnswer": "Spring Security processes HTTP requests through a chain of servlet filters (DelegatingFilterProxy delegates to FilterChainProxy which manages SecurityFilterChain instances). Each request passes through filters in a defined order. Key filters include: SecurityContextPersistenceFilter (loads/saves SecurityContext between requests), CorsFilter (handles CORS), CsrfFilter (validates CSRF tokens), UsernamePasswordAuthenticationFilter (processes form login), BasicAuthenticationFilter (processes HTTP Basic auth), BearerTokenAuthenticationFilter (processes OAuth2/JWT tokens), ExceptionTranslationFilter (handles authentication/authorization exceptions), and FilterSecurityInterceptor/AuthorizationFilter (performs the final authorization check). The authentication flow: (1) An authentication filter extracts credentials from the request. (2) It creates an Authentication token and passes it to AuthenticationManager. (3) AuthenticationManager delegates to AuthenticationProvider(s). (4) The provider uses UserDetailsService to load user details and verifies credentials. (5) On success, a fully authenticated Authentication object is stored in SecurityContextHolder. (6) For authorization, Spring checks @PreAuthorize annotations or URL-based rules defined in SecurityFilterChain configuration. The SecurityContext is thread-local by default, making authentication information accessible anywhere in the request processing pipeline via SecurityContextHolder.getContext().getAuthentication().",
+    "evaluationCriteria": [
+      "Describes the filter chain concept with key filters",
+      "Explains the authentication flow through AuthenticationManager and providers",
+      "Mentions SecurityContextHolder for storing authentication",
+      "Covers both authentication and authorization phases"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": [
+      "docker",
+      "github_actions",
+      "devops",
+      "debugging"
+    ],
+    "language": "en",
+    "questionText": "Your GitHub Actions CI pipeline builds a Docker image and runs tests, but the tests pass locally and fail in CI. What are common causes, and how do you debug this?",
+    "hints": [
+      "Think about environment differences: OS, file system, network, resources",
+      "Consider caching, timing issues, and service container readiness"
+    ],
+    "modelAnswer": "Tests passing locally but failing in CI is a common issue with several typical causes. Environment differences: Different OS (macOS/Windows locally vs Ubuntu in CI), case-insensitive vs case-sensitive file systems (macOS is case-insensitive, Linux is case-sensitive, so import mismatches may go unnoticed locally), and different file path separators. Resource constraints: CI runners have limited memory and CPU, causing timeout failures in tests that rely on timing. Fix: increase timeouts or use more efficient test patterns. Service readiness: If using service containers (PostgreSQL, Redis), the service may not be fully ready when tests start despite the container running. Fix: add health checks and wait-for scripts in the workflow. Environment variables: Missing secrets or environment variables not configured in the CI environment. Check that all required env vars are set in GitHub repository secrets. Caching issues: Stale dependency caches in CI. Fix: clear the cache or use a cache key that includes the lock file hash. Timezone differences: Tests relying on system timezone will fail if CI uses UTC and local machine uses a different timezone. Debugging approaches: (1) Add verbose logging to the CI workflow. (2) Check the exact error output in the GitHub Actions logs. (3) SSH into the runner using a debugging action (actions/debug). (4) Reproduce locally by running tests in Docker with the same base image as CI. (5) Use act (github.com/nektos/act) to run GitHub Actions locally.",
+    "evaluationCriteria": [
+      "Lists multiple common causes (OS, filesystem, resources, env vars)",
+      "Mentions service container readiness and health checks",
+      "Provides practical debugging techniques",
+      "Suggests reproducing CI environment locally with Docker"
+    ],
+    "timeEstimate": 230
+  },
+  {
+    "category": "technical",
+    "difficulty": "senior",
+    "tags": [
+      "angular",
+      "architecture",
+      "testing",
+      "best_practices"
+    ],
+    "language": "en",
+    "questionText": "How would you architect a large-scale Angular application for a team of 10+ developers? Cover project structure, state management, shared libraries, testing strategy, and how you enforce code quality.",
+    "hints": [
+      "Think about Nx monorepo, feature modules, barrel files, and linting rules",
+      "Consider domain-driven design and how to prevent spaghetti imports"
+    ],
+    "modelAnswer": "For a large-scale Angular application, I would use an Nx monorepo with a domain-driven structure. Project structure: Organize code into libraries by type and domain: feature libraries (feature-user-profile, feature-order-list), data-access libraries (data-access-user, data-access-order) containing services and state, UI libraries (shared reusable components), and utility libraries (shared pure functions, types, constants). Each library has a well-defined public API via index.ts barrel files. Nx enforces module boundaries through ESLint rules and tags, preventing a feature library from importing another feature library directly (they communicate through shared data-access or state). State management: Use NgRx SignalStore or NgRx Component Store for feature-level state, and global NgRx Store only for truly application-wide state. Each feature's state is self-contained within its data-access library. For simple cases, signal-based services are sufficient. Shared libraries: A shared UI library with design system components (buttons, forms, modals) ensures visual consistency. Shared data-access libraries provide common patterns (pagination, error handling, caching). A shared utilities library provides pure functions used across domains. Testing strategy: Unit tests with Jest for all services, pipes, and utilities (>80% coverage). Component tests with Testing Library for interaction testing. Integration tests for NgRx stores with their effects. E2E tests with Cypress or Playwright for critical user flows (login, checkout, etc.), run in CI against a deployed staging environment. Keep E2E tests focused on happy paths and critical business flows. Code quality enforcement: Strict TypeScript (strict: true, noImplicitAny, noUncheckedIndexedAccess), ESLint with Angular-specific rules and Nx boundary rules, Prettier for formatting, Husky pre-commit hooks for lint and format, mandatory PR reviews with CODEOWNERS for shared libraries, and SonarQube for maintainability metrics. CI runs all affected tests (Nx affected:test) on every PR, with branch protection requiring green checks. Documentation: ADRs (Architecture Decision Records) for major decisions, Storybook for the UI library, and auto-generated API documentation.",
+    "evaluationCriteria": [
+      "Describes a clear library-based architecture with domain separation",
+      "Explains module boundary enforcement with Nx tags/lint rules",
+      "Covers state management strategy with appropriate tool selection",
+      "Details a comprehensive testing strategy across unit, component, and E2E levels",
+      "Includes code quality automation (lint, format, hooks, PR reviews)"
+    ],
+    "timeEstimate": 360
+  },
+  {
+    "category": "technical",
+    "difficulty": "senior",
+    "tags": [
+      "docker",
+      "spring_boot",
+      "angular",
+      "deployment"
+    ],
+    "language": "en",
+    "questionText": "Describe how you would containerize a full-stack application with an Angular frontend and Spring Boot backend using Docker multi-stage builds. What are the key considerations for production-ready images?",
+    "hints": [
+      "Think about separating build and runtime stages",
+      "Consider image size, security, and layer caching"
+    ],
+    "modelAnswer": "For the Angular frontend, use a multi-stage Dockerfile: first stage uses node:18-alpine to run 'ng build --configuration production', second stage uses nginx:alpine to serve the static files from dist/. For Spring Boot, first stage uses maven:3.9-eclipse-temurin-17 to build the JAR with 'mvn clean package -DskipTests', second stage uses eclipse-temurin:17-jre-alpine to run the JAR. Key considerations: use .dockerignore to exclude node_modules and target/; pin specific image versions for reproducibility; run as non-root user for security; use HEALTHCHECK instructions; leverage layer caching by copying dependency files (package.json, pom.xml) before source code; use docker-compose for local orchestration with networking between services; keep production images minimal (alpine-based, JRE not JDK).",
+    "evaluationCriteria": [
+      "Explains multi-stage build pattern with correct stages",
+      "Mentions image size optimization (alpine, JRE vs JDK)",
+      "Addresses security concerns (non-root, minimal base)",
+      "Discusses layer caching strategy for faster builds"
+    ],
+    "timeEstimate": 360
+  }
+]
