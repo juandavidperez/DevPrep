@@ -1,0 +1,802 @@
+[
+  {
+    "category": "behavioral",
+    "difficulty": "junior",
+    "tags": ["teamwork", "collaboration"],
+    "language": "en",
+    "questionText": "Tell me about a time when you had to collaborate closely with a team member who had a very different working style than yours.",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Focus on how you adapted your communication style",
+      "Mention specific outcomes of the collaboration"
+    ],
+    "modelAnswer": "ENGLISH: During my first project at a consulting firm, I was paired with a senior developer for a client's inventory management module. He preferred working in silence with minimal meetings, while I liked frequent check-ins. I noticed our pull requests kept conflicting because we weren't aligned on task boundaries. I proposed a quick 10-minute daily sync where we'd share what files we were touching that day. He agreed since it was short and structured. Within a week, our merge conflicts dropped to zero and we delivered the module two days ahead of schedule. The client specifically praised how seamless the integration was.\n\nESPANOL: Durante mi primer proyecto en una consultora, me emparejaron con un desarrollador senior para el modulo de gestion de inventario de un cliente. El preferia trabajar en silencio con reuniones minimas, mientras que yo preferia sincronizaciones frecuentes. Note que nuestros pull requests seguian generando conflictos porque no estabamos alineados en los limites de las tareas. Propuse una sincronizacion diaria rapida de 10 minutos donde compartiamos que archivos ibamos a tocar ese dia. Acepto porque era corto y estructurado. En una semana, nuestros conflictos de merge bajaron a cero y entregamos el modulo dos dias antes de lo previsto. El cliente elogio especificamente lo fluida que fue la integracion.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Provides specific examples, not generalities",
+      "Shows willingness to adapt and compromise",
+      "Demonstrates respect for different working styles"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "junior",
+    "tags": ["teamwork", "code-review"],
+    "language": "en",
+    "questionText": "Describe a time when you received critical feedback on your code during a code review. How did you handle it?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Be honest about your initial reaction",
+      "Show what you learned and how it improved your work"
+    ],
+    "modelAnswer": "ENGLISH: Three months into my first role, I submitted a PR for a REST API endpoint in Spring Boot. The senior reviewer left 15 comments pointing out that I had business logic in the controller, no input validation, and inconsistent error handling. My first reaction was embarrassment — I thought I had done a good job. Instead of getting defensive, I scheduled a 20-minute call with the reviewer to understand the reasoning behind each comment. She walked me through the service layer pattern and showed me how to use Bean Validation annotations. I refactored the entire endpoint, and my next PR only had 2 minor comments. I started keeping a personal checklist of common review feedback, which I still use today.\n\nESPANOL: A los tres meses en mi primer puesto, envie un PR para un endpoint REST API en Spring Boot. El revisor senior dejo 15 comentarios senalando que tenia logica de negocio en el controlador, sin validacion de entrada y manejo de errores inconsistente. Mi primera reaccion fue verguenza — pensaba que habia hecho un buen trabajo. En lugar de ponerme a la defensiva, programe una llamada de 20 minutos con la revisora para entender el razonamiento detras de cada comentario. Me explico el patron de capa de servicio y me mostro como usar las anotaciones de Bean Validation. Refactorice todo el endpoint y mi siguiente PR solo tuvo 2 comentarios menores. Comence a mantener una lista personal de feedback comun de revisiones que sigo usando hoy.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows humility and willingness to learn",
+      "Demonstrates proactive approach to improving",
+      "Mentions concrete changes in behavior after the feedback"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "junior",
+    "tags": ["teamwork", "onboarding"],
+    "language": "en",
+    "questionText": "Tell me about your experience joining a new team or project. How did you get up to speed quickly?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Mention specific strategies you used to learn the codebase",
+      "Highlight how you asked for help without being a burden"
+    ],
+    "modelAnswer": "ENGLISH: I joined a fintech consulting project mid-sprint where the team of 6 was building a loan origination system in Angular and Spring Boot. The codebase had no documentation and over 200 services. My first action was to spend two days reading the existing test suites — they were the best documentation available. I mapped out the main domain entities by tracing the database migrations. I created a personal wiki with the architecture and shared it with the team. My manager said it was the first time anyone had documented the system. By week two, I was picking up bug fixes, and by week four I was handling feature stories independently.\n\nESPANOL: Me uni a un proyecto de consultoria fintech a mitad de sprint donde el equipo de 6 personas estaba construyendo un sistema de originacion de prestamos en Angular y Spring Boot. El codigo no tenia documentacion y habia mas de 200 servicios. Mi primera accion fue pasar dos dias leyendo las suites de pruebas existentes — eran la mejor documentacion disponible. Mape las entidades de dominio principales rastreando las migraciones de base de datos. Cree una wiki personal con la arquitectura y la comparti con el equipo. Mi manager dijo que era la primera vez que alguien documentaba el sistema. Para la segunda semana, ya estaba resolviendo bugs, y para la cuarta semana manejaba historias de funcionalidades de forma independiente.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows initiative and resourcefulness",
+      "Demonstrates ability to learn independently",
+      "Mentions contributing back to the team (e.g., documentation)"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["teamwork", "collaboration"],
+    "language": "en",
+    "questionText": "Tell me about a time you had to coordinate work across multiple teams or departments to deliver a feature. What challenges did you face?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Describe how you managed dependencies between teams",
+      "Mention communication tools or processes you established"
+    ],
+    "modelAnswer": "ENGLISH: I was the technical lead on a payment gateway integration for a retail banking client that required coordination between our frontend team (4 devs), the client's backend team (3 devs), and a third-party payment processor. The main challenge was that each team worked in different time zones and used different project management tools. I set up a shared Confluence space with API contracts, created a Slack channel for real-time questions, and established a weekly cross-team demo. When the payment processor changed their API spec mid-project, I organized an emergency sync, updated the contract documentation within 2 hours, and re-prioritized our sprint to absorb the changes. We delivered on time and the integration processed over 10,000 transactions in the first month without critical issues.\n\nESPANOL: Fui el lider tecnico en una integracion de pasarela de pagos para un cliente de banca minorista que requeria coordinacion entre nuestro equipo frontend (4 desarrolladores), el equipo backend del cliente (3 desarrolladores) y un procesador de pagos externo. El principal desafio era que cada equipo trabajaba en diferentes zonas horarias y usaba diferentes herramientas de gestion de proyectos. Configure un espacio compartido en Confluence con contratos de API, cree un canal de Slack para preguntas en tiempo real y estableci una demo semanal entre equipos. Cuando el procesador de pagos cambio su especificacion de API a mitad del proyecto, organice una sincronizacion de emergencia, actualice la documentacion del contrato en 2 horas y repriorice nuestro sprint para absorber los cambios. Entregamos a tiempo y la integracion proceso mas de 10,000 transacciones en el primer mes sin incidencias criticas.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Demonstrates leadership in cross-team coordination",
+      "Shows proactive communication and documentation",
+      "Mentions measurable outcomes and adaptability to change"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["teamwork", "pair-programming"],
+    "language": "en",
+    "questionText": "Describe a situation where pair programming or mob programming helped your team solve a difficult problem. What was your role?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Explain the specific problem that justified pairing",
+      "Mention both the technical and interpersonal dynamics"
+    ],
+    "modelAnswer": "ENGLISH: Our team was struggling with a complex race condition in a distributed order processing system. Individual debugging attempts had consumed 3 days without progress. I suggested a mob programming session with 4 developers, rotating the driver every 20 minutes. I facilitated the session by keeping a shared whiteboard where we mapped the sequence of events. Within 90 minutes, one of the junior developers spotted that two microservices were writing to the same database table without distributed locking. We implemented an optimistic locking strategy during the session and had the fix deployed by end of day. The bug had been causing approximately 50 failed orders per week for the client. After that, we established a team norm: any bug open for more than one day gets a pairing session.\n\nESPANOL: Nuestro equipo estaba luchando con una condicion de carrera compleja en un sistema distribuido de procesamiento de pedidos. Los intentos individuales de depuracion habian consumido 3 dias sin progreso. Sugeri una sesion de mob programming con 4 desarrolladores, rotando el driver cada 20 minutos. Facilite la sesion manteniendo una pizarra compartida donde mapeamos la secuencia de eventos. En 90 minutos, uno de los desarrolladores junior detecto que dos microservicios estaban escribiendo en la misma tabla de base de datos sin bloqueo distribuido. Implementamos una estrategia de bloqueo optimista durante la sesion y teniamos la correccion desplegada al final del dia. El bug estaba causando aproximadamente 50 pedidos fallidos por semana para el cliente. Despues de eso, establecimos una norma de equipo: cualquier bug abierto por mas de un dia recibe una sesion de pairing.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Demonstrates facilitation and collaboration skills",
+      "Shows how collaborative practices led to a better outcome",
+      "Mentions establishing lasting team improvements"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["teamwork", "code-review", "mentoring"],
+    "language": "en",
+    "questionText": "Tell me about a time when you had to give difficult feedback to a colleague on their code or approach. How did you ensure it was constructive?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Focus on how you framed the feedback",
+      "Mention the relationship before and after the conversation"
+    ],
+    "modelAnswer": "ENGLISH: A mid-level developer on my team consistently submitted PRs with 800+ lines, no tests, and tightly coupled components. The code worked but was unmaintainable. Rather than leaving a wall of review comments, I scheduled a private 1-on-1. I started by acknowledging his fast delivery, then shared my screen and walked through one specific PR, showing how extracting a service class and adding 3 unit tests would make it easier for others to modify his code later. I framed it as 'making your work more visible and impactful' rather than 'your code is bad.' We agreed on a PR size limit of 300 lines and I offered to do pre-review walkthroughs for his next 3 PRs. Within a month, his PR approval time dropped from 3 days to same-day, and two other team members adopted the same PR size guideline.\n\nESPANOL: Un desarrollador mid de mi equipo enviaba PRs consistentemente con mas de 800 lineas, sin pruebas y con componentes altamente acoplados. El codigo funcionaba pero era inmantenible. En lugar de dejar un muro de comentarios en la revision, programe una reunion privada 1-a-1. Comence reconociendo su velocidad de entrega, luego comparti mi pantalla y recorri un PR especifico, mostrando como extraer una clase de servicio y agregar 3 pruebas unitarias haria mas facil que otros modificaran su codigo despues. Lo enmarque como 'hacer tu trabajo mas visible e impactante' en lugar de 'tu codigo esta mal.' Acordamos un limite de 300 lineas por PR y le ofreci hacer revisiones previas de sus proximos 3 PRs. En un mes, su tiempo de aprobacion de PR bajo de 3 dias a el mismo dia, y otros dos miembros del equipo adoptaron la misma guia de tamano de PR.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows empathy and emotional intelligence in delivering feedback",
+      "Demonstrates leadership without authority",
+      "Mentions measurable improvement as a result"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["teamwork", "onboarding", "mentoring"],
+    "language": "en",
+    "questionText": "Describe how you helped onboard a new team member on a complex project. What did you do to accelerate their ramp-up?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Mention specific onboarding resources or practices you created",
+      "Highlight how this benefited the broader team"
+    ],
+    "modelAnswer": "ENGLISH: A new hire joined our team of 5 working on a healthcare claims processing system with a complex domain model (over 40 entities) and strict regulatory requirements. I volunteered to be their buddy for the first month. I created a 'guided tour' document that mapped the 5 most critical user flows through the codebase, with links to relevant classes and tests. Each day for the first two weeks, I assigned them a small, well-scoped task and reviewed their PR within an hour. I also scheduled 3 domain knowledge sessions where our BA explained HIPAA requirements. By week 3, the new developer was contributing to the sprint autonomously. The guided tour document became our standard onboarding resource, and our average ramp-up time for new hires dropped from 6 weeks to 3.\n\nESPANOL: Un nuevo miembro se unio a nuestro equipo de 5 personas trabajando en un sistema de procesamiento de reclamaciones de salud con un modelo de dominio complejo (mas de 40 entidades) y requisitos regulatorios estrictos. Me ofreci como su buddy durante el primer mes. Cree un documento de 'recorrido guiado' que mapeaba los 5 flujos de usuario mas criticos a traves del codigo, con enlaces a las clases y pruebas relevantes. Cada dia durante las primeras dos semanas, le asigne una tarea pequena y bien delimitada y revise su PR en menos de una hora. Tambien programe 3 sesiones de conocimiento de dominio donde nuestro BA explico los requisitos de HIPAA. Para la semana 3, el nuevo desarrollador contribuia al sprint de forma autonoma. El documento de recorrido guiado se convirtio en nuestro recurso estandar de onboarding, y nuestro tiempo promedio de adaptacion para nuevos miembros bajo de 6 semanas a 3.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows initiative and mentoring ability",
+      "Demonstrates creation of lasting team resources",
+      "Mentions measurable improvement in onboarding time"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["teamwork", "client-facing"],
+    "language": "en",
+    "questionText": "Tell me about a time you worked directly with a client's development team. How did you build trust and ensure smooth collaboration?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Mention cultural or process differences you had to navigate",
+      "Describe specific trust-building actions"
+    ],
+    "modelAnswer": "ENGLISH: I was placed on-site at a telecom client for 4 months to integrate their legacy billing system with our new microservices platform. Their team was skeptical of external consultants — previous engagements had left unfinished code. I started by spending the first week just observing their standup rituals and reading their existing codebase instead of pushing our approach. I adopted their coding conventions and Git workflow even though ours was different. When I found a performance bottleneck in their existing code during my review, I fixed it and gave full credit to their team in the demo. That small gesture changed the dynamic entirely. By month two, they were inviting me to their architecture discussions. We delivered the integration with 99.7% uptime in the first quarter, and the client requested me specifically for their next project phase.\n\nESPANOL: Me ubicaron en las oficinas de un cliente de telecomunicaciones durante 4 meses para integrar su sistema de facturacion legado con nuestra nueva plataforma de microservicios. Su equipo desconfiaba de consultores externos — compromisos anteriores habian dejado codigo sin terminar. Comence pasando la primera semana solo observando sus rituales de standup y leyendo su codigo existente en lugar de imponer nuestro enfoque. Adopte sus convenciones de codigo y flujo de Git aunque el nuestro era diferente. Cuando encontre un cuello de botella de rendimiento en su codigo existente durante mi revision, lo corregi y di todo el credito a su equipo en la demo. Ese pequeno gesto cambio la dinamica por completo. Para el segundo mes, me invitaban a sus discusiones de arquitectura. Entregamos la integracion con 99.7% de disponibilidad en el primer trimestre, y el cliente me solicito especificamente para la siguiente fase del proyecto.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Demonstrates cultural sensitivity and adaptability",
+      "Shows trust-building through actions, not just words",
+      "Mentions client satisfaction and long-term relationship outcomes"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "junior",
+    "tags": ["agile", "scrum"],
+    "language": "en",
+    "questionText": "Describe your experience participating in Scrum ceremonies. Which ceremony do you find most valuable and why?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Name the specific ceremonies you have participated in",
+      "Explain with a concrete example why one stands out"
+    ],
+    "modelAnswer": "ENGLISH: On my first project, a 4-person team building an e-commerce catalog for a retail client, we followed Scrum with 2-week sprints. I participated in daily standups, sprint planning, reviews, and retrospectives. The ceremony I found most valuable was the retrospective. In our third sprint, I raised during the retro that our deployments were taking 45 minutes because we had no CI/CD pipeline and were deploying manually. The team voted it as the top action item. The next sprint, I paired with our DevOps engineer to set up a Jenkins pipeline that reduced deployment to 8 minutes. That improvement came directly from having a safe space to surface problems without blame.\n\nESPANOL: En mi primer proyecto, un equipo de 4 personas construyendo un catalogo de e-commerce para un cliente de retail, seguiamos Scrum con sprints de 2 semanas. Participe en standups diarios, planificacion de sprint, revisiones y retrospectivas. La ceremonia que encontre mas valiosa fue la retrospectiva. En nuestro tercer sprint, plantee durante la retro que nuestros despliegues tardaban 45 minutos porque no teniamos pipeline de CI/CD y deployabamos manualmente. El equipo lo voto como la accion prioritaria. En el siguiente sprint, hice pair con nuestro ingeniero de DevOps para configurar un pipeline de Jenkins que redujo el despliegue a 8 minutos. Esa mejora surgio directamente de tener un espacio seguro para plantear problemas sin culpas.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows understanding of Scrum ceremonies and their purpose",
+      "Provides a concrete example with measurable improvement",
+      "Demonstrates initiative within the agile framework"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["agile", "estimation"],
+    "language": "en",
+    "questionText": "Tell me about a time when your sprint estimation was significantly off. What caused the misestimation and how did you adjust?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Be specific about the estimation gap (e.g., estimated 5 points, took 13)",
+      "Explain what systemic changes you made to improve future estimates"
+    ],
+    "modelAnswer": "ENGLISH: During a banking project, we estimated a payment reconciliation feature at 8 story points, expecting it to take one sprint. It ended up consuming nearly 3 sprints. The root cause was that we estimated based on the happy path without accounting for the 12 different exception scenarios the bank's compliance team required. I owned the miscalculation in our retro and proposed two changes: first, we started including a 'risk factor' column in our estimation sessions where we explicitly listed unknowns; second, for any story touching regulatory logic, we required a 30-minute refinement session with the compliance BA before estimation. Over the next 6 sprints, our velocity variance dropped from 40% to under 15%, and we never had another story spill across more than 2 sprints.\n\nESPANOL: Durante un proyecto bancario, estimamos una funcionalidad de conciliacion de pagos en 8 story points, esperando que tomara un sprint. Termino consumiendo casi 3 sprints. La causa raiz fue que estimamos basandonos en el camino feliz sin considerar los 12 escenarios de excepcion diferentes que el equipo de cumplimiento del banco requeria. Asumi la responsabilidad del error en nuestra retro y propuse dos cambios: primero, comenzamos a incluir una columna de 'factor de riesgo' en nuestras sesiones de estimacion donde listabamos explicitamente las incognitas; segundo, para cualquier historia que tocara logica regulatoria, requerimos una sesion de refinamiento de 30 minutos con el BA de cumplimiento antes de estimar. En los siguientes 6 sprints, nuestra variacion de velocidad bajo de 40% a menos del 15%, y nunca tuvimos otra historia que se extendiera mas de 2 sprints.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows accountability for the misestimation",
+      "Demonstrates systemic thinking — fixed the process, not just the symptom",
+      "Provides measurable improvement in estimation accuracy"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["agile", "requirements"],
+    "language": "en",
+    "questionText": "Describe a situation where requirements changed significantly mid-sprint. How did you and your team handle it?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Explain how you balanced the new requirements against existing commitments",
+      "Mention stakeholder communication during the change"
+    ],
+    "modelAnswer": "ENGLISH: We were 6 days into a 2-week sprint building a customer dashboard for an insurance client when their VP of Product announced a regulatory change that required all customer data displays to include a new consent verification step. This affected 4 of our 7 sprint stories. I facilitated an emergency backlog refinement where we categorized the impact: 2 stories needed minor changes, 2 needed major rework. I negotiated with the Product Owner to move 2 lower-priority stories to the next sprint, freeing capacity for the regulatory work. I also created a spike to assess the consent API integration. We communicated the revised sprint scope to stakeholders within 2 hours. We delivered the modified scope on time, the consent feature passed the compliance audit on first review, and the PO started including a 'regulatory risk buffer' of 10% in our sprint capacity.\n\nESPANOL: Estabamos 6 dias dentro de un sprint de 2 semanas construyendo un dashboard de clientes para un cliente de seguros cuando su VP de Producto anuncio un cambio regulatorio que requeria que todas las visualizaciones de datos del cliente incluyeran un nuevo paso de verificacion de consentimiento. Esto afectaba 4 de nuestras 7 historias del sprint. Facilite un refinamiento de emergencia del backlog donde categorizamos el impacto: 2 historias necesitaban cambios menores, 2 necesitaban retrabajo mayor. Negocie con el Product Owner para mover 2 historias de menor prioridad al siguiente sprint, liberando capacidad para el trabajo regulatorio. Tambien cree un spike para evaluar la integracion del API de consentimiento. Comunicamos el alcance revisado del sprint a los stakeholders en 2 horas. Entregamos el alcance modificado a tiempo, la funcionalidad de consentimiento paso la auditoria de cumplimiento en la primera revision, y el PO comenzo a incluir un 'buffer de riesgo regulatorio' del 10% en nuestra capacidad de sprint.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows structured approach to change management",
+      "Demonstrates negotiation skills with stakeholders",
+      "Mentions both short-term resolution and long-term process improvement"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["agile", "methodology"],
+    "language": "en",
+    "questionText": "Tell me about a time you helped a team transition from a waterfall or ad-hoc process to an agile methodology. What resistance did you encounter?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Describe specific resistance points and how you addressed them",
+      "Focus on incremental adoption rather than big-bang change"
+    ],
+    "modelAnswer": "ENGLISH: I joined a government project where the 8-person team had been using waterfall for 3 years. Releases happened quarterly with massive 2-week testing phases. The team lead was resistant to Scrum, calling it 'management theater.' Instead of pushing full Scrum, I proposed starting with just two practices: 2-week iterations with a demo, and a Monday planning session. I showed the team lead that his biggest complaint — last-minute requirement changes — would be caught earlier with shorter cycles. After 3 iterations, the team saw their defect rate drop by 30% because they were getting client feedback every 2 weeks instead of every 3 months. The team lead became the biggest advocate and asked to add retrospectives. Within 6 months, they were running full Scrum with a certified Scrum Master.\n\nESPANOL: Me uni a un proyecto gubernamental donde el equipo de 8 personas habia usado waterfall durante 3 anos. Los releases ocurrian trimestralmente con fases masivas de pruebas de 2 semanas. El lider del equipo se resistia a Scrum, llamandolo 'teatro de gestion.' En lugar de impulsar Scrum completo, propuse comenzar con solo dos practicas: iteraciones de 2 semanas con una demo, y una sesion de planificacion los lunes. Le mostre al lider del equipo que su mayor queja — cambios de requisitos de ultimo momento — se detectarian antes con ciclos mas cortos. Despues de 3 iteraciones, el equipo vio que su tasa de defectos bajo un 30% porque recibian feedback del cliente cada 2 semanas en lugar de cada 3 meses. El lider del equipo se convirtio en el mayor defensor y pidio agregar retrospectivas. En 6 meses, estaban ejecutando Scrum completo con un Scrum Master certificado.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows empathy for resistance and addresses root concerns",
+      "Demonstrates incremental change management approach",
+      "Provides measurable improvements that validate the transition"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["agile", "sprint-planning"],
+    "language": "en",
+    "questionText": "Describe a time when your team consistently failed to meet sprint commitments. What did you do to address the problem?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Identify the root cause, not just the symptoms",
+      "Show how you involved the team in the solution"
+    ],
+    "modelAnswer": "ENGLISH: Our team of 6 missed our sprint goal 4 sprints in a row on a logistics platform project. Morale was low and the client was frustrated. I analyzed our last 4 sprints and found two patterns: we were pulling in unplanned work averaging 20% of capacity, and our story points were inconsistent — the same complexity got 3 points from one dev and 8 from another. I proposed two changes in our retro: first, we reserved a 20% buffer for unplanned work in every sprint; second, we started doing planning poker with reference stories calibrated to our team's velocity. I created a reference card with 5 benchmark stories that everyone agreed on. Over the next 3 sprints, we met our commitment every time. The client's confidence recovered and they extended our contract for an additional 6 months.\n\nESPANOL: Nuestro equipo de 6 personas fallo en cumplir el objetivo del sprint 4 sprints seguidos en un proyecto de plataforma logistica. La moral estaba baja y el cliente frustrado. Analice nuestros ultimos 4 sprints y encontre dos patrones: estabamos incorporando trabajo no planificado que promediaba el 20% de la capacidad, y nuestros story points eran inconsistentes — la misma complejidad recibia 3 puntos de un dev y 8 de otro. Propuse dos cambios en nuestra retro: primero, reservar un buffer del 20% para trabajo no planificado en cada sprint; segundo, empezar a hacer planning poker con historias de referencia calibradas a la velocidad de nuestro equipo. Cree una tarjeta de referencia con 5 historias benchmark en las que todos estuvieron de acuerdo. En los siguientes 3 sprints, cumplimos nuestro compromiso cada vez. La confianza del cliente se recupero y extendieron nuestro contrato por 6 meses adicionales.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows data-driven root cause analysis",
+      "Demonstrates collaborative problem solving",
+      "Provides measurable improvement in team performance"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "junior",
+    "tags": ["legacy-code", "learning"],
+    "language": "en",
+    "questionText": "Tell me about a time you had to work with a codebase that had little or no documentation. How did you figure out how it worked?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Mention specific techniques you used to understand the code",
+      "Describe how you contributed to improving the situation"
+    ],
+    "modelAnswer": "ENGLISH: I was assigned to fix a critical bug in a 7-year-old Java monolith for an insurance client. The application had no README, no architecture docs, and the original developers had left the company. My approach was methodical: I started by running the application locally and tracing the bug's user flow through the browser's network tab. Then I used my IDE's 'find usages' feature to trace the HTTP endpoint back through the controller, service, and repository layers. I added temporary logging statements to understand the data flow. Within 2 days, I mapped the affected module and found the bug — a timezone conversion error in the claims processing logic. I fixed the bug and created a markdown document explaining the module's architecture with a flow diagram. My tech lead added 'create documentation for any undocumented module you touch' to our team's definition of done.\n\nESPANOL: Me asignaron corregir un bug critico en un monolito Java de 7 anos para un cliente de seguros. La aplicacion no tenia README, ni documentacion de arquitectura, y los desarrolladores originales habian dejado la empresa. Mi enfoque fue metodico: comence ejecutando la aplicacion localmente y rastreando el flujo del usuario del bug a traves de la pestana de red del navegador. Luego use la funcionalidad 'find usages' de mi IDE para rastrear el endpoint HTTP a traves de las capas de controlador, servicio y repositorio. Agregue sentencias de logging temporales para entender el flujo de datos. En 2 dias, mape el modulo afectado y encontre el bug — un error de conversion de zona horaria en la logica de procesamiento de reclamaciones. Corregi el bug y cree un documento markdown explicando la arquitectura del modulo con un diagrama de flujo. Mi tech lead agrego 'crear documentacion para cualquier modulo sin documentar que toques' a la definicion de terminado de nuestro equipo.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows systematic approach to understanding unknown code",
+      "Demonstrates resourcefulness with available tools",
+      "Mentions leaving the codebase better than found"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["legacy-code", "refactoring"],
+    "language": "en",
+    "questionText": "Describe a time you proposed and executed a refactoring of legacy code. How did you balance the refactoring work with feature delivery?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Explain how you justified the refactoring effort to stakeholders",
+      "Mention your strategy for minimizing risk during the refactoring"
+    ],
+    "modelAnswer": "ENGLISH: Our team inherited a customer notification module in a Spring Boot application where all logic — email templates, SMS routing, push notifications — lived in a single 3,000-line service class. Every new notification type took 2 weeks to implement because developers were afraid of breaking existing ones. I proposed the 'Boy Scout Rule' approach: instead of a big-bang rewrite, we would refactor each notification type into its own strategy class as we touched it for feature work. I created a thin adapter interface and migrated the email notification as a proof of concept in a single sprint alongside our regular stories. I wrote comprehensive integration tests before extracting each piece. Over 4 sprints, we extracted 5 notification types into independent classes. New notification implementation time dropped from 2 weeks to 3 days, and we had zero regressions because each step was tested independently.\n\nESPANOL: Nuestro equipo heredo un modulo de notificaciones de clientes en una aplicacion Spring Boot donde toda la logica — plantillas de email, enrutamiento de SMS, notificaciones push — vivia en una sola clase de servicio de 3,000 lineas. Cada nuevo tipo de notificacion tardaba 2 semanas en implementarse porque los desarrolladores tenian miedo de romper las existentes. Propuse el enfoque de la 'Regla del Boy Scout': en lugar de una reescritura masiva, refactorizariamos cada tipo de notificacion en su propia clase strategy conforme la tocaramos para trabajo de funcionalidades. Cree una interfaz adapter delgada y migre la notificacion de email como prueba de concepto en un solo sprint junto con nuestras historias regulares. Escribi pruebas de integracion completas antes de extraer cada pieza. En 4 sprints, extrajimos 5 tipos de notificacion en clases independientes. El tiempo de implementacion de nuevas notificaciones bajo de 2 semanas a 3 dias, y tuvimos cero regresiones porque cada paso se probo independientemente.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows strategic incremental approach to refactoring",
+      "Demonstrates risk mitigation through testing",
+      "Provides measurable improvement in delivery speed"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["legacy-code", "technical-debt"],
+    "language": "en",
+    "questionText": "Tell me about a time you had to convince stakeholders to invest time in paying down technical debt. How did you make the business case?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Translate technical concepts into business impact",
+      "Mention specific metrics you used to justify the investment"
+    ],
+    "modelAnswer": "ENGLISH: Our Angular frontend had accumulated significant tech debt — we were still on Angular 8 while the latest was 15, our unit test coverage was at 12%, and the build took 18 minutes. Feature velocity had slowed to the point where the client noticed. I prepared a presentation for the client's product director with three data points: our average bug fix time had increased from 2 hours to 8 hours over 6 months, our deployment frequency had dropped from daily to weekly, and 3 of our 5 developers reported the codebase as their top frustration in an anonymous survey. I proposed dedicating 20% of each sprint to tech debt and projected that within 3 months we would recover to daily deployments. The director approved it. After 3 months, our build time was down to 4 minutes, test coverage was at 45%, and we had migrated to Angular 14. Feature delivery speed improved by 35% as measured by story points per sprint.\n\nESPANOL: Nuestro frontend Angular habia acumulado deuda tecnica significativa — seguiamos en Angular 8 mientras la ultima version era 15, nuestra cobertura de pruebas unitarias estaba en 12%, y el build tardaba 18 minutos. La velocidad de funcionalidades se habia ralentizado al punto donde el cliente lo noto. Prepare una presentacion para el director de producto del cliente con tres datos: nuestro tiempo promedio de correccion de bugs habia aumentado de 2 horas a 8 horas en 6 meses, nuestra frecuencia de despliegue habia caido de diaria a semanal, y 3 de nuestros 5 desarrolladores reportaron el codigo como su principal frustracion en una encuesta anonima. Propuse dedicar el 20% de cada sprint a deuda tecnica y proyecte que en 3 meses recuperariamos los despliegues diarios. El director lo aprobo. Despues de 3 meses, nuestro tiempo de build bajo a 4 minutos, la cobertura de pruebas estaba en 45%, y habiamos migrado a Angular 14. La velocidad de entrega de funcionalidades mejoro un 35% medido en story points por sprint.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Demonstrates ability to translate technical debt into business language",
+      "Shows data-driven approach to building the case",
+      "Provides measurable before/after improvements"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["legacy-code", "migration"],
+    "language": "en",
+    "questionText": "Describe a challenging legacy system migration you were involved in. What strategy did you use and what were the biggest risks?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Mention your migration strategy (strangler fig, big bang, parallel run, etc.)",
+      "Describe how you handled data migration and rollback plans"
+    ],
+    "modelAnswer": "ENGLISH: I led the migration of a monolithic loan processing system from a legacy Oracle Forms application to a Spring Boot microservices architecture for a banking client. The system processed 5,000 loan applications daily and downtime was unacceptable. I chose the strangler fig pattern: we built new microservices behind an API gateway while the legacy system continued running. We started by migrating the least critical module — document upload — as a pilot. We ran both systems in parallel for 2 weeks, comparing outputs automatically with a reconciliation script I wrote. The biggest risk was data consistency between the old Oracle database and the new PostgreSQL database. I implemented a CDC (Change Data Capture) pipeline using Debezium to keep both databases in sync during the transition. Over 8 months, we migrated 7 modules. The new system processed loans 40% faster and the client saved $200K annually in Oracle licensing costs.\n\nESPANOL: Lidere la migracion de un sistema monolitico de procesamiento de prestamos desde una aplicacion legacy Oracle Forms a una arquitectura de microservicios Spring Boot para un cliente bancario. El sistema procesaba 5,000 solicitudes de prestamo diarias y el tiempo de inactividad era inaceptable. Elegi el patron strangler fig: construimos nuevos microservicios detras de un API gateway mientras el sistema legacy seguia funcionando. Comenzamos migrando el modulo menos critico — carga de documentos — como piloto. Ejecutamos ambos sistemas en paralelo durante 2 semanas, comparando salidas automaticamente con un script de reconciliacion que escribi. El mayor riesgo era la consistencia de datos entre la base de datos Oracle antigua y la nueva PostgreSQL. Implemente un pipeline de CDC (Change Data Capture) usando Debezium para mantener ambas bases de datos sincronizadas durante la transicion. En 8 meses, migramos 7 modulos. El nuevo sistema procesaba prestamos un 40% mas rapido y el cliente ahorro $200K anuales en costos de licenciamiento Oracle.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Demonstrates strategic approach to migration with risk mitigation",
+      "Shows understanding of data consistency challenges",
+      "Provides measurable business outcomes"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["legacy-code", "technical-debt"],
+    "language": "en",
+    "questionText": "Tell me about a time you discovered a significant technical risk in a legacy system. How did you communicate it and what was the outcome?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Explain how you assessed the severity of the risk",
+      "Describe how you communicated the risk to both technical and non-technical audiences"
+    ],
+    "modelAnswer": "ENGLISH: While reviewing our client's e-commerce platform for a performance optimization project, I discovered that the authentication module was using MD5 for password hashing — a severe security vulnerability. The system served 50,000 active users. I immediately prepared two documents: a technical RFC for the engineering team detailing the migration from MD5 to bcrypt with a backward-compatible rollout strategy, and a one-page executive summary for the client's CTO framing it as a compliance and reputation risk — a data breach with MD5-hashed passwords could result in regulatory fines and customer trust damage. The CTO approved an emergency 2-week sprint. I designed a zero-downtime migration: new passwords used bcrypt immediately, and existing passwords were re-hashed transparently on next login. Within 3 weeks, 85% of active users had been migrated. The security audit that quarter passed with zero critical findings for the first time in 2 years.\n\nESPANOL: Mientras revisaba la plataforma de e-commerce de nuestro cliente para un proyecto de optimizacion de rendimiento, descubri que el modulo de autenticacion usaba MD5 para el hashing de contrasenas — una vulnerabilidad de seguridad severa. El sistema servia a 50,000 usuarios activos. Inmediatamente prepare dos documentos: un RFC tecnico para el equipo de ingenieria detallando la migracion de MD5 a bcrypt con una estrategia de despliegue retrocompatible, y un resumen ejecutivo de una pagina para el CTO del cliente enmarcandolo como un riesgo de cumplimiento y reputacion — una brecha de datos con contrasenas hasheadas en MD5 podria resultar en multas regulatorias y dano a la confianza del cliente. El CTO aprobo un sprint de emergencia de 2 semanas. Disene una migracion sin tiempo de inactividad: las contrasenas nuevas usaban bcrypt inmediatamente, y las existentes se re-hasheaban transparentemente en el proximo inicio de sesion. En 3 semanas, el 85% de los usuarios activos habian sido migrados. La auditoria de seguridad de ese trimestre paso con cero hallazgos criticos por primera vez en 2 anos.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows initiative in identifying and escalating risks",
+      "Demonstrates ability to communicate to different audiences",
+      "Provides a technically sound solution with measurable outcomes"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "junior",
+    "tags": ["stakeholder", "communication"],
+    "language": "en",
+    "questionText": "Tell me about a time you had to explain a technical concept to a non-technical person. How did you make sure they understood?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Mention analogies or visuals you used",
+      "Describe how you confirmed their understanding"
+    ],
+    "modelAnswer": "ENGLISH: Our client's marketing manager wanted to understand why the website search was slow and what our proposed Elasticsearch migration would do. Instead of talking about inverted indexes and sharding, I used an analogy: I compared the current SQL search to looking through every page of a phone book one by one, and Elasticsearch to using the alphabetical index tabs on the side. I drew a simple diagram on a whiteboard showing the before (5-second search) and after (0.2-second search) with user impact numbers — their search abandonment rate was 40% and we projected it would drop to under 10%. She immediately understood the value and approved the budget. After implementation, the actual abandonment rate dropped to 8%, and the marketing manager cited our explanation in her board presentation as an example of good engineering-business collaboration.\n\nESPANOL: La gerente de marketing de nuestro cliente queria entender por que la busqueda del sitio web era lenta y que haria nuestra migracion propuesta a Elasticsearch. En lugar de hablar sobre indices invertidos y sharding, use una analogia: compare la busqueda SQL actual con mirar cada pagina de una guia telefonica una por una, y Elasticsearch con usar las pestanas de indice alfabetico del costado. Dibuje un diagrama simple en una pizarra mostrando el antes (busqueda de 5 segundos) y despues (busqueda de 0.2 segundos) con numeros de impacto al usuario — su tasa de abandono de busqueda era del 40% y proyectamos que bajaria a menos del 10%. Ella entendio inmediatamente el valor y aprobo el presupuesto. Despues de la implementacion, la tasa real de abandono bajo al 8%, y la gerente de marketing cito nuestra explicacion en su presentacion a la junta como ejemplo de buena colaboracion entre ingenieria y negocio.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Uses effective analogies or visual aids",
+      "Translates technical details into business impact",
+      "Confirms understanding through audience engagement"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["stakeholder", "expectations"],
+    "language": "en",
+    "questionText": "Describe a situation where you had to manage a client's expectations when a project was falling behind schedule. How did you handle the conversation?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Focus on proactive communication, not waiting for the client to ask",
+      "Mention how you presented options rather than just problems"
+    ],
+    "modelAnswer": "ENGLISH: We were 3 weeks from a go-live deadline on an HR portal for a manufacturing client, and we were at least 2 weeks behind. Instead of waiting for the project manager to deliver the bad news, I prepared a transparent status report. I categorized the remaining work into 3 tiers: must-have for launch (employee directory, leave requests), nice-to-have (advanced reporting), and can-wait (mobile app). I presented the client with 3 options: delay launch by 2 weeks for full scope, launch on time with Tier 1 only and deliver Tiers 2-3 in a follow-up sprint, or add 2 contractors at additional cost. The client chose option 2. I created a detailed cutover plan for the reduced scope, and we launched on time with 100% of critical features. The client appreciated the proactive communication — their exact words were 'I wish all vendors were this transparent.' We delivered the remaining features 3 weeks after launch.\n\nESPANOL: Estabamos a 3 semanas de la fecha de salida en vivo de un portal de RRHH para un cliente de manufactura, y teniamos al menos 2 semanas de retraso. En lugar de esperar a que el project manager diera las malas noticias, prepare un informe de estado transparente. Categorice el trabajo restante en 3 niveles: imprescindible para el lanzamiento (directorio de empleados, solicitudes de permisos), deseable (reportes avanzados), y puede esperar (app movil). Presente al cliente 3 opciones: retrasar el lanzamiento 2 semanas para el alcance completo, lanzar a tiempo solo con el Nivel 1 y entregar los Niveles 2-3 en un sprint posterior, o agregar 2 contratistas a costo adicional. El cliente eligio la opcion 2. Cree un plan detallado de transicion para el alcance reducido, y lanzamos a tiempo con el 100% de las funcionalidades criticas. El cliente aprecio la comunicacion proactiva — sus palabras exactas fueron 'ojala todos los proveedores fueran asi de transparentes.' Entregamos las funcionalidades restantes 3 semanas despues del lanzamiento.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Demonstrates proactive communication and transparency",
+      "Shows ability to present options, not just problems",
+      "Mentions client satisfaction and trust-building"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["stakeholder", "scope-creep"],
+    "language": "en",
+    "questionText": "Tell me about a time you had to push back on scope creep from a client or product owner. How did you say no while maintaining the relationship?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Show that you validated the request before declining",
+      "Mention how you offered alternatives"
+    ],
+    "modelAnswer": "ENGLISH: During the final sprint of a 6-month project building a CRM for a real estate client, the product owner wanted to add a WhatsApp integration that would let agents send automated messages to leads. It was a great idea but would have required integrating the WhatsApp Business API, building a message templating system, and handling opt-in/opt-out compliance — easily 4-6 weeks of work. Instead of saying 'no, that's too much,' I acknowledged the value: 'This would definitely increase agent engagement. Let me show you what it would take.' I created a quick scope estimate with a Gantt chart showing it would push our launch from March to May. Then I offered an alternative: we could add a simple 'click to WhatsApp' deep link in the current sprint (1 day of work) as an interim solution, and plan the full integration as Phase 2. The PO loved the compromise. We shipped on time with the deep link, and the full WhatsApp integration was approved as a follow-up contract.\n\nESPANOL: Durante el sprint final de un proyecto de 6 meses construyendo un CRM para un cliente inmobiliario, el product owner queria agregar una integracion con WhatsApp que permitiera a los agentes enviar mensajes automatizados a prospectos. Era una gran idea pero habria requerido integrar la API de WhatsApp Business, construir un sistema de plantillas de mensajes y manejar el cumplimiento de opt-in/opt-out — facilmente 4-6 semanas de trabajo. En lugar de decir 'no, es demasiado,' reconoci el valor: 'Esto definitivamente aumentaria el engagement de los agentes. Dejame mostrarte lo que implicaria.' Cree una estimacion rapida de alcance con un diagrama Gantt mostrando que empujaria nuestro lanzamiento de marzo a mayo. Luego ofreci una alternativa: podiamos agregar un simple deep link de 'clic para WhatsApp' en el sprint actual (1 dia de trabajo) como solucion interina, y planificar la integracion completa como Fase 2. Al PO le encanto el compromiso. Entregamos a tiempo con el deep link, y la integracion completa de WhatsApp fue aprobada como un contrato de seguimiento.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Validates the request before pushing back",
+      "Provides data-driven justification for the pushback",
+      "Offers a creative compromise that satisfies both parties"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["stakeholder", "deadlines"],
+    "language": "en",
+    "questionText": "Describe a time when a stakeholder set an unrealistic deadline. How did you handle the situation?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Focus on how you negotiated without damaging the relationship",
+      "Mention trade-offs you proposed"
+    ],
+    "modelAnswer": "ENGLISH: The VP of Engineering at our client company committed to their board that a new fraud detection module would be live in 6 weeks. Our team's estimate was 12 weeks. The VP was under enormous pressure and initially dismissed our concerns. I requested a 30-minute meeting where I walked through the technical breakdown: 3 weeks for the ML model integration, 4 weeks for the real-time transaction monitoring pipeline, 3 weeks for the admin dashboard, and 2 weeks for security audit and load testing. I then proposed a phased approach: in 6 weeks, we would deliver the ML model with batch processing (covering 70% of fraud cases), and in the remaining 6 weeks, we would add real-time monitoring and the dashboard. This let the VP tell the board the fraud detection was 'operational' at the 6-week mark while we continued building. The batch system caught $150K in fraudulent transactions in its first month, validating the phased approach.\n\nESPANOL: El VP de Ingenieria de la empresa cliente se comprometio con su junta directiva a que un nuevo modulo de deteccion de fraude estaria en vivo en 6 semanas. La estimacion de nuestro equipo era 12 semanas. El VP estaba bajo enorme presion e inicialmente descarto nuestras preocupaciones. Solicite una reunion de 30 minutos donde recorri el desglose tecnico: 3 semanas para la integracion del modelo ML, 4 semanas para el pipeline de monitoreo de transacciones en tiempo real, 3 semanas para el dashboard de administracion, y 2 semanas para auditoria de seguridad y pruebas de carga. Luego propuse un enfoque por fases: en 6 semanas, entregariamos el modelo ML con procesamiento por lotes (cubriendo el 70% de los casos de fraude), y en las 6 semanas restantes, agregariamos el monitoreo en tiempo real y el dashboard. Esto permitio al VP decirle a la junta que la deteccion de fraude estaba 'operacional' en la marca de 6 semanas mientras seguiamos construyendo. El sistema por lotes detecto $150K en transacciones fraudulentas en su primer mes, validando el enfoque por fases.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows empathy for the stakeholder's position",
+      "Demonstrates negotiation through data and technical breakdown",
+      "Offers a phased solution that meets both business and technical needs"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["stakeholder", "client-facing"],
+    "language": "en",
+    "questionText": "Tell me about a time you had to deliver bad news to a client about a production issue caused by your team. How did you handle it?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Show ownership and accountability",
+      "Describe both the immediate response and the long-term preventive measures"
+    ],
+    "modelAnswer": "ENGLISH: A deployment on Friday afternoon introduced a bug that caused duplicate charges on our client's e-commerce platform. By Saturday morning, 230 customers had been double-charged totaling $45,000. I was the on-call engineer who discovered the issue. I immediately rolled back the deployment and contacted the client's operations manager. Instead of making excuses, I took full ownership: 'Our deployment had a bug in the payment idempotency check. Here is what happened, here is what we have done to stop it, and here is our plan to prevent it from happening again.' I provided a list of all affected transactions within 2 hours so their finance team could process refunds. On Monday, I led a blameless post-mortem and we implemented three changes: mandatory staging environment testing for payment flows, a deployment freeze after Wednesday, and automated duplicate charge detection alerts. The client said our response was 'the most professional incident handling they had experienced.'\n\nESPANOL: Un despliegue el viernes por la tarde introdujo un bug que causo cargos duplicados en la plataforma de e-commerce de nuestro cliente. Para el sabado por la manana, 230 clientes habian sido cobrados doble por un total de $45,000. Yo era el ingeniero de guardia que descubrio el problema. Inmediatamente revertimos el despliegue y contacte al gerente de operaciones del cliente. En lugar de dar excusas, asumi total responsabilidad: 'Nuestro despliegue tenia un bug en la verificacion de idempotencia de pagos. Esto es lo que paso, esto es lo que hemos hecho para detenerlo, y este es nuestro plan para prevenir que vuelva a ocurrir.' Proporcione una lista de todas las transacciones afectadas en 2 horas para que su equipo de finanzas pudiera procesar reembolsos. El lunes, lidere un post-mortem sin culpas e implementamos tres cambios: pruebas obligatorias en entorno de staging para flujos de pago, congelamiento de despliegues despues del miercoles, y alertas automatizadas de deteccion de cargos duplicados. El cliente dijo que nuestra respuesta fue 'el manejo de incidentes mas profesional que habian experimentado.'",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows immediate ownership without deflecting blame",
+      "Demonstrates structured incident response",
+      "Mentions both immediate fix and long-term preventive measures"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "junior",
+    "tags": ["problem-solving", "learning"],
+    "language": "en",
+    "questionText": "Tell me about a time you had to learn a new technology or framework quickly for a project. How did you approach it?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Mention your specific learning strategy",
+      "Show how you applied the learning to deliver results"
+    ],
+    "modelAnswer": "ENGLISH: I was assigned to a project that required building real-time data visualizations using D3.js, a library I had never used. The first deliverable was due in 3 weeks. My learning strategy was three-pronged: I spent the first 3 days completing an online course to understand D3's data binding model, then I reverse-engineered 5 examples from Observable notebooks that were similar to what we needed, and finally I built a small prototype of our most complex chart — a real-time candlestick chart — during week two. I documented every gotcha I encountered in a team wiki page. By week three, I delivered the first dashboard with 4 chart types. The client was impressed that the charts felt 'custom-built' rather than looking like generic charting library output. My wiki page became the go-to reference for the other 2 developers who joined the project later.\n\nESPANOL: Me asignaron a un proyecto que requeria construir visualizaciones de datos en tiempo real usando D3.js, una biblioteca que nunca habia usado. La primera entrega era en 3 semanas. Mi estrategia de aprendizaje fue triple: pase los primeros 3 dias completando un curso en linea para entender el modelo de data binding de D3, luego hice ingenieria inversa de 5 ejemplos de notebooks de Observable que eran similares a lo que necesitabamos, y finalmente construi un prototipo pequeno de nuestro grafico mas complejo — un grafico de velas en tiempo real — durante la segunda semana. Documente cada problema que encontre en una pagina wiki del equipo. Para la tercera semana, entregue el primer dashboard con 4 tipos de graficos. El cliente quedo impresionado de que los graficos se sentian 'hechos a medida' en lugar de parecer salidas genericas de una biblioteca de graficos. Mi pagina wiki se convirtio en la referencia principal para los otros 2 desarrolladores que se unieron al proyecto despues.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows a structured approach to learning",
+      "Demonstrates quick application of new knowledge",
+      "Mentions knowledge sharing with the team"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["problem-solving", "debugging"],
+    "language": "en",
+    "questionText": "Describe a time you had to debug a critical production issue under pressure. Walk me through your troubleshooting process.",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Detail your systematic debugging approach",
+      "Mention how you communicated during the incident"
+    ],
+    "modelAnswer": "ENGLISH: At 2 AM on a Monday, our monitoring system alerted that the client's order processing API was returning 500 errors for 30% of requests. Revenue was being lost every minute. As the on-call lead, I started by checking the most recent deployment — nothing had been deployed in 3 days, ruling out code changes. I then checked infrastructure metrics: CPU and memory were normal, but database connection pool usage was at 98%. I traced the slow queries and found a new reporting job that had been scheduled over the weekend was holding long-running transactions and exhausting the connection pool. I killed the reporting job, connection pool usage dropped to 40%, and errors stopped within 2 minutes. The total incident duration was 22 minutes. I communicated status updates every 5 minutes in our incident Slack channel. The next day, I moved the reporting job to a read replica and added a connection pool exhaustion alert. We also implemented a change management process for scheduled jobs.\n\nESPANOL: A las 2 AM de un lunes, nuestro sistema de monitoreo alerto que la API de procesamiento de pedidos del cliente estaba retornando errores 500 para el 30% de las solicitudes. Se estaba perdiendo ingresos cada minuto. Como lider de guardia, comence verificando el despliegue mas reciente — nada se habia desplegado en 3 dias, descartando cambios de codigo. Luego revise las metricas de infraestructura: CPU y memoria estaban normales, pero el uso del pool de conexiones de base de datos estaba al 98%. Rastree las consultas lentas y encontre que un nuevo job de reportes programado durante el fin de semana estaba manteniendo transacciones de larga duracion y agotando el pool de conexiones. Mate el job de reportes, el uso del pool bajo al 40%, y los errores cesaron en 2 minutos. La duracion total del incidente fue 22 minutos. Comunique actualizaciones de estado cada 5 minutos en nuestro canal de Slack de incidentes. Al dia siguiente, movi el job de reportes a una replica de lectura y agregue una alerta de agotamiento del pool de conexiones. Tambien implementamos un proceso de gestion de cambios para jobs programados.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Demonstrates systematic troubleshooting methodology",
+      "Shows clear communication during high-pressure situations",
+      "Mentions both immediate fix and root cause prevention"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["problem-solving", "decision-making"],
+    "language": "en",
+    "questionText": "Tell me about a time you had to make a significant technical decision with incomplete information. What was your reasoning process?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Explain what information was missing and how you compensated",
+      "Mention the risks you identified and how you mitigated them"
+    ],
+    "modelAnswer": "ENGLISH: We needed to choose a message broker for a new event-driven architecture — the options were RabbitMQ, Kafka, and AWS SQS. We had no performance benchmarks for our specific use case, uncertain traffic projections (the client estimated anywhere between 1,000 and 50,000 events per minute), and a 2-week deadline to start implementation. I created a decision matrix weighted by our known requirements: guaranteed delivery (critical for financial transactions), operational complexity (we had no Kafka expertise), and cost at both the low and high traffic estimates. I also built a proof-of-concept with RabbitMQ and SQS over 3 days to test our most common message pattern. The PoC showed that both handled our patterns well, but SQS would cost 3x more at high volume. I chose RabbitMQ with a documented migration path to Kafka if we exceeded 30,000 events/minute. We hit production with RabbitMQ, peaked at 12,000 events/minute, and never needed the Kafka migration. The decision matrix became a template our team used for all subsequent technology choices.\n\nESPANOL: Necesitabamos elegir un message broker para una nueva arquitectura orientada a eventos — las opciones eran RabbitMQ, Kafka y AWS SQS. No teniamos benchmarks de rendimiento para nuestro caso de uso especifico, proyecciones de trafico inciertas (el cliente estimaba entre 1,000 y 50,000 eventos por minuto), y una fecha limite de 2 semanas para comenzar la implementacion. Cree una matriz de decision ponderada por nuestros requisitos conocidos: entrega garantizada (critico para transacciones financieras), complejidad operacional (no teniamos experiencia en Kafka), y costo en ambas estimaciones de trafico. Tambien construi una prueba de concepto con RabbitMQ y SQS en 3 dias para probar nuestro patron de mensajes mas comun. El PoC mostro que ambos manejaban bien nuestros patrones, pero SQS costaria 3 veces mas a alto volumen. Elegi RabbitMQ con un camino de migracion documentado a Kafka si excediamos 30,000 eventos/minuto. Llegamos a produccion con RabbitMQ, alcanzamos un pico de 12,000 eventos/minuto, y nunca necesitamos la migracion a Kafka. La matriz de decision se convirtio en una plantilla que nuestro equipo uso para todas las elecciones tecnologicas posteriores.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows structured decision-making under uncertainty",
+      "Demonstrates risk mitigation with fallback plans",
+      "Mentions validation through prototyping or proof of concept"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["problem-solving", "learning"],
+    "language": "en",
+    "questionText": "Describe a time when you had to quickly become the subject matter expert on a technology or domain that was new to the entire team.",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Mention how you structured your learning and shared knowledge",
+      "Describe the impact on the team's delivery"
+    ],
+    "modelAnswer": "ENGLISH: Our consulting team won a contract to build a GraphQL API layer for a media streaming client, but nobody on our 4-person team had production GraphQL experience. As the most senior developer, I volunteered to become the team's GraphQL lead. I spent the first week doing a deep dive: I completed the official Apollo Server tutorial, studied 3 open-source production GraphQL APIs on GitHub, and had a 1-hour call with a GraphQL expert from another team in our consultancy. By the end of week one, I had created a starter template with our conventions: query/mutation structure, error handling patterns, DataLoader for N+1 prevention, and authentication middleware. I ran a 2-hour workshop for the team using this template. Within 2 weeks, all 4 developers were writing GraphQL resolvers independently. We delivered the API on schedule with 95% test coverage, and the client's performance benchmarks showed a 60% reduction in API calls compared to their previous REST implementation.\n\nESPANOL: Nuestro equipo de consultoria gano un contrato para construir una capa de API GraphQL para un cliente de streaming de medios, pero nadie en nuestro equipo de 4 personas tenia experiencia en produccion con GraphQL. Como el desarrollador mas senior, me ofreci para ser el lider de GraphQL del equipo. Pase la primera semana en una inmersion profunda: complete el tutorial oficial de Apollo Server, estudie 3 APIs GraphQL de produccion de codigo abierto en GitHub, y tuve una llamada de 1 hora con un experto en GraphQL de otro equipo de nuestra consultora. Al final de la primera semana, habia creado una plantilla inicial con nuestras convenciones: estructura de queries/mutations, patrones de manejo de errores, DataLoader para prevencion de N+1, y middleware de autenticacion. Dicte un taller de 2 horas para el equipo usando esta plantilla. En 2 semanas, los 4 desarrolladores escribian resolvers de GraphQL independientemente. Entregamos la API en plazo con 95% de cobertura de pruebas, y los benchmarks de rendimiento del cliente mostraron una reduccion del 60% en llamadas API comparado con su implementacion REST anterior.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows proactive learning and leadership",
+      "Demonstrates knowledge transfer to the team",
+      "Mentions measurable delivery outcomes"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["problem-solving", "production"],
+    "language": "en",
+    "questionText": "Tell me about a time when a production system you worked on had a recurring issue that no one could figure out. How did you approach solving it?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Describe your investigation methodology in detail",
+      "Show persistence and creative problem-solving"
+    ],
+    "modelAnswer": "ENGLISH: Our client's inventory management system experienced random OutOfMemoryError crashes every 3-5 days. The team had been restarting the service each time for 2 months. I decided to investigate systematically. First, I enabled JVM heap dumps on OOM and configured Prometheus to capture memory metrics with 10-second granularity. After the next crash, I analyzed the heap dump with Eclipse MAT and found 2 million orphaned inventory snapshot objects. I traced the code and found that a scheduled job that took daily inventory snapshots was creating objects in a static HashMap for a cache that was never cleared. The cache was designed for a feature that had been abandoned 6 months earlier. I removed the dead code, added a cache eviction policy as a safeguard, and set up a memory trend alert. The service ran for 3 months straight without a single restart. The client estimated the recurring crashes had been costing their warehouse operations approximately $8,000 per month in downtime.\n\nESPANOL: El sistema de gestion de inventario de nuestro cliente experimentaba crashes aleatorios de OutOfMemoryError cada 3-5 dias. El equipo habia estado reiniciando el servicio cada vez durante 2 meses. Decidi investigar sistematicamente. Primero, habilite heap dumps de JVM en OOM y configure Prometheus para capturar metricas de memoria con granularidad de 10 segundos. Despues del siguiente crash, analice el heap dump con Eclipse MAT y encontre 2 millones de objetos huerfanos de snapshots de inventario. Rastree el codigo y encontre que un job programado que tomaba snapshots diarios de inventario estaba creando objetos en un HashMap estatico para un cache que nunca se limpiaba. El cache fue disenado para una funcionalidad que habia sido abandonada 6 meses antes. Elimine el codigo muerto, agregue una politica de eviccion de cache como salvaguarda, y configure una alerta de tendencia de memoria. El servicio funciono 3 meses seguidos sin un solo reinicio. El cliente estimo que los crashes recurrentes habian estado costando a sus operaciones de almacen aproximadamente $8,000 por mes en tiempo de inactividad.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows systematic and methodical debugging approach",
+      "Demonstrates persistence in solving a long-standing issue",
+      "Provides measurable business impact of the fix"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "junior",
+    "tags": ["conflict", "communication"],
+    "language": "en",
+    "questionText": "Tell me about a time you disagreed with a more senior developer on a technical approach. How did you handle the disagreement?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Show respect while still advocating for your position",
+      "Mention whether you were right, wrong, or found a middle ground"
+    ],
+    "modelAnswer": "ENGLISH: During a Spring Boot project, our tech lead wanted to use stored procedures for all business logic in the database layer. I believed the logic should live in the service layer for testability and maintainability. Instead of arguing in a group meeting, I asked for a 15-minute 1-on-1. I came prepared with a small code example showing the same business rule implemented both ways — the service layer version had 5 unit tests running in 200ms, while the stored procedure version required a database container and took 8 seconds. I also acknowledged his perspective: stored procedures would indeed be faster for batch processing. We reached a compromise — service layer for CRUD and business rules, stored procedures only for batch reports that processed more than 10,000 records. The hybrid approach gave us 90% test coverage on business logic while keeping our nightly batch report under 5 minutes.\n\nESPANOL: Durante un proyecto Spring Boot, nuestro tech lead queria usar stored procedures para toda la logica de negocio en la capa de base de datos. Yo creia que la logica debia vivir en la capa de servicio por testabilidad y mantenibilidad. En lugar de discutir en una reunion grupal, pedi una reunion 1-a-1 de 15 minutos. Llegue preparado con un pequeno ejemplo de codigo mostrando la misma regla de negocio implementada de ambas formas — la version de capa de servicio tenia 5 pruebas unitarias corriendo en 200ms, mientras que la version de stored procedure requeria un contenedor de base de datos y tardaba 8 segundos. Tambien reconoci su perspectiva: los stored procedures serian mas rapidos para procesamiento por lotes. Llegamos a un compromiso — capa de servicio para CRUD y reglas de negocio, stored procedures solo para reportes batch que procesaran mas de 10,000 registros. El enfoque hibrido nos dio 90% de cobertura de pruebas en logica de negocio mientras manteniamos nuestro reporte batch nocturno en menos de 5 minutos.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows respect for seniority while still advocating their position",
+      "Demonstrates preparation with evidence, not just opinions",
+      "Shows willingness to compromise and find middle ground"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["conflict", "pressure"],
+    "language": "en",
+    "questionText": "Describe a time when you had to deal with a tight deadline that seemed impossible. What was your approach?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Mention how you prioritized and what trade-offs you made",
+      "Show how you managed stress and kept the team focused"
+    ],
+    "modelAnswer": "ENGLISH: Our client's compliance team informed us on a Tuesday that a new data privacy regulation required all user data exports to be encrypted, and the deadline was the following Monday — 5 business days for what we estimated as 3 weeks of work. I immediately called a team meeting to triage. I broke the requirement into three components: encryption of CSV exports (critical — used daily), encryption of PDF reports (medium — used weekly), and encryption of API data feeds (low — used by one internal system). I proposed we focus only on the critical path: CSV exports. I assigned the encryption library integration to our strongest backend developer, had another developer write the tests, and I handled the deployment pipeline changes. We worked extended hours but I made sure no one worked past 9 PM. By Friday, we had encrypted CSV exports in production with comprehensive tests. We communicated to the compliance team that the other two formats would follow in the next sprint. They accepted because the CSV export was the primary audit target. All three were done within 2 weeks.\n\nESPANOL: El equipo de cumplimiento de nuestro cliente nos informo un martes que una nueva regulacion de privacidad de datos requeria que todas las exportaciones de datos de usuario estuvieran encriptadas, y la fecha limite era el lunes siguiente — 5 dias habiles para lo que estimamos como 3 semanas de trabajo. Inmediatamente convoque una reunion de equipo para triaje. Desglose el requisito en tres componentes: encriptacion de exportaciones CSV (critico — usado diariamente), encriptacion de reportes PDF (medio — usado semanalmente), y encriptacion de feeds de datos API (bajo — usado por un solo sistema interno). Propuse enfocarnos solo en la ruta critica: exportaciones CSV. Asigne la integracion de la biblioteca de encriptacion a nuestro desarrollador backend mas fuerte, otro desarrollador escribio las pruebas, y yo maneje los cambios en el pipeline de despliegue. Trabajamos horas extendidas pero me asegure de que nadie trabajara despues de las 9 PM. Para el viernes, teniamos las exportaciones CSV encriptadas en produccion con pruebas completas. Comunicamos al equipo de cumplimiento que los otros dos formatos seguirian en el proximo sprint. Aceptaron porque la exportacion CSV era el objetivo principal de la auditoria. Los tres estaban listos en 2 semanas.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows prioritization and scope management under pressure",
+      "Demonstrates team leadership and care for team wellbeing",
+      "Mentions effective stakeholder communication about trade-offs"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["conflict", "team-dynamics"],
+    "language": "en",
+    "questionText": "Tell me about a time you had to work with a difficult team member who was negatively affecting the team's productivity or morale.",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Be diplomatic — focus on behaviors, not personality",
+      "Show empathy and effort to understand their perspective"
+    ],
+    "modelAnswer": "ENGLISH: On a 6-month banking project, one senior developer consistently dismissed others' ideas in architecture discussions, spoke over people in meetings, and made sarcastic comments on code reviews. Two junior developers told me privately they were afraid to contribute ideas. I first tried to understand his perspective — I learned he was under pressure from a personal situation and felt the team was moving too slowly. I had a private conversation where I acknowledged his technical expertise and the pressure he was under, then shared specific examples of how his communication style was impacting the team. I also worked with our delivery manager to adjust his workload. We agreed on ground rules for discussions: every person gets to finish their thought, and code review comments must include a suggestion, not just criticism. Within a month, the team dynamic shifted. The two junior developers started contributing to architecture discussions again, and the senior developer later thanked me for the honest feedback, saying no one had told him before.\n\nESPANOL: En un proyecto bancario de 6 meses, un desarrollador senior descartaba consistentemente las ideas de otros en discusiones de arquitectura, interrumpia a la gente en reuniones y hacia comentarios sarcasticos en las revisiones de codigo. Dos desarrolladores junior me dijeron en privado que tenian miedo de contribuir ideas. Primero trate de entender su perspectiva — supe que estaba bajo presion por una situacion personal y sentia que el equipo avanzaba muy lento. Tuve una conversacion privada donde reconoci su experiencia tecnica y la presion que enfrentaba, luego comparti ejemplos especificos de como su estilo de comunicacion estaba impactando al equipo. Tambien trabaje con nuestro delivery manager para ajustar su carga de trabajo. Acordamos reglas basicas para las discusiones: cada persona termina su pensamiento, y los comentarios de revision de codigo deben incluir una sugerencia, no solo critica. En un mes, la dinamica del equipo cambio. Los dos desarrolladores junior volvieron a contribuir en las discusiones de arquitectura, y el desarrollador senior despues me agradecio por el feedback honesto, diciendo que nadie se lo habia dicho antes.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows empathy and effort to understand root causes",
+      "Demonstrates courage to address the issue directly but privately",
+      "Mentions concrete behavioral changes and improved team dynamics"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["conflict", "mistakes"],
+    "language": "en",
+    "questionText": "Describe a time you made a mistake that affected production. How did you handle the aftermath?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Show accountability — don't minimize or blame others",
+      "Focus on what you learned and what you changed"
+    ],
+    "modelAnswer": "ENGLISH: I accidentally ran a database migration script on the production database instead of staging, which dropped a column that was still being used by a legacy reporting module. The reports started failing within minutes and the client's operations team noticed immediately. I immediately informed my tech lead, identified the affected column, and wrote a restore script using the most recent backup — we had the column back with all data within 45 minutes. I then owned the mistake completely in our incident report. I proposed three preventive measures that we implemented: color-coded terminal prompts for production environments (red) vs. staging (green), a mandatory `--confirm-environment` flag on all migration scripts, and separation of production database credentials into a vault that required explicit checkout. My manager told me later that my handling of the incident — immediate transparency, quick resolution, and systemic prevention — actually increased the client's confidence in our team rather than damaging it.\n\nESPANOL: Accidentalmente ejecute un script de migracion de base de datos en la base de datos de produccion en lugar de staging, lo que elimino una columna que aun estaba siendo utilizada por un modulo de reportes legacy. Los reportes comenzaron a fallar en minutos y el equipo de operaciones del cliente lo noto inmediatamente. Inmediatamente informe a mi tech lead, identifique la columna afectada, y escribi un script de restauracion usando el backup mas reciente — teniamos la columna de vuelta con todos los datos en 45 minutos. Luego asumi la responsabilidad completamente en nuestro reporte de incidente. Propuse tres medidas preventivas que implementamos: prompts de terminal con codigo de colores para ambientes de produccion (rojo) vs. staging (verde), un flag obligatorio `--confirm-environment` en todos los scripts de migracion, y separacion de credenciales de base de datos de produccion en un vault que requeria checkout explicito. Mi manager me dijo despues que mi manejo del incidente — transparencia inmediata, resolucion rapida y prevencion sistemica — en realidad aumento la confianza del cliente en nuestro equipo en lugar de danarla.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows immediate ownership and transparency",
+      "Demonstrates quick incident response under pressure",
+      "Implements systemic preventive measures, not just personal ones"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "junior",
+    "tags": ["career", "motivation"],
+    "language": "en",
+    "questionText": "Why are you interested in this software development role, and what specifically attracted you to our company?",
+    "hints": [
+      "Use the STAR format where applicable — for this question, focus on specific experiences that led to your interest",
+      "Connect your skills and interests to the company's tech stack or mission",
+      "Be genuine — generic answers are easy to spot"
+    ],
+    "modelAnswer": "ENGLISH: I have been drawn to software development since I built my first web application during university — a course registration tool that 200 students actually used. What attracted me to consulting specifically was the variety: every few months you work on a different domain, a different tech stack, and different challenges. Your company stood out to me for three reasons: first, I saw your engineering blog post about migrating a client from a monolith to microservices using the strangler fig pattern, which aligned with how I learned to approach legacy modernization. Second, your stack (Angular, Spring Boot, PostgreSQL) matches my strongest technologies. Third, I spoke with one of your developers at a local meetup who described a culture of continuous learning — weekly tech talks and sponsored certifications. I want to grow into a full-stack architect, and this role offers the breadth of experience across industries and technologies that would accelerate that growth.\n\nESPANOL: Me ha atraido el desarrollo de software desde que construi mi primera aplicacion web durante la universidad — una herramienta de registro de cursos que 200 estudiantes realmente usaron. Lo que me atrajo de la consultoria especificamente fue la variedad: cada pocos meses trabajas en un dominio diferente, un stack tecnologico diferente y desafios diferentes. Su empresa me destaco por tres razones: primero, vi su publicacion en el blog de ingenieria sobre migrar a un cliente de un monolito a microservicios usando el patron strangler fig, lo cual se alineaba con como aprendi a abordar la modernizacion de sistemas legacy. Segundo, su stack (Angular, Spring Boot, PostgreSQL) coincide con mis tecnologias mas fuertes. Tercero, hable con uno de sus desarrolladores en un meetup local quien describio una cultura de aprendizaje continuo — charlas tecnicas semanales y certificaciones patrocinadas. Quiero crecer hacia arquitecto full-stack, y este rol ofrece la amplitud de experiencia en industrias y tecnologias que aceleraria ese crecimiento.",
+    "evaluationCriteria": [
+      "Provides specific, researched reasons for interest in the company",
+      "Connects personal skills and goals to the role",
+      "Shows genuine enthusiasm without being generic",
+      "Demonstrates knowledge of the company's work or culture"
+    ],
+    "timeEstimate": 120
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "junior",
+    "tags": ["career", "growth"],
+    "language": "en",
+    "questionText": "Where do you see yourself in 3-5 years in your software development career?",
+    "hints": [
+      "Use the STAR format where applicable — reference experiences that shaped your vision",
+      "Be realistic but ambitious",
+      "Connect your growth plan to how it benefits the company"
+    ],
+    "modelAnswer": "ENGLISH: In 3-5 years, I see myself growing from a developer who executes well to one who shapes technical direction. Specifically, in the next 2 years I want to deepen my expertise in distributed systems and cloud architecture — I am already studying for the AWS Solutions Architect certification and building side projects with event-driven architectures. By year 3, I would like to be leading the technical design of projects, mentoring junior developers, and contributing to architectural decisions. By year 5, my goal is to be a technical architect who can bridge the gap between business requirements and system design. I have seen how projects succeed or fail based on early architectural decisions, and I want to be the person who helps get those right. I chose consulting because it gives me exposure to diverse problems — in 5 years at a product company, you might see 2-3 architectures; in consulting, you could see 10-15.\n\nESPANOL: En 3-5 anos, me veo creciendo de un desarrollador que ejecuta bien a uno que define la direccion tecnica. Especificamente, en los proximos 2 anos quiero profundizar mi experiencia en sistemas distribuidos y arquitectura cloud — ya estoy estudiando para la certificacion AWS Solutions Architect y construyendo proyectos personales con arquitecturas orientadas a eventos. Para el ano 3, me gustaria estar liderando el diseno tecnico de proyectos, mentoreando desarrolladores junior y contribuyendo a decisiones arquitectonicas. Para el ano 5, mi meta es ser un arquitecto tecnico que pueda cerrar la brecha entre requisitos de negocio y diseno de sistemas. He visto como los proyectos triunfan o fracasan basandose en decisiones arquitectonicas tempranas, y quiero ser la persona que ayude a tomarlas correctamente. Elegi consultoria porque me da exposicion a problemas diversos — en 5 anos en una empresa de producto, podrias ver 2-3 arquitecturas; en consultoria, podrias ver 10-15.",
+    "evaluationCriteria": [
+      "Provides a realistic and specific growth trajectory",
+      "Shows active steps being taken toward the goal",
+      "Connects personal growth to value for the company",
+      "Demonstrates self-awareness about current level and next steps"
+    ],
+    "timeEstimate": 120
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["career", "achievement"],
+    "language": "en",
+    "questionText": "What is your biggest professional achievement so far, and why does it stand out to you?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Choose an achievement that demonstrates technical and interpersonal skills",
+      "Quantify the impact wherever possible"
+    ],
+    "modelAnswer": "ENGLISH: My biggest achievement was leading the rescue of a failing project for a logistics client. When I joined, the project was 3 months behind schedule, the original team lead had left, and the client was considering canceling the contract. The system — a real-time fleet tracking platform — had a half-built backend with no tests and a frontend that crashed every 15 minutes. I started by stabilizing the existing code: I added error boundaries to the frontend, wrote integration tests for the 3 most critical API endpoints, and set up a CI/CD pipeline where there was none. Then I restructured the remaining work into 2-week milestones with clear deliverables, making progress visible to the client weekly. In 4 months, we delivered the platform. It tracked 350 vehicles in real-time, reduced the client's route planning time by 40%, and the contract was extended for 18 months of additional feature development. It stands out because it taught me that technical skill alone is not enough — the ability to organize, communicate, and rebuild trust is equally important.\n\nESPANOL: Mi mayor logro fue liderar el rescate de un proyecto fallido para un cliente de logistica. Cuando me uni, el proyecto tenia 3 meses de retraso, el lider del equipo original se habia ido, y el cliente estaba considerando cancelar el contrato. El sistema — una plataforma de rastreo de flotas en tiempo real — tenia un backend a medio construir sin pruebas y un frontend que se caia cada 15 minutos. Comence estabilizando el codigo existente: agregue error boundaries al frontend, escribi pruebas de integracion para los 3 endpoints API mas criticos, y configure un pipeline de CI/CD donde no habia ninguno. Luego reestructure el trabajo restante en hitos de 2 semanas con entregables claros, haciendo el progreso visible para el cliente semanalmente. En 4 meses, entregamos la plataforma. Rastreaba 350 vehiculos en tiempo real, redujo el tiempo de planificacion de rutas del cliente en un 40%, y el contrato se extendio por 18 meses de desarrollo adicional de funcionalidades. Destaca porque me enseno que la habilidad tecnica sola no es suficiente — la capacidad de organizar, comunicar y reconstruir confianza es igualmente importante.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows both technical and leadership competencies",
+      "Provides quantifiable impact and outcomes",
+      "Demonstrates self-reflection on why the achievement matters"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["career", "failure", "growth"],
+    "language": "en",
+    "questionText": "Tell me about your biggest professional failure. What happened and what did you learn from it?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Choose a real failure, not a disguised success",
+      "Focus heavily on the lessons learned and behavioral changes"
+    ],
+    "modelAnswer": "ENGLISH: My biggest failure was overengineering a microservices architecture for a startup client that only had 500 users. I was fresh from a large enterprise project and applied the same patterns: Kubernetes, API gateway, event bus, 8 separate microservices. The system was technically impressive but the client's 2-person team could not maintain it. Deployments went from taking 5 minutes with their previous monolith to 45 minutes across 8 services. Two months after delivery, they hired a contractor to merge everything back into a monolith. I felt terrible. The failure taught me three lessons I carry to this day: first, always design for the team that will maintain the system, not the one that builds it; second, architecture should match the organization's maturity, not the architect's ambition; third, I now start every project by asking 'what is the simplest architecture that solves this problem?' before reaching for complexity. Since then, I have successfully recommended monoliths for 3 startup clients where the team previously assumed they needed microservices.\n\nESPANOL: Mi mayor fracaso fue sobreingenierar una arquitectura de microservicios para un cliente startup que solo tenia 500 usuarios. Venia de un proyecto empresarial grande y aplique los mismos patrones: Kubernetes, API gateway, bus de eventos, 8 microservicios separados. El sistema era tecnicamente impresionante pero el equipo de 2 personas del cliente no podia mantenerlo. Los despliegues pasaron de tomar 5 minutos con su monolito anterior a 45 minutos a traves de 8 servicios. Dos meses despues de la entrega, contrataron a un consultor para fusionar todo de nuevo en un monolito. Me senti terrible. El fracaso me enseno tres lecciones que cargo hasta hoy: primero, siempre disenar para el equipo que mantendra el sistema, no el que lo construye; segundo, la arquitectura debe coincidir con la madurez de la organizacion, no con la ambicion del arquitecto; tercero, ahora comienzo cada proyecto preguntando 'cual es la arquitectura mas simple que resuelve este problema?' antes de buscar complejidad. Desde entonces, he recomendado exitosamente monolitos para 3 clientes startup donde el equipo previamente asumia que necesitaban microservicios.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Describes a genuine failure with real consequences",
+      "Shows deep self-reflection and accountability",
+      "Demonstrates concrete behavioral changes resulting from the failure"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["stakeholder", "communication", "client-facing"],
+    "language": "en",
+    "questionText": "Tell me about a time you had to bridge the communication gap between a technical team and business stakeholders on a complex feature.",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Show how you translated between technical and business language",
+      "Mention specific communication artifacts you created"
+    ],
+    "modelAnswer": "ENGLISH: Our team was building a recommendation engine for an e-commerce client. The data science team kept presenting their work using ML terminology — precision, recall, F1 scores — and the business stakeholders had no idea what those numbers meant or whether the project was on track. I volunteered to create a 'translation layer.' I built a simple dashboard that showed business metrics alongside the ML metrics: 'precision of 0.85' became 'out of every 100 product recommendations, 85 are relevant to the user,' and 'recall of 0.72' became 'we are capturing 72 out of every 100 products the user would actually want.' I also created a weekly one-page summary with a traffic light system: green meant the metric exceeded the business target, yellow meant it was close, red meant it needed attention. The business team finally had visibility, and the data science team stopped getting interrupted with 'is it working?' questions. Recommendation click-through rates increased 28% after launch, and both teams credited the shared visibility with helping them align on priorities.\n\nESPANOL: Nuestro equipo estaba construyendo un motor de recomendaciones para un cliente de e-commerce. El equipo de ciencia de datos seguia presentando su trabajo usando terminologia de ML — precision, recall, F1 scores — y los stakeholders de negocio no tenian idea de que significaban esos numeros ni si el proyecto iba por buen camino. Me ofreci para crear una 'capa de traduccion.' Construi un dashboard simple que mostraba metricas de negocio junto a las metricas de ML: 'precision de 0.85' se convirtio en 'de cada 100 recomendaciones de productos, 85 son relevantes para el usuario,' y 'recall de 0.72' se convirtio en 'estamos capturando 72 de cada 100 productos que el usuario realmente querria.' Tambien cree un resumen semanal de una pagina con un sistema de semaforo: verde significaba que la metrica superaba el objetivo de negocio, amarillo que estaba cerca, rojo que necesitaba atencion. El equipo de negocio finalmente tenia visibilidad, y el equipo de ciencia de datos dejo de ser interrumpido con preguntas de 'funciona?'. Las tasas de clic en recomendaciones aumentaron un 28% despues del lanzamiento, y ambos equipos atribuyeron la visibilidad compartida con ayudarles a alinear prioridades.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Demonstrates ability to translate between technical and business domains",
+      "Shows initiative in creating communication tools",
+      "Mentions measurable improvement in stakeholder alignment"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["agile", "continuous-improvement"],
+    "language": "en",
+    "questionText": "Tell me about a process improvement you introduced that had a lasting impact on your team's productivity.",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Quantify the before-and-after impact",
+      "Explain how you got team buy-in"
+    ],
+    "modelAnswer": "ENGLISH: Our team of 6 was spending an average of 4 hours per developer per week on code reviews because PRs were large, context-switching was constant, and reviews often sat for 2-3 days. I analyzed our Bitbucket data and presented the findings in a retro: large PRs (500+ lines) took 5x longer to review and had 3x more post-merge bugs than small PRs. I proposed three changes: a 300-line PR limit with exceptions requiring tech lead approval, a 'review slot' system where each developer blocked 30 minutes twice daily for reviews, and a PR template with a 'how to test this' section to reduce reviewer investigation time. I piloted the changes with 2 willing developers first to prove the concept. After 1 month, the team saw review time drop from 4 hours to 1.5 hours per developer per week, PR turnaround went from 2.5 days to 6 hours, and our post-merge defect rate dropped by 40%. The practices spread to 3 other teams in the consultancy.\n\nESPANOL: Nuestro equipo de 6 personas pasaba un promedio de 4 horas por desarrollador por semana en revisiones de codigo porque los PRs eran grandes, el cambio de contexto era constante y las revisiones a menudo esperaban 2-3 dias. Analice nuestros datos de Bitbucket y presente los hallazgos en una retro: los PRs grandes (500+ lineas) tardaban 5 veces mas en revisarse y tenian 3 veces mas bugs post-merge que los PRs pequenos. Propuse tres cambios: un limite de 300 lineas por PR con excepciones que requerian aprobacion del tech lead, un sistema de 'slots de revision' donde cada desarrollador bloqueaba 30 minutos dos veces al dia para revisiones, y una plantilla de PR con una seccion de 'como probar esto' para reducir el tiempo de investigacion del revisor. Primero pilotee los cambios con 2 desarrolladores dispuestos para probar el concepto. Despues de 1 mes, el equipo vio el tiempo de revision bajar de 4 horas a 1.5 horas por desarrollador por semana, el tiempo de respuesta de PR bajo de 2.5 dias a 6 horas, y nuestra tasa de defectos post-merge bajo un 40%. Las practicas se extendieron a 3 otros equipos en la consultora.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows data-driven approach to identifying the problem",
+      "Demonstrates change management skills with pilot approach",
+      "Provides measurable before-and-after improvements"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["problem-solving", "decision-making"],
+    "language": "en",
+    "questionText": "Describe a time when you identified a problem that nobody else on the team had noticed. What made you notice it, and what did you do?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Explain your observation or investigation process",
+      "Show how you escalated and resolved the issue"
+    ],
+    "modelAnswer": "ENGLISH: While working on a healthcare scheduling application, I noticed that our test suite was passing but the appointment overlap validation seemed inconsistent. Other developers considered it a non-issue since tests were green. I spent a Saturday morning creating a stress test that simulated 50 concurrent appointment bookings for the same time slot. The test revealed that our optimistic locking implementation had a race condition — under high concurrency, 2-3 overlapping appointments could be created. In a healthcare context, this meant double-booked surgeries or conflicting drug administration schedules. I documented the issue with the stress test as evidence and presented it to the team on Monday. We implemented a pessimistic locking strategy with a database advisory lock for the critical booking path. The fix took 2 days to implement. The client's operations team later confirmed they had been seeing occasional double bookings in production but assumed it was user error. Our fix eliminated the issue entirely.\n\nESPANOL: Mientras trabajaba en una aplicacion de programacion de citas medicas, note que nuestra suite de pruebas pasaba pero la validacion de superposicion de citas parecia inconsistente. Otros desarrolladores lo consideraban un no-problema ya que las pruebas estaban en verde. Pase un sabado por la manana creando una prueba de estres que simulaba 50 reservas de citas concurrentes para el mismo horario. La prueba revelo que nuestra implementacion de bloqueo optimista tenia una condicion de carrera — bajo alta concurrencia, se podian crear 2-3 citas superpuestas. En un contexto de salud, esto significaba cirugias con doble reserva o conflictos en programaciones de administracion de medicamentos. Documente el problema con la prueba de estres como evidencia y lo presente al equipo el lunes. Implementamos una estrategia de bloqueo pesimista con un advisory lock de base de datos para la ruta critica de reservas. La correccion tomo 2 dias en implementarse. El equipo de operaciones del cliente confirmo despues que habian estado viendo reservas dobles ocasionales en produccion pero asumian que era error del usuario. Nuestra correccion elimino el problema por completo.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows technical curiosity and attention to detail",
+      "Demonstrates initiative to investigate beyond surface-level",
+      "Provides evidence-based approach to escalating concerns"
+    ],
+    "timeEstimate": 210
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["legacy-code", "refactoring", "testing"],
+    "language": "en",
+    "questionText": "Tell me about a time you had to add tests to an untested legacy codebase. How did you prioritize what to test first?",
+    "hints": [
+      "Use the STAR format: Situation, Task, Action, Result",
+      "Explain your testing strategy and prioritization criteria",
+      "Mention how you balanced test writing with feature delivery"
+    ],
+    "modelAnswer": "ENGLISH: I inherited a Node.js API with 0% test coverage serving a financial reporting client. The API had 45 endpoints and we were expected to add new features while the system was in production. Testing everything at once was impossible alongside feature work. I prioritized using a risk-based approach: I pulled the last 3 months of production incident reports and identified the 8 endpoints that had caused 80% of the bugs. Those were my first targets. I started with integration tests rather than unit tests because the code was tightly coupled and refactoring it first would have been too risky. I used a testing pattern where each test set up its own database state, called the endpoint, and verified both the response and the database side effects. In 6 sprints, I had 85% coverage on the critical 8 endpoints and 30% overall coverage. Bug reports for those endpoints dropped from an average of 3 per sprint to 0. The approach was adopted as our standard for all legacy projects in the consultancy.\n\nESPANOL: Herede una API Node.js con 0% de cobertura de pruebas que servia a un cliente de reportes financieros. La API tenia 45 endpoints y se esperaba que agregaramos nuevas funcionalidades mientras el sistema estaba en produccion. Probar todo de una vez era imposible junto con el trabajo de funcionalidades. Priorice usando un enfoque basado en riesgo: extraje los reportes de incidentes de produccion de los ultimos 3 meses e identifique los 8 endpoints que habian causado el 80% de los bugs. Esos fueron mis primeros objetivos. Comence con pruebas de integracion en lugar de pruebas unitarias porque el codigo estaba altamente acoplado y refactorizarlo primero habria sido muy riesgoso. Use un patron de pruebas donde cada test configuraba su propio estado de base de datos, llamaba al endpoint y verificaba tanto la respuesta como los efectos secundarios en la base de datos. En 6 sprints, tenia 85% de cobertura en los 8 endpoints criticos y 30% de cobertura general. Los reportes de bugs para esos endpoints bajaron de un promedio de 3 por sprint a 0. El enfoque se adopto como nuestro estandar para todos los proyectos legacy en la consultora.",
+    "evaluationCriteria": [
+      "Uses STAR format (Situation, Task, Action, Result)",
+      "Shows strategic prioritization based on risk and data",
+      "Demonstrates pragmatic testing approach for legacy code",
+      "Provides measurable improvement in code quality"
+    ],
+    "timeEstimate": 210
+  }
+]

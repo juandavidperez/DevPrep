@@ -1,0 +1,1588 @@
+[
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": [
+      "algorithms",
+      "arrays"
+    ],
+    "language": "en",
+    "questionText": "Write a function that takes an array of integers and returns the two numbers that add up to a given target. You may assume exactly one solution exists and you cannot use the same element twice.",
+    "hints": [
+      "A brute-force approach uses two nested loops — O(n²)",
+      "Can you use a hashmap to do it in one pass?"
+    ],
+    "modelAnswer": "Use a hashmap to store each number's complement (target - num) as you iterate. For each number, check if it already exists in the map. If yes, return the pair.\n\nfunction twoSum(nums: number[], target: number): [number, number] {\n  const seen = new Map<number, number>();\n  for (const num of nums) {\n    const complement = target - num;\n    if (seen.has(complement)) {\n      return [complement, num];\n    }\n    seen.set(num, complement);\n  }\n  throw new Error('No solution found');\n}\n\nTime complexity: O(n) — single pass through the array.\nSpace complexity: O(n) — hashmap stores at most n entries.",
+    "evaluationCriteria": [
+      "Uses a hashmap for O(n) solution instead of brute force",
+      "Handles edge cases (no solution, single-element array)",
+      "Correctly identifies time and space complexity",
+      "Code is clean and readable"
+    ],
+    "timeEstimate": 240,
+    "codeTemplate": "function twoSum(nums: number[], target: number): [number, number] {\n  // your code here\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      {
+        "input": "nums = [2, 7, 11, 15], target = 9",
+        "expected": "[2, 7]"
+      },
+      {
+        "input": "nums = [3, 2, 4], target = 6",
+        "expected": "[2, 4]"
+      },
+      {
+        "input": "nums = [1, 5, 3, 7], target = 8",
+        "expected": "[1, 7] or [5, 3]"
+      }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": [
+      "algorithms",
+      "strings"
+    ],
+    "language": "en",
+    "questionText": "Write a function that determines if two strings are anagrams of each other. The comparison should be case-insensitive and ignore spaces.",
+    "hints": [
+      "What data structure can count character frequencies?",
+      "Sorting both strings is another valid approach"
+    ],
+    "modelAnswer": "Approach 1 (HashMap): Count character frequencies in both strings and compare the maps.\n\nfunction areAnagrams(s1: string, s2: string): boolean {\n  const normalize = (s: string) => s.toLowerCase().replace(/\\s/g, '');\n  const a = normalize(s1);\n  const b = normalize(s2);\n  if (a.length !== b.length) return false;\n  const freq = new Map<string, number>();\n  for (const ch of a) freq.set(ch, (freq.get(ch) || 0) + 1);\n  for (const ch of b) {\n    const count = freq.get(ch);\n    if (!count) return false;\n    freq.set(ch, count - 1);\n  }\n  return true;\n}\n\nApproach 2 (Sort): Sort both strings and compare. Simpler code but O(n log n).\n\nTime complexity: O(n) for hashmap approach, O(n log n) for sorting.\nSpace complexity: O(n) for the frequency map or sorted copies.",
+    "evaluationCriteria": [
+      "Handles case-insensitivity and whitespace correctly",
+      "Uses efficient character counting (hashmap preferred)",
+      "Includes the early length check optimization",
+      "Explains trade-offs between sorting vs hashmap approaches"
+    ],
+    "timeEstimate": 180,
+    "codeTemplate": "function areAnagrams(s1: string, s2: string): boolean {\n  // your code here\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      {
+        "input": "s1 = 'listen', s2 = 'silent'",
+        "expected": "true"
+      },
+      {
+        "input": "s1 = 'Hello', s2 = 'Olelh'",
+        "expected": "true"
+      },
+      {
+        "input": "s1 = 'Dormitory', s2 = 'Dirty Room'",
+        "expected": "true"
+      },
+      {
+        "input": "s1 = 'abc', s2 = 'abd'",
+        "expected": "false"
+      }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": [
+      "algorithms",
+      "arrays"
+    ],
+    "language": "en",
+    "questionText": "Write a function that removes duplicates from a sorted array in-place and returns the new length. Do not allocate extra space — modify the input array with O(1) extra memory.",
+    "hints": [
+      "Use two pointers: one for reading, one for writing",
+      "Since the array is sorted, duplicates are always adjacent"
+    ],
+    "modelAnswer": "Use a slow and fast pointer. The slow pointer tracks where to write the next unique value. The fast pointer scans every element.\n\nfunction removeDuplicates(nums: number[]): number {\n  if (nums.length === 0) return 0;\n  let writeIdx = 0;\n  for (let readIdx = 1; readIdx < nums.length; readIdx++) {\n    if (nums[readIdx] !== nums[writeIdx]) {\n      writeIdx++;\n      nums[writeIdx] = nums[readIdx];\n    }\n  }\n  return writeIdx + 1;\n}\n\nTime complexity: O(n) — single pass.\nSpace complexity: O(1) — in-place modification.",
+    "evaluationCriteria": [
+      "Implements two-pointer technique correctly",
+      "Handles empty array edge case",
+      "Does not use extra space (no Set or new array)",
+      "Correctly returns the new length"
+    ],
+    "timeEstimate": 180,
+    "codeTemplate": "function removeDuplicates(nums: number[]): number {\n  // Modify nums in-place and return new length\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      {
+        "input": "[1, 1, 2]",
+        "expected": "2 (array becomes [1, 2, ...])"
+      },
+      {
+        "input": "[0, 0, 1, 1, 1, 2, 2, 3, 3, 4]",
+        "expected": "5 (array becomes [0, 1, 2, 3, 4, ...])"
+      },
+      {
+        "input": "[]",
+        "expected": "0"
+      }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": [
+      "algorithms",
+      "stacks"
+    ],
+    "language": "en",
+    "questionText": "Write a function that checks if a string containing only parentheses '(', ')', '{', '}', '[', ']' is valid. A string is valid if every open bracket is closed by the same type in the correct order.",
+    "hints": [
+      "A stack is the natural data structure for matching pairs",
+      "Push opening brackets, pop and compare for closing brackets"
+    ],
+    "modelAnswer": "Use a stack. For each character: push opening brackets, and for closing brackets pop from the stack and verify the match.\n\nfunction isValid(s: string): boolean {\n  const stack: string[] = [];\n  const pairs: Record<string, string> = { ')': '(', '}': '{', ']': '[' };\n  for (const ch of s) {\n    if ('({['.includes(ch)) {\n      stack.push(ch);\n    } else {\n      if (stack.pop() !== pairs[ch]) return false;\n    }\n  }\n  return stack.length === 0;\n}\n\nTime complexity: O(n) — single pass.\nSpace complexity: O(n) — stack stores at most n/2 opening brackets.",
+    "evaluationCriteria": [
+      "Uses a stack-based approach",
+      "Handles all three bracket types correctly",
+      "Returns false for unmatched brackets at the end (non-empty stack)",
+      "Clean mapping of closing to opening brackets"
+    ],
+    "timeEstimate": 180,
+    "codeTemplate": "function isValid(s: string): boolean {\n  // your code here\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      {
+        "input": "'()'",
+        "expected": "true"
+      },
+      {
+        "input": "'()[]{}'",
+        "expected": "true"
+      },
+      {
+        "input": "'(]'",
+        "expected": "false"
+      },
+      {
+        "input": "'([)]'",
+        "expected": "false"
+      },
+      {
+        "input": "'{[]}'",
+        "expected": "true"
+      }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": [
+      "algorithms",
+      "hashmaps"
+    ],
+    "language": "en",
+    "questionText": "Write a function that finds the first non-repeating character in a string and returns its index. If no such character exists, return -1.",
+    "hints": [
+      "Count the frequency of each character first",
+      "Then iterate again to find the first character with count 1"
+    ],
+    "modelAnswer": "Two-pass approach: first pass counts frequencies, second pass finds the first character with count === 1.\n\nfunction firstUniqChar(s: string): number {\n  const freq = new Map<string, number>();\n  for (const ch of s) {\n    freq.set(ch, (freq.get(ch) || 0) + 1);\n  }\n  for (let i = 0; i < s.length; i++) {\n    if (freq.get(s[i]) === 1) return i;\n  }\n  return -1;\n}\n\nTime complexity: O(n) — two passes through the string.\nSpace complexity: O(1) — at most 26 lowercase letters (or O(k) where k is charset size).",
+    "evaluationCriteria": [
+      "Uses frequency counting with a hashmap",
+      "Returns the index, not the character",
+      "Handles no-unique-character case (-1)",
+      "Correct complexity analysis"
+    ],
+    "timeEstimate": 180,
+    "codeTemplate": "function firstUniqChar(s: string): number {\n  // your code here\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      {
+        "input": "'leetcode'",
+        "expected": "0"
+      },
+      {
+        "input": "'loveleetcode'",
+        "expected": "2"
+      },
+      {
+        "input": "'aabb'",
+        "expected": "-1"
+      }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": [
+      "algorithms",
+      "linked-lists"
+    ],
+    "language": "en",
+    "questionText": "Write a function to reverse a singly linked list. Given the head of the list, return the new head of the reversed list.",
+    "hints": [
+      "You need three pointers: previous, current, and next",
+      "At each step, reverse the current node's pointer to point to previous"
+    ],
+    "modelAnswer": "Iterative approach using three pointers:\n\nclass ListNode {\n  val: number;\n  next: ListNode | null;\n  constructor(val: number, next?: ListNode | null) {\n    this.val = val;\n    this.next = next ?? null;\n  }\n}\n\nfunction reverseList(head: ListNode | null): ListNode | null {\n  let prev: ListNode | null = null;\n  let curr = head;\n  while (curr !== null) {\n    const next = curr.next;\n    curr.next = prev;\n    prev = curr;\n    curr = next;\n  }\n  return prev;\n}\n\nTime complexity: O(n) — visit each node once.\nSpace complexity: O(1) — only three pointers regardless of list size.\n\nRecursive approach is also valid but uses O(n) call stack space.",
+    "evaluationCriteria": [
+      "Correctly reverses all pointers",
+      "Handles empty list and single-node list",
+      "Uses O(1) space (iterative preferred)",
+      "Can explain the recursive alternative"
+    ],
+    "timeEstimate": 240,
+    "codeTemplate": "class ListNode {\n  val: number;\n  next: ListNode | null;\n  constructor(val: number, next?: ListNode | null) {\n    this.val = val;\n    this.next = next ?? null;\n  }\n}\n\nfunction reverseList(head: ListNode | null): ListNode | null {\n  // your code here\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      {
+        "input": "[1, 2, 3, 4, 5]",
+        "expected": "[5, 4, 3, 2, 1]"
+      },
+      {
+        "input": "[1, 2]",
+        "expected": "[2, 1]"
+      },
+      {
+        "input": "[]",
+        "expected": "[]"
+      }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": [
+      "algorithms",
+      "sorting"
+    ],
+    "language": "en",
+    "questionText": "Implement a function that merges two sorted arrays into one sorted array. Do not use the built-in sort function.",
+    "hints": [
+      "Use two pointers, one for each array",
+      "Compare elements at both pointers and pick the smaller one"
+    ],
+    "modelAnswer": "Two-pointer merge technique (the merge step of merge sort):\n\nfunction mergeSortedArrays(a: number[], b: number[]): number[] {\n  const result: number[] = [];\n  let i = 0, j = 0;\n  while (i < a.length && j < b.length) {\n    if (a[i] <= b[j]) {\n      result.push(a[i++]);\n    } else {\n      result.push(b[j++]);\n    }\n  }\n  while (i < a.length) result.push(a[i++]);\n  while (j < b.length) result.push(b[j++]);\n  return result;\n}\n\nTime complexity: O(n + m) where n and m are the lengths of the two arrays.\nSpace complexity: O(n + m) for the result array.",
+    "evaluationCriteria": [
+      "Uses two-pointer technique correctly",
+      "Handles remaining elements after one array is exhausted",
+      "Does not use built-in sort",
+      "Handles empty array inputs"
+    ],
+    "timeEstimate": 180,
+    "codeTemplate": "function mergeSortedArrays(a: number[], b: number[]): number[] {\n  // your code here\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      {
+        "input": "a = [1, 3, 5], b = [2, 4, 6]",
+        "expected": "[1, 2, 3, 4, 5, 6]"
+      },
+      {
+        "input": "a = [1, 2, 3], b = []",
+        "expected": "[1, 2, 3]"
+      },
+      {
+        "input": "a = [1, 1], b = [1, 1]",
+        "expected": "[1, 1, 1, 1]"
+      }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": [
+      "algorithms",
+      "trees"
+    ],
+    "language": "en",
+    "questionText": "Write a function that calculates the maximum depth (height) of a binary tree. The depth is the number of nodes along the longest path from the root to a leaf.",
+    "hints": [
+      "This is a natural fit for recursion",
+      "The depth of a node is 1 + max(depth of left, depth of right)"
+    ],
+    "modelAnswer": "Recursive DFS approach:\n\nclass TreeNode {\n  val: number;\n  left: TreeNode | null;\n  right: TreeNode | null;\n  constructor(val: number, left?: TreeNode | null, right?: TreeNode | null) {\n    this.val = val;\n    this.left = left ?? null;\n    this.right = right ?? null;\n  }\n}\n\nfunction maxDepth(root: TreeNode | null): number {\n  if (root === null) return 0;\n  return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n}\n\nTime complexity: O(n) — visits every node once.\nSpace complexity: O(h) where h is the height of the tree (call stack). Worst case O(n) for a skewed tree.",
+    "evaluationCriteria": [
+      "Correct recursive base case (null returns 0)",
+      "Correctly computes max of left and right subtrees",
+      "Handles edge cases: empty tree, single node",
+      "Can discuss iterative BFS alternative"
+    ],
+    "timeEstimate": 180,
+    "codeTemplate": "class TreeNode {\n  val: number;\n  left: TreeNode | null;\n  right: TreeNode | null;\n}\n\nfunction maxDepth(root: TreeNode | null): number {\n  // your code here\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      {
+        "input": "[3, 9, 20, null, null, 15, 7]",
+        "expected": "3"
+      },
+      {
+        "input": "[1, null, 2]",
+        "expected": "2"
+      },
+      {
+        "input": "[]",
+        "expected": "0"
+      }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": [
+      "algorithms",
+      "searching"
+    ],
+    "language": "en",
+    "questionText": "Implement binary search on a sorted array of integers. Return the index of the target element, or -1 if not found.",
+    "hints": [
+      "Maintain low and high pointers, compute mid each iteration",
+      "Be careful with integer overflow when computing mid — use low + (high - low) / 2"
+    ],
+    "modelAnswer": "Classic binary search:\n\nfunction binarySearch(nums: number[], target: number): number {\n  let low = 0;\n  let high = nums.length - 1;\n  while (low <= high) {\n    const mid = low + Math.floor((high - low) / 2);\n    if (nums[mid] === target) return mid;\n    if (nums[mid] < target) low = mid + 1;\n    else high = mid - 1;\n  }\n  return -1;\n}\n\nTime complexity: O(log n) — halves the search space each iteration.\nSpace complexity: O(1) — iterative approach uses constant space.",
+    "evaluationCriteria": [
+      "Correct loop condition (low <= high)",
+      "Uses overflow-safe mid calculation",
+      "Correctly narrows search space in both directions",
+      "Handles empty array and single-element array"
+    ],
+    "timeEstimate": 180,
+    "codeTemplate": "function binarySearch(nums: number[], target: number): number {\n  // your code here\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      {
+        "input": "nums = [-1, 0, 3, 5, 9, 12], target = 9",
+        "expected": "4"
+      },
+      {
+        "input": "nums = [-1, 0, 3, 5, 9, 12], target = 2",
+        "expected": "-1"
+      },
+      {
+        "input": "nums = [5], target = 5",
+        "expected": "0"
+      }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": [
+      "algorithms",
+      "strings",
+      "hashmaps"
+    ],
+    "language": "en",
+    "questionText": "Write a function that groups an array of strings into anagram groups. Strings that are anagrams of each other should be in the same group.",
+    "hints": [
+      "What if you sort each string and use the sorted version as a key?",
+      "A hashmap where keys are sorted strings and values are arrays of original strings"
+    ],
+    "modelAnswer": "Sort each string to create a canonical key, then group by that key:\n\nfunction groupAnagrams(strs: string[]): string[][] {\n  const map = new Map<string, string[]>();\n  for (const s of strs) {\n    const key = s.split('').sort().join('');\n    if (!map.has(key)) map.set(key, []);\n    map.get(key)!.push(s);\n  }\n  return Array.from(map.values());\n}\n\nTime complexity: O(n * k log k) where n is the number of strings and k is the maximum string length (due to sorting each string).\nSpace complexity: O(n * k) to store all strings in the hashmap.\n\nAlternative: Use character frequency as key (e.g., '1#0#0#...#2') to avoid sorting — O(n * k) time.",
+    "evaluationCriteria": [
+      "Uses sorted string as hashmap key (or frequency-based key)",
+      "Groups all anagrams correctly",
+      "Analyzes complexity including the sorting of individual strings",
+      "Handles empty strings and single-character strings"
+    ],
+    "timeEstimate": 240,
+    "codeTemplate": "function groupAnagrams(strs: string[]): string[][] {\n  // your code here\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      {
+        "input": "['eat', 'tea', 'tan', 'ate', 'nat', 'bat']",
+        "expected": "[['eat', 'tea', 'ate'], ['tan', 'nat'], ['bat']]"
+      },
+      {
+        "input": "['']",
+        "expected": "[['']]"
+      },
+      {
+        "input": "['a']",
+        "expected": "[['a']]"
+      }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": [
+      "java",
+      "collections"
+    ],
+    "language": "en",
+    "questionText": "Write a Java method that takes a list of strings and returns a Map<Integer, List<String>> grouping the strings by their length. Use the Stream API.",
+    "hints": [
+      "Look at Collectors.groupingBy()",
+      "The classifier function should return the string length"
+    ],
+    "modelAnswer": "Using the Stream API with Collectors.groupingBy:\n\nimport java.util.*;\nimport java.util.stream.Collectors;\n\npublic Map<Integer, List<String>> groupByLength(List<String> strings) {\n    return strings.stream()\n        .collect(Collectors.groupingBy(String::length));\n}\n\nFor sorted output within each group:\n\nreturn strings.stream()\n    .sorted()\n    .collect(Collectors.groupingBy(String::length));\n\nFor a TreeMap (keys sorted by length):\n\nreturn strings.stream()\n    .collect(Collectors.groupingBy(\n        String::length,\n        TreeMap::new,\n        Collectors.toList()\n    ));\n\nTime complexity: O(n) for basic grouping, O(n log n) if sorting.\nSpace complexity: O(n) for the resulting map.",
+    "evaluationCriteria": [
+      "Correct use of Collectors.groupingBy with method reference",
+      "Understands the Stream pipeline (stream -> collect)",
+      "Can customize the map type or downstream collector",
+      "Handles null/empty list gracefully"
+    ],
+    "timeEstimate": 180,
+    "codeTemplate": "import java.util.*;\nimport java.util.stream.Collectors;\n\npublic class StringGrouper {\n    public Map<Integer, List<String>> groupByLength(List<String> strings) {\n        // your code here\n    }\n}",
+    "codeLanguage": "java",
+    "testCases": [
+      {
+        "input": "[\"hi\", \"hello\", \"hey\", \"world\", \"ok\"]",
+        "expected": "{2=[hi, ok], 3=[hey], 5=[hello, world]}"
+      },
+      {
+        "input": "[]",
+        "expected": "{}"
+      }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": [
+      "java",
+      "streams"
+    ],
+    "language": "en",
+    "questionText": "Given a list of Employee objects with fields (String name, String department, double salary), write Java Stream operations to: 1) Find the highest-paid employee in each department, 2) Calculate the average salary per department, 3) Get names of employees earning above 80000, sorted alphabetically.",
+    "hints": [
+      "Use Collectors.groupingBy combined with Collectors.maxBy or Collectors.averagingDouble",
+      "For filtering and sorting, chain .filter().sorted().map().collect()"
+    ],
+    "modelAnswer": "// 1) Highest paid per department\nMap<String, Optional<Employee>> highestPaid = employees.stream()\n    .collect(Collectors.groupingBy(\n        Employee::getDepartment,\n        Collectors.maxBy(Comparator.comparingDouble(Employee::getSalary))\n    ));\n\n// 2) Average salary per department\nMap<String, Double> avgSalary = employees.stream()\n    .collect(Collectors.groupingBy(\n        Employee::getDepartment,\n        Collectors.averagingDouble(Employee::getSalary)\n    ));\n\n// 3) Names above 80k, sorted\nList<String> highEarners = employees.stream()\n    .filter(e -> e.getSalary() > 80000)\n    .sorted(Comparator.comparing(Employee::getName))\n    .map(Employee::getName)\n    .collect(Collectors.toList());\n\nTime complexity: O(n) for each grouping operation, O(n log n) for the sorted operation.\nSpace complexity: O(n) for storing results.",
+    "evaluationCriteria": [
+      "Correct use of groupingBy with downstream collectors",
+      "Proper chaining of filter, sorted, map, collect",
+      "Uses method references where appropriate",
+      "Understands Optional handling in maxBy result"
+    ],
+    "timeEstimate": 300,
+    "codeTemplate": "import java.util.*;\nimport java.util.stream.Collectors;\n\nclass Employee {\n    String name;\n    String department;\n    double salary;\n    // getters\n}\n\npublic class EmployeeAnalysis {\n    // Implement the three operations\n}",
+    "codeLanguage": "java",
+    "testCases": [
+      {
+        "input": "employees with Engineering(Alice:90k, Bob:85k) and Sales(Carol:70k, Dave:95k)",
+        "expected": "highest: {Engineering=Alice, Sales=Dave}, avg: {Engineering=87500, Sales=82500}, above80k: [Alice, Bob, Dave]"
+      }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": [
+      "java",
+      "design-patterns"
+    ],
+    "language": "en",
+    "questionText": "Implement the Factory pattern in Java for creating different types of notifications (EmailNotification, SMSNotification, PushNotification). Each notification type has a send(String message) method. The factory should create the appropriate type based on a string parameter.",
+    "hints": [
+      "Define a Notification interface with a send() method",
+      "The factory method takes a type string and returns the correct implementation",
+      "Consider using an enum instead of raw strings for type safety"
+    ],
+    "modelAnswer": "public interface Notification {\n    void send(String message);\n}\n\npublic class EmailNotification implements Notification {\n    @Override\n    public void send(String message) {\n        System.out.println(\"Email: \" + message);\n    }\n}\n\npublic class SMSNotification implements Notification {\n    @Override\n    public void send(String message) {\n        System.out.println(\"SMS: \" + message);\n    }\n}\n\npublic class PushNotification implements Notification {\n    @Override\n    public void send(String message) {\n        System.out.println(\"Push: \" + message);\n    }\n}\n\npublic class NotificationFactory {\n    public static Notification create(String type) {\n        return switch (type.toUpperCase()) {\n            case \"EMAIL\" -> new EmailNotification();\n            case \"SMS\" -> new SMSNotification();\n            case \"PUSH\" -> new PushNotification();\n            default -> throw new IllegalArgumentException(\"Unknown type: \" + type);\n        };\n    }\n}\n\nUsage:\nNotification n = NotificationFactory.create(\"EMAIL\");\nn.send(\"Hello!\");\n\nBenefits: Client code depends on the Notification interface, not concrete classes. Adding a new type only requires a new class and one factory case — Open/Closed Principle.",
+    "evaluationCriteria": [
+      "Defines a common interface for all notification types",
+      "Factory returns interface type, not concrete class",
+      "Handles unknown types with appropriate exception",
+      "Can explain Open/Closed Principle benefit"
+    ],
+    "timeEstimate": 240,
+    "codeTemplate": "// Define the Notification interface, concrete implementations,\n// and a NotificationFactory class",
+    "codeLanguage": "java"
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": [
+      "typescript",
+      "generics"
+    ],
+    "language": "en",
+    "questionText": "Write a generic TypeScript function called 'groupBy' that takes an array of objects and a key name, and groups the objects by the value of that key. The function should be type-safe — the key parameter should only accept valid keys of the object type.",
+    "hints": [
+      "Use keyof T to constrain the key parameter",
+      "The return type is Record<string, T[]>",
+      "Use generics: function groupBy<T>(items: T[], key: keyof T)"
+    ],
+    "modelAnswer": "function groupBy<T>(items: T[], key: keyof T): Record<string, T[]> {\n  return items.reduce((groups, item) => {\n    const groupKey = String(item[key]);\n    if (!groups[groupKey]) {\n      groups[groupKey] = [];\n    }\n    groups[groupKey].push(item);\n    return groups;\n  }, {} as Record<string, T[]>);\n}\n\n// Usage:\ninterface User {\n  name: string;\n  role: 'admin' | 'user';\n  age: number;\n}\n\nconst users: User[] = [\n  { name: 'Alice', role: 'admin', age: 30 },\n  { name: 'Bob', role: 'user', age: 25 },\n  { name: 'Carol', role: 'admin', age: 28 },\n];\n\nconst byRole = groupBy(users, 'role');\n// { admin: [Alice, Carol], user: [Bob] }\n\ngroupBy(users, 'invalid'); // TypeScript compile error!\n\nTime complexity: O(n) — single pass with reduce.\nSpace complexity: O(n) — stores all items in groups.",
+    "evaluationCriteria": [
+      "Uses generics with keyof constraint for type safety",
+      "Correctly groups items by the specified key",
+      "Return type is properly typed",
+      "Compile-time error for invalid keys"
+    ],
+    "timeEstimate": 240,
+    "codeTemplate": "function groupBy<T>(items: T[], key: keyof T): Record<string, T[]> {\n  // your code here\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      {
+        "input": "items = [{name: 'A', type: 'x'}, {name: 'B', type: 'y'}, {name: 'C', type: 'x'}], key = 'type'",
+        "expected": "{ x: [{name:'A',type:'x'}, {name:'C',type:'x'}], y: [{name:'B',type:'y'}] }"
+      }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": [
+      "typescript",
+      "angular",
+      "services"
+    ],
+    "language": "en",
+    "questionText": "Create an Angular service called LocalStorageService that provides type-safe get/set/remove operations. The get method should use generics and return the parsed value or a default. Handle JSON parse errors gracefully.",
+    "hints": [
+      "Use generics for the get method: get<T>(key: string, defaultValue: T): T",
+      "Wrap JSON.parse in a try-catch to handle corrupted data",
+      "Use the @Injectable({ providedIn: 'root' }) decorator"
+    ],
+    "modelAnswer": "import { Injectable } from '@angular/core';\n\n@Injectable({ providedIn: 'root' })\nexport class LocalStorageService {\n\n  get<T>(key: string, defaultValue: T): T {\n    try {\n      const item = localStorage.getItem(key);\n      return item !== null ? JSON.parse(item) as T : defaultValue;\n    } catch {\n      console.warn(`Failed to parse localStorage key \"${key}\", returning default`);\n      return defaultValue;\n    }\n  }\n\n  set<T>(key: string, value: T): void {\n    try {\n      localStorage.setItem(key, JSON.stringify(value));\n    } catch (e) {\n      console.error(`Failed to write to localStorage key \"${key}\"`, e);\n    }\n  }\n\n  remove(key: string): void {\n    localStorage.removeItem(key);\n  }\n\n  clear(): void {\n    localStorage.clear();\n  }\n}\n\nKey points: providedIn: 'root' makes it a singleton. Generic get<T> ensures type safety at call sites. Try-catch handles QuotaExceededError on set and corrupted JSON on get.",
+    "evaluationCriteria": [
+      "Uses @Injectable with providedIn: 'root'",
+      "Generic get<T> method with default value fallback",
+      "Error handling for both JSON.parse and QuotaExceededError",
+      "Clean, single-responsibility service design"
+    ],
+    "timeEstimate": 240,
+    "codeTemplate": "import { Injectable } from '@angular/core';\n\n@Injectable({ providedIn: 'root' })\nexport class LocalStorageService {\n  // Implement get<T>, set<T>, remove, clear\n}",
+    "codeLanguage": "typescript"
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": [
+      "sql",
+      "joins"
+    ],
+    "language": "en",
+    "questionText": "Given the following tables:\n- employees (id, name, department_id, salary, hire_date)\n- departments (id, name, budget)\n\nWrite SQL queries to:\n1) List all employees with their department name (include employees with no department)\n2) Find departments that have no employees\n3) Show the employee count and average salary per department",
+    "hints": [
+      "Use LEFT JOIN for employees without departments",
+      "Use LEFT JOIN from departments side + WHERE IS NULL for empty departments",
+      "GROUP BY with COUNT and AVG for aggregations"
+    ],
+    "modelAnswer": "-- 1) Employees with department name (include unassigned)\nSELECT e.name AS employee_name, COALESCE(d.name, 'Unassigned') AS department_name\nFROM employees e\nLEFT JOIN departments d ON e.department_id = d.id;\n\n-- 2) Departments with no employees\nSELECT d.name\nFROM departments d\nLEFT JOIN employees e ON d.id = e.department_id\nWHERE e.id IS NULL;\n\n-- 3) Employee count and average salary per department\nSELECT d.name AS department,\n       COUNT(e.id) AS employee_count,\n       ROUND(AVG(e.salary), 2) AS avg_salary\nFROM departments d\nLEFT JOIN employees e ON d.id = e.department_id\nGROUP BY d.id, d.name\nORDER BY employee_count DESC;\n\nKey points: LEFT JOIN preserves all rows from the left table. COALESCE handles NULLs for display. COUNT(e.id) instead of COUNT(*) correctly counts 0 for empty departments. ROUND for clean salary output.",
+    "evaluationCriteria": [
+      "Correct JOIN type for each query (LEFT vs INNER)",
+      "Uses COALESCE for null handling",
+      "COUNT(column) vs COUNT(*) distinction for null-safety",
+      "Proper GROUP BY with all non-aggregated columns"
+    ],
+    "timeEstimate": 240,
+    "codeTemplate": "-- Schema:\n-- employees (id, name, department_id, salary, hire_date)\n-- departments (id, name, budget)\n\n-- 1) Employees with department names\n\n-- 2) Departments with no employees\n\n-- 3) Count and average salary per department",
+    "codeLanguage": "sql"
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": [
+      "sql",
+      "aggregations"
+    ],
+    "language": "en",
+    "questionText": "Given an 'orders' table (id, customer_id, amount, order_date, status) and a 'customers' table (id, name, email, city), write SQL queries to:\n1) Find the total spending per customer (name and total), only for customers who have spent more than 1000\n2) Find the most recent order date for each customer\n3) Count orders by status (pending, shipped, delivered) for the current month",
+    "hints": [
+      "Use HAVING to filter aggregated results",
+      "MAX(order_date) gives the most recent date per group",
+      "DATE_TRUNC or EXTRACT for filtering by current month"
+    ],
+    "modelAnswer": "-- 1) Total spending > 1000\nSELECT c.name, SUM(o.amount) AS total_spent\nFROM customers c\nJOIN orders o ON c.id = o.customer_id\nGROUP BY c.id, c.name\nHAVING SUM(o.amount) > 1000\nORDER BY total_spent DESC;\n\n-- 2) Most recent order per customer\nSELECT c.name, MAX(o.order_date) AS last_order\nFROM customers c\nJOIN orders o ON c.id = o.customer_id\nGROUP BY c.id, c.name;\n\n-- 3) Orders by status for current month (PostgreSQL)\nSELECT status, COUNT(*) AS order_count\nFROM orders\nWHERE DATE_TRUNC('month', order_date) = DATE_TRUNC('month', CURRENT_DATE)\nGROUP BY status;\n\nKey points: HAVING filters after GROUP BY (unlike WHERE which filters before). DATE_TRUNC is PostgreSQL-specific — in MySQL you would use YEAR()/MONTH(). Always GROUP BY the primary key + display columns.",
+    "evaluationCriteria": [
+      "Correct use of HAVING vs WHERE for post-aggregation filtering",
+      "Proper GROUP BY clauses",
+      "Uses DATE_TRUNC correctly for PostgreSQL date filtering",
+      "Understands JOIN is needed to get customer names"
+    ],
+    "timeEstimate": 240,
+    "codeTemplate": "-- Schema:\n-- orders (id, customer_id, amount, order_date, status)\n-- customers (id, name, email, city)\n\n-- 1) Total spending > 1000\n\n-- 2) Most recent order per customer\n\n-- 3) Orders by status this month",
+    "codeLanguage": "sql"
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": [
+      "testing",
+      "junit"
+    ],
+    "language": "en",
+    "questionText": "Write JUnit 5 tests for a simple Calculator class that has methods: add(int a, int b), divide(int a, int b), and isPrime(int n). The divide method should throw ArithmeticException on division by zero. Write at least 6 test methods covering normal cases, edge cases, and exception testing.",
+    "hints": [
+      "Use @Test annotation for each test method",
+      "Use assertThrows() for expected exceptions",
+      "Test boundary values: 0, 1, negative numbers, Integer.MAX_VALUE"
+    ],
+    "modelAnswer": "import org.junit.jupiter.api.Test;\nimport org.junit.jupiter.api.DisplayName;\nimport static org.junit.jupiter.api.Assertions.*;\n\nclass CalculatorTest {\n\n    private final Calculator calc = new Calculator();\n\n    @Test\n    @DisplayName(\"add: positive numbers\")\n    void addPositiveNumbers() {\n        assertEquals(5, calc.add(2, 3));\n    }\n\n    @Test\n    @DisplayName(\"add: negative numbers\")\n    void addNegativeNumbers() {\n        assertEquals(-5, calc.add(-2, -3));\n    }\n\n    @Test\n    @DisplayName(\"divide: normal division\")\n    void divideNormal() {\n        assertEquals(3, calc.divide(9, 3));\n    }\n\n    @Test\n    @DisplayName(\"divide: throws on division by zero\")\n    void divideByZeroThrows() {\n        assertThrows(ArithmeticException.class, () -> calc.divide(10, 0));\n    }\n\n    @Test\n    @DisplayName(\"isPrime: returns true for prime\")\n    void isPrimeTrue() {\n        assertTrue(calc.isPrime(7));\n    }\n\n    @Test\n    @DisplayName(\"isPrime: returns false for 1\")\n    void isPrimeOneIsFalse() {\n        assertFalse(calc.isPrime(1));\n    }\n\n    @Test\n    @DisplayName(\"isPrime: returns false for negative\")\n    void isPrimeNegative() {\n        assertFalse(calc.isPrime(-5));\n    }\n}\n\nKey practices: One assertion per test (SRP), descriptive names, @DisplayName for readability, edge cases (0, 1, negatives), exception testing with assertThrows.",
+    "evaluationCriteria": [
+      "Uses JUnit 5 annotations correctly (@Test, @DisplayName)",
+      "Tests both normal and edge cases",
+      "Uses assertThrows for exception testing",
+      "Follows one-assertion-per-test best practice"
+    ],
+    "timeEstimate": 300,
+    "codeTemplate": "import org.junit.jupiter.api.Test;\nimport static org.junit.jupiter.api.Assertions.*;\n\nclass CalculatorTest {\n    private final Calculator calc = new Calculator();\n\n    // Write your tests here\n}",
+    "codeLanguage": "java"
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": [
+      "testing",
+      "angular",
+      "jest"
+    ],
+    "language": "en",
+    "questionText": "Write tests for an Angular TodoService that has methods: addTodo(title: string), getTodos(), toggleComplete(id: number), and deleteTodo(id: number). The service stores todos in memory. Write at least 5 tests using TestBed and Jest/Jasmine.",
+    "hints": [
+      "Use TestBed.configureTestingModule to set up the testing module",
+      "Inject the service using TestBed.inject()",
+      "Test the service methods independently, verifying state changes"
+    ],
+    "modelAnswer": "import { TestBed } from '@angular/core/testing';\nimport { TodoService, Todo } from './todo.service';\n\ndescribe('TodoService', () => {\n  let service: TodoService;\n\n  beforeEach(() => {\n    TestBed.configureTestingModule({});\n    service = TestBed.inject(TodoService);\n  });\n\n  it('should be created', () => {\n    expect(service).toBeTruthy();\n  });\n\n  it('should start with an empty todo list', () => {\n    expect(service.getTodos()).toEqual([]);\n  });\n\n  it('should add a todo with correct defaults', () => {\n    service.addTodo('Buy groceries');\n    const todos = service.getTodos();\n    expect(todos.length).toBe(1);\n    expect(todos[0].title).toBe('Buy groceries');\n    expect(todos[0].completed).toBe(false);\n  });\n\n  it('should toggle todo completion', () => {\n    service.addTodo('Test task');\n    const id = service.getTodos()[0].id;\n    service.toggleComplete(id);\n    expect(service.getTodos()[0].completed).toBe(true);\n    service.toggleComplete(id);\n    expect(service.getTodos()[0].completed).toBe(false);\n  });\n\n  it('should delete a todo by id', () => {\n    service.addTodo('Task 1');\n    service.addTodo('Task 2');\n    const id = service.getTodos()[0].id;\n    service.deleteTodo(id);\n    expect(service.getTodos().length).toBe(1);\n    expect(service.getTodos()[0].title).toBe('Task 2');\n  });\n});\n\nKey practices: beforeEach provides fresh service instance per test (isolation). Tests verify both return values and state changes. Descriptive test names explain expected behavior.",
+    "evaluationCriteria": [
+      "Correct TestBed setup with beforeEach for isolation",
+      "Uses TestBed.inject() to get service instance",
+      "Tests cover add, read, update, and delete operations",
+      "Each test is independent and verifies specific behavior"
+    ],
+    "timeEstimate": 300,
+    "codeTemplate": "import { TestBed } from '@angular/core/testing';\nimport { TodoService } from './todo.service';\n\ndescribe('TodoService', () => {\n  let service: TodoService;\n\n  beforeEach(() => {\n    TestBed.configureTestingModule({});\n    service = TestBed.inject(TodoService);\n  });\n\n  // Write your tests here\n});",
+    "codeLanguage": "typescript"
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "algorithms",
+      "arrays",
+      "hashmaps"
+    ],
+    "language": "en",
+    "questionText": "Given an array of integers, find the length of the longest consecutive sequence. The sequence does not need to be contiguous in the array. Your algorithm should run in O(n) time.\n\nExample: Input [100, 4, 200, 1, 3, 2] -> Output: 4 (the sequence is [1, 2, 3, 4])",
+    "hints": [
+      "Put all numbers in a HashSet for O(1) lookups",
+      "Only start counting a sequence from its beginning — check if (num - 1) is NOT in the set",
+      "This avoids redundant counting and keeps it O(n)"
+    ],
+    "modelAnswer": "function longestConsecutive(nums: number[]): number {\n  const numSet = new Set(nums);\n  let longest = 0;\n\n  for (const num of numSet) {\n    // Only start a sequence if num is the beginning (num-1 not in set)\n    if (!numSet.has(num - 1)) {\n      let current = num;\n      let streak = 1;\n      while (numSet.has(current + 1)) {\n        current++;\n        streak++;\n      }\n      longest = Math.max(longest, streak);\n    }\n  }\n  return longest;\n}\n\nWhy this is O(n): Each number is visited at most twice — once when iterating, once when extending a streak. The key insight is the (num - 1) check ensures we only start from sequence beginnings.\n\nTime complexity: O(n).\nSpace complexity: O(n) for the set.",
+    "evaluationCriteria": [
+      "Uses a Set for O(1) lookups",
+      "Only starts sequences from their beginning element",
+      "Correctly achieves O(n) time — can explain why",
+      "Handles empty array and arrays with duplicates"
+    ],
+    "timeEstimate": 360,
+    "codeTemplate": "function longestConsecutive(nums: number[]): number {\n  // Must be O(n) — no sorting allowed\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      {
+        "input": "[100, 4, 200, 1, 3, 2]",
+        "expected": "4"
+      },
+      {
+        "input": "[0, 3, 7, 2, 5, 8, 4, 6, 0, 1]",
+        "expected": "9"
+      },
+      {
+        "input": "[]",
+        "expected": "0"
+      },
+      {
+        "input": "[1, 1, 1]",
+        "expected": "1"
+      }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "algorithms",
+      "trees"
+    ],
+    "language": "en",
+    "questionText": "Write a function that checks if a binary tree is a valid Binary Search Tree (BST). In a valid BST, for every node: all values in the left subtree are strictly less than the node's value, and all values in the right subtree are strictly greater.",
+    "hints": [
+      "A common mistake is only checking immediate children — you need to check against a valid range",
+      "Pass min/max bounds through the recursion",
+      "In-order traversal of a valid BST produces a sorted sequence"
+    ],
+    "modelAnswer": "Approach 1: Range-based recursion\n\nfunction isValidBST(root: TreeNode | null): boolean {\n  function validate(node: TreeNode | null, min: number, max: number): boolean {\n    if (node === null) return true;\n    if (node.val <= min || node.val >= max) return false;\n    return validate(node.left, min, node.val) && validate(node.right, node.val, max);\n  }\n  return validate(root, -Infinity, Infinity);\n}\n\nApproach 2: In-order traversal check\n\nfunction isValidBST(root: TreeNode | null): boolean {\n  let prev = -Infinity;\n  function inorder(node: TreeNode | null): boolean {\n    if (!node) return true;\n    if (!inorder(node.left)) return false;\n    if (node.val <= prev) return false;\n    prev = node.val;\n    return inorder(node.right);\n  }\n  return inorder(root);\n}\n\nTime complexity: O(n) — visits each node once.\nSpace complexity: O(h) for recursion stack, where h is tree height.",
+    "evaluationCriteria": [
+      "Validates against full range, not just immediate parent",
+      "Handles edge cases: empty tree, single node, duplicate values",
+      "Can explain both range-based and in-order approaches",
+      "Correctly uses strict inequality (no duplicates allowed in BST)"
+    ],
+    "timeEstimate": 360,
+    "codeTemplate": "class TreeNode {\n  val: number;\n  left: TreeNode | null;\n  right: TreeNode | null;\n}\n\nfunction isValidBST(root: TreeNode | null): boolean {\n  // your code here\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      {
+        "input": "[2, 1, 3]",
+        "expected": "true"
+      },
+      {
+        "input": "[5, 1, 4, null, null, 3, 6]",
+        "expected": "false (4 < 5 but in right subtree with 3 < 5)"
+      },
+      {
+        "input": "[1, 1]",
+        "expected": "false (no duplicates in BST)"
+      }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "algorithms",
+      "stacks",
+      "strings"
+    ],
+    "language": "en",
+    "questionText": "Implement a basic calculator that evaluates a string expression containing non-negative integers, '+', '-', '*', '/' and spaces. Follow standard operator precedence (* and / before + and -). No parentheses. Division should truncate toward zero.\n\nExample: '3+2*2' -> 7, ' 3/2 ' -> 1, ' 3+5 / 2 ' -> 5",
+    "hints": [
+      "Use a stack to handle precedence: process * and / immediately, push + and - values for later",
+      "Keep track of the current number and the last operator",
+      "At the end, sum all values in the stack"
+    ],
+    "modelAnswer": "function calculate(s: string): number {\n  const stack: number[] = [];\n  let currentNum = 0;\n  let operator = '+';\n\n  for (let i = 0; i < s.length; i++) {\n    const ch = s[i];\n    if (ch >= '0' && ch <= '9') {\n      currentNum = currentNum * 10 + Number(ch);\n    }\n    if (('+-*/'.includes(ch) && ch !== ' ') || i === s.length - 1) {\n      switch (operator) {\n        case '+': stack.push(currentNum); break;\n        case '-': stack.push(-currentNum); break;\n        case '*': stack.push(stack.pop()! * currentNum); break;\n        case '/': stack.push(Math.trunc(stack.pop()! / currentNum)); break;\n      }\n      operator = ch;\n      currentNum = 0;\n    }\n  }\n  return stack.reduce((sum, val) => sum + val, 0);\n}\n\nKey insight: When encountering * or /, pop the last value from the stack and compute immediately. For + and -, just push the value (negated for -). Final sum gives the result.\n\nTime complexity: O(n) — single pass.\nSpace complexity: O(n) for the stack.",
+    "evaluationCriteria": [
+      "Correctly handles operator precedence without parentheses",
+      "Uses stack-based approach to defer + and - operations",
+      "Handles multi-digit numbers and spaces",
+      "Division truncates toward zero (Math.trunc, not Math.floor)"
+    ],
+    "timeEstimate": 420,
+    "codeTemplate": "function calculate(s: string): number {\n  // Evaluate expression with +, -, *, / and standard precedence\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      {
+        "input": "'3+2*2'",
+        "expected": "7"
+      },
+      {
+        "input": "' 3/2 '",
+        "expected": "1"
+      },
+      {
+        "input": "' 3+5 / 2 '",
+        "expected": "5"
+      },
+      {
+        "input": "'14-3/2'",
+        "expected": "13"
+      }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "algorithms",
+      "hashmaps",
+      "design"
+    ],
+    "language": "en",
+    "questionText": "Design and implement an LRU (Least Recently Used) Cache with the following operations:\n- get(key): Return the value if the key exists, otherwise return -1. Mark the key as recently used.\n- put(key, value): Insert or update the value. If the cache is at capacity, evict the least recently used item before inserting.\n\nBoth operations must be O(1) time.",
+    "hints": [
+      "A HashMap alone gives O(1) lookup but not O(1) ordering",
+      "A doubly linked list can add/remove nodes in O(1)",
+      "Combine both: HashMap for lookup, Doubly Linked List for recency order"
+    ],
+    "modelAnswer": "class DLinkedNode {\n  key: number;\n  value: number;\n  prev: DLinkedNode | null = null;\n  next: DLinkedNode | null = null;\n  constructor(key: number = 0, value: number = 0) {\n    this.key = key;\n    this.value = value;\n  }\n}\n\nclass LRUCache {\n  private capacity: number;\n  private cache = new Map<number, DLinkedNode>();\n  private head = new DLinkedNode(); // dummy head\n  private tail = new DLinkedNode(); // dummy tail\n\n  constructor(capacity: number) {\n    this.capacity = capacity;\n    this.head.next = this.tail;\n    this.tail.prev = this.head;\n  }\n\n  get(key: number): number {\n    const node = this.cache.get(key);\n    if (!node) return -1;\n    this.moveToHead(node);\n    return node.value;\n  }\n\n  put(key: number, value: number): void {\n    const node = this.cache.get(key);\n    if (node) {\n      node.value = value;\n      this.moveToHead(node);\n    } else {\n      const newNode = new DLinkedNode(key, value);\n      this.cache.set(key, newNode);\n      this.addToHead(newNode);\n      if (this.cache.size > this.capacity) {\n        const removed = this.removeTail();\n        this.cache.delete(removed.key);\n      }\n    }\n  }\n\n  private addToHead(node: DLinkedNode): void {\n    node.prev = this.head;\n    node.next = this.head.next;\n    this.head.next!.prev = node;\n    this.head.next = node;\n  }\n\n  private removeNode(node: DLinkedNode): void {\n    node.prev!.next = node.next;\n    node.next!.prev = node.prev;\n  }\n\n  private moveToHead(node: DLinkedNode): void {\n    this.removeNode(node);\n    this.addToHead(node);\n  }\n\n  private removeTail(): DLinkedNode {\n    const node = this.tail.prev!;\n    this.removeNode(node);\n    return node;\n  }\n}\n\nTime complexity: O(1) for both get and put.\nSpace complexity: O(capacity) for the cache.",
+    "evaluationCriteria": [
+      "Uses HashMap + Doubly Linked List for O(1) operations",
+      "Correctly evicts LRU item when capacity is exceeded",
+      "get() marks the item as recently used",
+      "Uses sentinel/dummy head and tail nodes for clean edge case handling"
+    ],
+    "timeEstimate": 480,
+    "codeTemplate": "class LRUCache {\n  constructor(capacity: number) {\n    // initialize\n  }\n\n  get(key: number): number {\n    // return value or -1\n  }\n\n  put(key: number, value: number): void {\n    // insert or update, evict if needed\n  }\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      {
+        "input": "LRUCache(2), put(1,1), put(2,2), get(1), put(3,3), get(2)",
+        "expected": "get(1)=1, get(2)=-1 (evicted)"
+      },
+      {
+        "input": "LRUCache(1), put(1,1), put(2,2), get(1)",
+        "expected": "get(1)=-1"
+      }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "algorithms",
+      "arrays"
+    ],
+    "language": "en",
+    "questionText": "Given an integer array, return an array where each element is the product of all elements except itself. You must do this in O(n) time WITHOUT using division.",
+    "hints": [
+      "Think about prefix and suffix products",
+      "For position i, the answer is (product of everything before i) * (product of everything after i)",
+      "You can do it with two passes: left-to-right and right-to-left"
+    ],
+    "modelAnswer": "function productExceptSelf(nums: number[]): number[] {\n  const n = nums.length;\n  const result = new Array(n).fill(1);\n\n  // Left pass: result[i] = product of all elements to the left of i\n  let leftProduct = 1;\n  for (let i = 0; i < n; i++) {\n    result[i] = leftProduct;\n    leftProduct *= nums[i];\n  }\n\n  // Right pass: multiply by product of all elements to the right of i\n  let rightProduct = 1;\n  for (let i = n - 1; i >= 0; i--) {\n    result[i] *= rightProduct;\n    rightProduct *= nums[i];\n  }\n\n  return result;\n}\n\nTime complexity: O(n) — two passes.\nSpace complexity: O(1) extra space (output array doesn't count).",
+    "evaluationCriteria": [
+      "Does not use division",
+      "Achieves O(n) time with prefix/suffix products",
+      "Handles arrays containing zeros correctly",
+      "Can optimize to O(1) extra space using the result array for prefix products"
+    ],
+    "timeEstimate": 360,
+    "codeTemplate": "function productExceptSelf(nums: number[]): number[] {\n  // O(n) time, no division\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      {
+        "input": "[1, 2, 3, 4]",
+        "expected": "[24, 12, 8, 6]"
+      },
+      {
+        "input": "[-1, 1, 0, -3, 3]",
+        "expected": "[0, 0, 9, 0, 0]"
+      },
+      {
+        "input": "[2, 3]",
+        "expected": "[3, 2]"
+      }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "java",
+      "streams",
+      "clean-code"
+    ],
+    "language": "en",
+    "questionText": "Refactor the following Java code to use the Stream API and follow Clean Code principles. The code processes a list of transactions to find the top 3 cities by total transaction amount for a given year.\n\n```java\npublic List<String> getTopCities(List<Transaction> transactions, int year) {\n    Map<String, Double> cityTotals = new HashMap<>();\n    for (Transaction t : transactions) {\n        if (t.getYear() == year && t.getAmount() > 0) {\n            String city = t.getCity();\n            if (cityTotals.containsKey(city)) {\n                cityTotals.put(city, cityTotals.get(city) + t.getAmount());\n            } else {\n                cityTotals.put(city, t.getAmount());\n            }\n        }\n    }\n    List<Map.Entry<String, Double>> entries = new ArrayList<>(cityTotals.entrySet());\n    entries.sort((a, b) -> Double.compare(b.getValue(), a.getValue()));\n    List<String> result = new ArrayList<>();\n    for (int i = 0; i < Math.min(3, entries.size()); i++) {\n        result.add(entries.get(i).getKey());\n    }\n    return result;\n}\n```",
+    "hints": [
+      "Collectors.groupingBy with Collectors.summingDouble for the aggregation",
+      "Stream the entry set, sort by value descending, limit(3), map to key",
+      "Extract filter conditions into well-named predicates if complex"
+    ],
+    "modelAnswer": "public List<String> getTopCitiesByTransactionVolume(List<Transaction> transactions, int year) {\n    return transactions.stream()\n        .filter(t -> t.getYear() == year)\n        .filter(t -> t.getAmount() > 0)\n        .collect(Collectors.groupingBy(\n            Transaction::getCity,\n            Collectors.summingDouble(Transaction::getAmount)\n        ))\n        .entrySet().stream()\n        .sorted(Map.Entry.<String, Double>comparingByValue().reversed())\n        .limit(3)\n        .map(Map.Entry::getKey)\n        .collect(Collectors.toList());\n}\n\nClean Code improvements:\n1. More descriptive method name (getTopCitiesByTransactionVolume)\n2. Separate filter calls for readability (each filter has single responsibility)\n3. Declarative style replaces imperative loops and manual map management\n4. No mutable state — the entire computation is a single expression\n5. Collectors.summingDouble replaces manual accumulation\n\nTime complexity: O(n + m log m) where n = transactions, m = unique cities.\nSpace complexity: O(m) for the intermediate map.",
+    "evaluationCriteria": [
+      "Correct use of groupingBy with summingDouble",
+      "Proper sorting with reversed comparator",
+      "Clean separation of filter conditions",
+      "Can explain the Clean Code principles applied (SRP, DRY, declarative style)"
+    ],
+    "timeEstimate": 360,
+    "codeTemplate": "// Refactor the imperative code to use Stream API\npublic List<String> getTopCities(List<Transaction> transactions, int year) {\n    // your code here\n}",
+    "codeLanguage": "java"
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "java",
+      "concurrency"
+    ],
+    "language": "en",
+    "questionText": "Implement a thread-safe Singleton pattern in Java using three different approaches. Explain the trade-offs of each: (1) eager initialization, (2) double-checked locking, and (3) Bill Pugh's static inner class approach. Then explain why the enum-based singleton is often recommended.",
+    "hints": [
+      "Eager initialization is simple but may waste resources if the instance is never used",
+      "Double-checked locking requires the volatile keyword — explain why",
+      "The inner class approach leverages class loading mechanics for lazy initialization"
+    ],
+    "modelAnswer": "// 1. Eager Initialization\npublic class EagerSingleton {\n    private static final EagerSingleton INSTANCE = new EagerSingleton();\n    private EagerSingleton() {}\n    public static EagerSingleton getInstance() { return INSTANCE; }\n}\n// Pros: Simple, thread-safe (JVM guarantees). Cons: Instance created even if never used.\n\n// 2. Double-Checked Locking\npublic class DCLSingleton {\n    private static volatile DCLSingleton instance; // volatile is crucial!\n    private DCLSingleton() {}\n    public static DCLSingleton getInstance() {\n        if (instance == null) {\n            synchronized (DCLSingleton.class) {\n                if (instance == null) {\n                    instance = new DCLSingleton();\n                }\n            }\n        }\n        return instance;\n    }\n}\n// volatile prevents instruction reordering — without it, another thread\n// could see a partially constructed object. The outer null check avoids\n// synchronization after initialization.\n\n// 3. Bill Pugh (Static Inner Class)\npublic class BillPughSingleton {\n    private BillPughSingleton() {}\n    private static class Holder {\n        private static final BillPughSingleton INSTANCE = new BillPughSingleton();\n    }\n    public static BillPughSingleton getInstance() {\n        return Holder.INSTANCE;\n    }\n}\n// Lazy: Holder class is not loaded until getInstance() is called.\n// Thread-safe: Class loading is inherently thread-safe.\n\n// 4. Enum (Recommended)\npublic enum EnumSingleton {\n    INSTANCE;\n    public void doSomething() { /* ... */ }\n}\n// Protects against serialization attacks and reflection attacks automatically.\n// Simplest and most robust approach.",
+    "evaluationCriteria": [
+      "Correctly implements all three approaches",
+      "Explains why volatile is needed in double-checked locking",
+      "Understands lazy vs eager initialization trade-offs",
+      "Knows enum singleton prevents serialization/reflection attacks"
+    ],
+    "timeEstimate": 420,
+    "codeTemplate": "// Implement three singleton approaches and explain trade-offs",
+    "codeLanguage": "java"
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "java",
+      "design-patterns"
+    ],
+    "language": "en",
+    "questionText": "Implement the Strategy pattern in Java for a payment processing system. Support three payment strategies: CreditCardPayment, PayPalPayment, and CryptoPayment. Each has a different pay(double amount) implementation. Create a ShoppingCart class that can use any payment strategy. Demonstrate the Open/Closed Principle.",
+    "hints": [
+      "Define a PaymentStrategy interface with a pay(double amount) method",
+      "ShoppingCart receives the strategy at payment time (or via setter)",
+      "Adding a new payment method should not modify existing classes"
+    ],
+    "modelAnswer": "public interface PaymentStrategy {\n    void pay(double amount);\n    String getPaymentMethod();\n}\n\npublic class CreditCardPayment implements PaymentStrategy {\n    private final String cardNumber;\n    public CreditCardPayment(String cardNumber) { this.cardNumber = cardNumber; }\n\n    @Override\n    public void pay(double amount) {\n        String masked = \"****\" + cardNumber.substring(cardNumber.length() - 4);\n        System.out.printf(\"Paid $%.2f with credit card %s%n\", amount, masked);\n    }\n\n    @Override\n    public String getPaymentMethod() { return \"Credit Card\"; }\n}\n\npublic class PayPalPayment implements PaymentStrategy {\n    private final String email;\n    public PayPalPayment(String email) { this.email = email; }\n\n    @Override\n    public void pay(double amount) {\n        System.out.printf(\"Paid $%.2f via PayPal (%s)%n\", amount, email);\n    }\n\n    @Override\n    public String getPaymentMethod() { return \"PayPal\"; }\n}\n\npublic class CryptoPayment implements PaymentStrategy {\n    private final String walletAddress;\n    public CryptoPayment(String walletAddress) { this.walletAddress = walletAddress; }\n\n    @Override\n    public void pay(double amount) {\n        System.out.printf(\"Paid $%.2f in crypto to %s%n\", amount, walletAddress);\n    }\n\n    @Override\n    public String getPaymentMethod() { return \"Cryptocurrency\"; }\n}\n\npublic class ShoppingCart {\n    private final List<Double> items = new ArrayList<>();\n\n    public void addItem(double price) { items.add(price); }\n\n    public double getTotal() {\n        return items.stream().mapToDouble(Double::doubleValue).sum();\n    }\n\n    public void checkout(PaymentStrategy strategy) {\n        double total = getTotal();\n        strategy.pay(total);\n        items.clear();\n    }\n}\n\n// Usage:\nShoppingCart cart = new ShoppingCart();\ncart.addItem(29.99);\ncart.addItem(49.99);\ncart.checkout(new CreditCardPayment(\"1234567890123456\"));\n// Or:\ncart.checkout(new PayPalPayment(\"user@email.com\"));\n\nOpen/Closed Principle: To add BankTransferPayment, create a new class implementing PaymentStrategy. ShoppingCart and existing strategies are never modified.",
+    "evaluationCriteria": [
+      "Clean interface definition with appropriate method signatures",
+      "Each strategy is self-contained with its own data and behavior",
+      "ShoppingCart depends on the interface, not concrete implementations",
+      "Can explain how this satisfies the Open/Closed Principle"
+    ],
+    "timeEstimate": 360,
+    "codeTemplate": "// Define PaymentStrategy interface, three implementations,\n// and a ShoppingCart class that uses the strategy",
+    "codeLanguage": "java"
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "java",
+      "design-patterns"
+    ],
+    "language": "en",
+    "questionText": "Implement the Observer pattern in Java for a stock price notification system. Create a StockExchange (subject) that maintains a list of Stock objects. When a stock price changes, notify all registered observers. Observers include PriceAlertObserver (triggers when price crosses a threshold) and PriceLogObserver (logs every price change).",
+    "hints": [
+      "Define an Observer interface with an update(Stock stock, double oldPrice, double newPrice) method",
+      "The subject (StockExchange) maintains a list of observers and calls update() on price changes",
+      "Consider using Java's built-in functional interfaces or custom ones"
+    ],
+    "modelAnswer": "public interface StockObserver {\n    void onPriceChange(String symbol, double oldPrice, double newPrice);\n}\n\npublic class PriceAlertObserver implements StockObserver {\n    private final String watchSymbol;\n    private final double threshold;\n\n    public PriceAlertObserver(String symbol, double threshold) {\n        this.watchSymbol = symbol;\n        this.threshold = threshold;\n    }\n\n    @Override\n    public void onPriceChange(String symbol, double oldPrice, double newPrice) {\n        if (symbol.equals(watchSymbol) && oldPrice < threshold && newPrice >= threshold) {\n            System.out.printf(\"ALERT: %s crossed $%.2f (now $%.2f)%n\", symbol, threshold, newPrice);\n        }\n    }\n}\n\npublic class PriceLogObserver implements StockObserver {\n    @Override\n    public void onPriceChange(String symbol, double oldPrice, double newPrice) {\n        double change = ((newPrice - oldPrice) / oldPrice) * 100;\n        System.out.printf(\"[LOG] %s: $%.2f -> $%.2f (%.2f%%)%n\", symbol, oldPrice, newPrice, change);\n    }\n}\n\npublic class StockExchange {\n    private final Map<String, Double> prices = new HashMap<>();\n    private final List<StockObserver> observers = new ArrayList<>();\n\n    public void addObserver(StockObserver observer) { observers.add(observer); }\n    public void removeObserver(StockObserver observer) { observers.remove(observer); }\n\n    public void updatePrice(String symbol, double newPrice) {\n        double oldPrice = prices.getOrDefault(symbol, 0.0);\n        prices.put(symbol, newPrice);\n        if (oldPrice != newPrice) {\n            notifyObservers(symbol, oldPrice, newPrice);\n        }\n    }\n\n    private void notifyObservers(String symbol, double oldPrice, double newPrice) {\n        for (StockObserver observer : observers) {\n            observer.onPriceChange(symbol, oldPrice, newPrice);\n        }\n    }\n}\n\nKey design decisions: Observer interface uses push model (data passed in notification). Subject manages observer lifecycle. Notifications only fire on actual changes. Loose coupling — StockExchange knows nothing about concrete observers.",
+    "evaluationCriteria": [
+      "Clean Observer interface with appropriate parameters",
+      "Subject correctly manages observer registration and notification",
+      "Observers have distinct behavior (alert vs log)",
+      "Loose coupling between subject and observers"
+    ],
+    "timeEstimate": 420,
+    "codeTemplate": "// Implement StockObserver interface, two concrete observers,\n// and StockExchange as the subject",
+    "codeLanguage": "java"
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "typescript",
+      "rxjs",
+      "angular"
+    ],
+    "language": "en",
+    "questionText": "Implement an Angular service for a search feature with the following requirements using RxJS:\n1. Debounce user input by 300ms\n2. Ignore searches shorter than 2 characters\n3. Cancel previous HTTP requests when a new search term arrives\n4. Handle errors gracefully — return empty results on failure without breaking the stream\n5. Cache results for recently searched terms (last 5 terms)\n\nWrite the service with proper typing and explain which RxJS operators you chose and why.",
+    "hints": [
+      "Use debounceTime, distinctUntilChanged, filter, switchMap",
+      "catchError inside switchMap keeps the outer stream alive",
+      "For caching, consider a Map and checking it before making the HTTP call"
+    ],
+    "modelAnswer": "import { Injectable } from '@angular/core';\nimport { HttpClient } from '@angular/common/http';\nimport { Subject, Observable, of } from 'rxjs';\nimport { debounceTime, distinctUntilChanged, filter, switchMap, catchError, tap } from 'rxjs/operators';\n\nexport interface SearchResult {\n  id: string;\n  title: string;\n}\n\n@Injectable({ providedIn: 'root' })\nexport class SearchService {\n  private searchSubject = new Subject<string>();\n  private cache = new Map<string, SearchResult[]>();\n  private cacheKeys: string[] = []; // track insertion order\n  private readonly MAX_CACHE = 5;\n\n  results$: Observable<SearchResult[]> = this.searchSubject.pipe(\n    debounceTime(300),\n    distinctUntilChanged(),\n    filter(term => term.length >= 2),\n    switchMap(term => this.searchWithCache(term))\n  );\n\n  constructor(private http: HttpClient) {}\n\n  search(term: string): void {\n    this.searchSubject.next(term);\n  }\n\n  private searchWithCache(term: string): Observable<SearchResult[]> {\n    if (this.cache.has(term)) {\n      return of(this.cache.get(term)!);\n    }\n    return this.http.get<SearchResult[]>(`/api/search?q=${encodeURIComponent(term)}`).pipe(\n      tap(results => this.addToCache(term, results)),\n      catchError(() => of([]))\n    );\n  }\n\n  private addToCache(term: string, results: SearchResult[]): void {\n    if (this.cacheKeys.length >= this.MAX_CACHE) {\n      const oldest = this.cacheKeys.shift()!;\n      this.cache.delete(oldest);\n    }\n    this.cache.set(term, results);\n    this.cacheKeys.push(term);\n  }\n}\n\nOperator choices:\n- debounceTime(300): Waits for user to stop typing, reduces API calls\n- distinctUntilChanged(): Skips duplicate consecutive searches\n- filter(length >= 2): Avoids meaningless short searches\n- switchMap: Cancels in-flight HTTP requests when new term arrives (prevents race conditions)\n- catchError inside switchMap: Error in one search doesn't break the stream\n- tap for side-effect caching without altering the data flow",
+    "evaluationCriteria": [
+      "Correct operator chain: debounceTime -> distinctUntilChanged -> filter -> switchMap",
+      "Uses switchMap (not mergeMap) to cancel previous requests",
+      "Error handling inside switchMap preserves the outer stream",
+      "Cache implementation with LRU-style eviction"
+    ],
+    "timeEstimate": 420,
+    "codeTemplate": "import { Injectable } from '@angular/core';\nimport { HttpClient } from '@angular/common/http';\nimport { Subject, Observable } from 'rxjs';\n\n@Injectable({ providedIn: 'root' })\nexport class SearchService {\n  // Implement debounced, cached search with RxJS\n}",
+    "codeLanguage": "typescript"
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "typescript",
+      "angular",
+      "components"
+    ],
+    "language": "en",
+    "questionText": "Implement parent-child component communication in Angular for a shopping cart scenario. Create:\n1. A CartComponent (parent) that holds the cart items array and total\n2. A CartItemComponent (child) that displays a single item with quantity controls (+/-) and a remove button\n3. Use @Input() for data flow down and @Output() with EventEmitter for events up\n4. Include proper TypeScript interfaces for the data models\n\nShow the component classes and templates.",
+    "hints": [
+      "@Input() passes data from parent to child",
+      "@Output() with EventEmitter sends events from child to parent",
+      "The parent should own the data mutation logic — child only emits events",
+      "Use OnPush change detection strategy for the child component"
+    ],
+    "modelAnswer": "// models/cart.model.ts\nexport interface CartItem {\n  id: number;\n  name: string;\n  price: number;\n  quantity: number;\n}\n\n// cart-item.component.ts (child)\n@Component({\n  selector: 'app-cart-item',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n  template: `\n    <div class=\"cart-item\">\n      <span>{{ item.name }} - {{ item.price | currency }}</span>\n      <div class=\"quantity-controls\">\n        <button (click)=\"onQuantityChange(-1)\" [disabled]=\"item.quantity <= 1\">-</button>\n        <span>{{ item.quantity }}</span>\n        <button (click)=\"onQuantityChange(1)\">+</button>\n      </div>\n      <span>{{ item.price * item.quantity | currency }}</span>\n      <button (click)=\"remove.emit(item.id)\">Remove</button>\n    </div>\n  `\n})\nexport class CartItemComponent {\n  @Input({ required: true }) item!: CartItem;\n  @Output() quantityChange = new EventEmitter<{ id: number; delta: number }>();\n  @Output() remove = new EventEmitter<number>();\n\n  onQuantityChange(delta: number): void {\n    this.quantityChange.emit({ id: this.item.id, delta });\n  }\n}\n\n// cart.component.ts (parent)\n@Component({\n  selector: 'app-cart',\n  template: `\n    <h2>Shopping Cart</h2>\n    <app-cart-item\n      *ngFor=\"let item of items; trackBy: trackById\"\n      [item]=\"item\"\n      (quantityChange)=\"onQuantityChange($event)\"\n      (remove)=\"onRemove($event)\"\n    />\n    <div class=\"total\">\n      <strong>Total: {{ total | currency }}</strong>\n    </div>\n  `\n})\nexport class CartComponent {\n  items: CartItem[] = [];\n\n  get total(): number {\n    return this.items.reduce((sum, item) => sum + item.price * item.quantity, 0);\n  }\n\n  onQuantityChange(event: { id: number; delta: number }): void {\n    const item = this.items.find(i => i.id === event.id);\n    if (item) {\n      item.quantity = Math.max(1, item.quantity + event.delta);\n      this.items = [...this.items]; // trigger OnPush change detection\n    }\n  }\n\n  onRemove(id: number): void {\n    this.items = this.items.filter(i => i.id !== id);\n  }\n\n  trackById(index: number, item: CartItem): number {\n    return item.id;\n  }\n}\n\nKey patterns: Unidirectional data flow — parent owns state, child only emits events. OnPush on child for performance. trackBy for efficient ngFor rendering. Immutable array update (spread) to trigger change detection.",
+    "evaluationCriteria": [
+      "Correct use of @Input() and @Output() with EventEmitter",
+      "Parent owns all data mutation logic (unidirectional flow)",
+      "TypeScript interfaces for strong typing",
+      "Uses OnPush change detection and trackBy for performance"
+    ],
+    "timeEstimate": 420,
+    "codeTemplate": "// Define CartItem interface, CartItemComponent (child),\n// and CartComponent (parent) with proper communication",
+    "codeLanguage": "typescript"
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "typescript",
+      "angular",
+      "rxjs"
+    ],
+    "language": "en",
+    "questionText": "Create an Angular HttpInterceptor (using the new functional interceptor approach) that:\n1. Adds an Authorization header from a stored token\n2. Shows a global loading spinner for any requests taking longer than 200ms\n3. Retries failed requests up to 2 times with exponential backoff (1s, 2s)\n4. Handles 401 responses by redirecting to login\n\nUse the modern `HttpInterceptorFn` approach (not the class-based one).",
+    "hints": [
+      "HttpInterceptorFn signature: (req, next) => Observable<HttpEvent<any>>",
+      "Use inject() to access services inside the functional interceptor",
+      "Use retry({ count: 2, delay: (error, retryCount) => timer(retryCount * 1000) })",
+      "Use finalize() to hide the spinner regardless of success/failure"
+    ],
+    "modelAnswer": "import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';\nimport { inject } from '@angular/core';\nimport { Router } from '@angular/router';\nimport { catchError, finalize, retry, timer, tap, throwError } from 'rxjs';\n\nexport const authRetryInterceptor: HttpInterceptorFn = (req, next) => {\n  const router = inject(Router);\n  const authService = inject(AuthService);\n  const loadingService = inject(LoadingService);\n\n  // 1. Add auth header\n  const token = authService.getToken();\n  const authReq = token\n    ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })\n    : req;\n\n  // 2. Show loading after 200ms delay\n  let loadingVisible = false;\n  const loadingTimer = setTimeout(() => {\n    loadingService.show();\n    loadingVisible = true;\n  }, 200);\n\n  return next(authReq).pipe(\n    // 3. Retry with exponential backoff (skip 401s)\n    retry({\n      count: 2,\n      delay: (error: HttpErrorResponse, retryCount) => {\n        if (error.status === 401 || error.status === 403) {\n          return throwError(() => error); // don't retry auth errors\n        }\n        return timer(retryCount * 1000); // 1s, 2s\n      }\n    }),\n    // 4. Handle 401\n    catchError((error: HttpErrorResponse) => {\n      if (error.status === 401) {\n        authService.clearToken();\n        router.navigate(['/auth/signin']);\n      }\n      return throwError(() => error);\n    }),\n    // Clean up loading spinner\n    finalize(() => {\n      clearTimeout(loadingTimer);\n      if (loadingVisible) loadingService.hide();\n    })\n  );\n};\n\n// Register in app.config.ts:\n// provideHttpClient(withInterceptors([authRetryInterceptor]))\n\nKey points: Functional interceptor uses inject() instead of constructor DI. Retry skips 401/403 to avoid pointless retries on auth failures. finalize() ensures spinner is hidden even on error. Loading delay prevents spinner flash for fast requests.",
+    "evaluationCriteria": [
+      "Uses HttpInterceptorFn with inject() for DI",
+      "Correctly clones request to add Authorization header",
+      "Retry with exponential backoff, excluding auth errors",
+      "finalize() cleans up loading state in all scenarios"
+    ],
+    "timeEstimate": 420,
+    "codeTemplate": "import { HttpInterceptorFn } from '@angular/common/http';\n\nexport const authRetryInterceptor: HttpInterceptorFn = (req, next) => {\n  // Implement: auth header, loading, retry, 401 handling\n};",
+    "codeLanguage": "typescript"
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "typescript",
+      "utility-types"
+    ],
+    "language": "en",
+    "questionText": "Implement the following TypeScript utility types from scratch (without using the built-in versions):\n1. MyPick<T, K> — picks only the specified keys from T\n2. MyOmit<T, K> — removes the specified keys from T\n3. MyReadonly<T> — makes all properties readonly\n4. MyPartial<T> — makes all properties optional\n5. DeepReadonly<T> — recursively makes all nested properties readonly\n\nProvide usage examples demonstrating type-level correctness.",
+    "hints": [
+      "Use mapped types: { [P in K]: T[P] }",
+      "keyof T gives you all keys, Exclude<keyof T, K> gives remaining keys",
+      "For DeepReadonly, use conditional types to handle nested objects vs primitives",
+      "Constrain K extends keyof T for type safety"
+    ],
+    "modelAnswer": "// 1. MyPick\ntype MyPick<T, K extends keyof T> = {\n  [P in K]: T[P];\n};\n\n// 2. MyOmit\ntype MyOmit<T, K extends keyof T> = {\n  [P in Exclude<keyof T, K>]: T[P];\n};\n// Alternative: MyPick<T, Exclude<keyof T, K>>\n\n// 3. MyReadonly\ntype MyReadonly<T> = {\n  readonly [P in keyof T]: T[P];\n};\n\n// 4. MyPartial\ntype MyPartial<T> = {\n  [P in keyof T]?: T[P];\n};\n\n// 5. DeepReadonly\ntype DeepReadonly<T> = T extends Function\n  ? T\n  : T extends object\n    ? { readonly [P in keyof T]: DeepReadonly<T[P]> }\n    : T;\n\n// Usage examples:\ninterface User {\n  name: string;\n  age: number;\n  address: {\n    street: string;\n    city: string;\n  };\n}\n\ntype NameOnly = MyPick<User, 'name'>;           // { name: string }\ntype NoAge = MyOmit<User, 'age'>;               // { name: string; address: {...} }\ntype ReadonlyUser = MyReadonly<User>;            // all props readonly\ntype OptionalUser = MyPartial<User>;            // all props optional\ntype DeepRO = DeepReadonly<User>;               // address.street is also readonly\n\n// MyPick<User, 'invalid'>;  // Compile error! 'invalid' not in keyof User\n\nKey concepts: Mapped types iterate over keys. 'extends keyof T' constrains valid keys. Conditional types enable recursive type transformations. Exclude is a distributive conditional type.",
+    "evaluationCriteria": [
+      "Correct mapped type syntax for all five types",
+      "K extends keyof T constraint for type safety in Pick/Omit",
+      "DeepReadonly correctly handles nested objects, arrays, and primitives",
+      "Can explain mapped types, conditional types, and Exclude"
+    ],
+    "timeEstimate": 360,
+    "codeTemplate": "// Implement each utility type from scratch\ntype MyPick<T, K> = // ...\ntype MyOmit<T, K> = // ...\ntype MyReadonly<T> = // ...\ntype MyPartial<T> = // ...\ntype DeepReadonly<T> = // ...",
+    "codeLanguage": "typescript"
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "sql",
+      "window-functions"
+    ],
+    "language": "en",
+    "questionText": "Given an 'employees' table (id, name, department, salary, hire_date), write PostgreSQL queries using window functions to:\n1) Rank employees by salary within each department (highest first)\n2) Show each employee's salary compared to the department average (difference and percentage)\n3) Find the running total of salaries ordered by hire_date within each department\n4) Identify employees whose salary is above the median in their department",
+    "hints": [
+      "RANK() vs DENSE_RANK() vs ROW_NUMBER() — know the differences",
+      "AVG() OVER (PARTITION BY department) gives department average alongside each row",
+      "SUM() OVER (PARTITION BY ... ORDER BY ...) computes running totals",
+      "PERCENTILE_CONT(0.5) WITHIN GROUP for median, or use NTILE"
+    ],
+    "modelAnswer": "-- 1) Rank by salary within department\nSELECT name, department, salary,\n       RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS salary_rank,\n       DENSE_RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS dense_rank\nFROM employees;\n-- RANK: ties get same rank, next rank is skipped (1,1,3)\n-- DENSE_RANK: ties get same rank, no gaps (1,1,2)\n\n-- 2) Salary vs department average\nSELECT name, department, salary,\n       ROUND(AVG(salary) OVER (PARTITION BY department), 2) AS dept_avg,\n       ROUND(salary - AVG(salary) OVER (PARTITION BY department), 2) AS diff_from_avg,\n       ROUND(salary / AVG(salary) OVER (PARTITION BY department) * 100, 1) AS pct_of_avg\nFROM employees;\n\n-- 3) Running total by hire_date within department\nSELECT name, department, salary, hire_date,\n       SUM(salary) OVER (\n         PARTITION BY department\n         ORDER BY hire_date\n         ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n       ) AS running_total\nFROM employees;\n\n-- 4) Employees above department median\nWITH dept_medians AS (\n  SELECT department,\n         PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY salary) AS median_salary\n  FROM employees\n  GROUP BY department\n)\nSELECT e.name, e.department, e.salary, dm.median_salary\nFROM employees e\nJOIN dept_medians dm ON e.department = dm.department\nWHERE e.salary > dm.median_salary;\n\nKey concepts: Window functions compute across a set of rows related to the current row without collapsing them (unlike GROUP BY). PARTITION BY defines the window, ORDER BY defines the sequence within the window.",
+    "evaluationCriteria": [
+      "Correct PARTITION BY and ORDER BY in window functions",
+      "Understands RANK vs DENSE_RANK vs ROW_NUMBER differences",
+      "Proper frame specification for running totals",
+      "Uses PERCENTILE_CONT or equivalent for median calculation"
+    ],
+    "timeEstimate": 420,
+    "codeTemplate": "-- employees (id, name, department, salary, hire_date)\n\n-- 1) Rank by salary within department\n\n-- 2) Salary vs department average\n\n-- 3) Running total by hire_date\n\n-- 4) Above-median salaries",
+    "codeLanguage": "sql"
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "sql",
+      "subqueries",
+      "cte"
+    ],
+    "language": "en",
+    "questionText": "Given tables:\n- products (id, name, category, price)\n- order_items (id, order_id, product_id, quantity, unit_price)\n- orders (id, customer_id, order_date, status)\n\nWrite PostgreSQL queries using CTEs (WITH clauses) to:\n1) Find the top 3 best-selling products per category by total quantity sold\n2) Calculate month-over-month revenue growth as a percentage\n3) Find customers who have ordered every product in the 'Electronics' category",
+    "hints": [
+      "Use CTE + ROW_NUMBER() for top-N per group",
+      "LAG() window function compares current row with previous row for MoM growth",
+      "Relational division: count of distinct products ordered = total products in category"
+    ],
+    "modelAnswer": "-- 1) Top 3 products per category by quantity\nWITH product_sales AS (\n  SELECT p.category, p.name, SUM(oi.quantity) AS total_sold,\n         ROW_NUMBER() OVER (\n           PARTITION BY p.category\n           ORDER BY SUM(oi.quantity) DESC\n         ) AS rn\n  FROM products p\n  JOIN order_items oi ON p.id = oi.product_id\n  GROUP BY p.category, p.name\n)\nSELECT category, name, total_sold\nFROM product_sales\nWHERE rn <= 3;\n\n-- 2) Month-over-month revenue growth\nWITH monthly_revenue AS (\n  SELECT DATE_TRUNC('month', o.order_date) AS month,\n         SUM(oi.quantity * oi.unit_price) AS revenue\n  FROM orders o\n  JOIN order_items oi ON o.id = oi.order_id\n  WHERE o.status != 'cancelled'\n  GROUP BY DATE_TRUNC('month', o.order_date)\n)\nSELECT month,\n       revenue,\n       LAG(revenue) OVER (ORDER BY month) AS prev_month_revenue,\n       ROUND(\n         (revenue - LAG(revenue) OVER (ORDER BY month))\n         / LAG(revenue) OVER (ORDER BY month) * 100, 2\n       ) AS growth_pct\nFROM monthly_revenue\nORDER BY month;\n\n-- 3) Customers who ordered every Electronics product (relational division)\nWITH electronics_products AS (\n  SELECT id FROM products WHERE category = 'Electronics'\n),\ncustomer_electronics AS (\n  SELECT DISTINCT o.customer_id, oi.product_id\n  FROM orders o\n  JOIN order_items oi ON o.id = oi.order_id\n  WHERE oi.product_id IN (SELECT id FROM electronics_products)\n)\nSELECT customer_id\nFROM customer_electronics\nGROUP BY customer_id\nHAVING COUNT(DISTINCT product_id) = (SELECT COUNT(*) FROM electronics_products);\n\nKey concepts: CTEs improve readability by naming intermediate result sets. ROW_NUMBER + filter for top-N per group. LAG for time-series comparisons. Relational division (HAVING COUNT = total) for 'all' queries.",
+    "evaluationCriteria": [
+      "Correct CTE syntax and logical decomposition",
+      "ROW_NUMBER with PARTITION BY for top-N per group",
+      "LAG window function for month-over-month comparison",
+      "Relational division technique for 'has ordered all' query"
+    ],
+    "timeEstimate": 480,
+    "codeTemplate": "-- products (id, name, category, price)\n-- order_items (id, order_id, product_id, quantity, unit_price)\n-- orders (id, customer_id, order_date, status)\n\n-- 1) Top 3 products per category\n\n-- 2) Month-over-month revenue growth\n\n-- 3) Customers who ordered all Electronics products",
+    "codeLanguage": "sql"
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "sql",
+      "joins",
+      "aggregations"
+    ],
+    "language": "en",
+    "questionText": "Given a social media database:\n- users (id, username, created_at)\n- posts (id, user_id, content, created_at, likes_count)\n- follows (follower_id, following_id, created_at)\n\nWrite PostgreSQL queries to:\n1) Find the top 10 users with the most followers who joined in the last year\n2) For a given user, show their feed (posts from people they follow) ordered by recency, with the author's username and follower count\n3) Find 'mutual follows' — pairs of users who follow each other",
+    "hints": [
+      "COUNT followers by grouping follows on following_id",
+      "Self-join follows table for mutual follows",
+      "Use a subquery or CTE to get follower counts and join with posts"
+    ],
+    "modelAnswer": "-- 1) Top 10 users by followers (joined in last year)\nSELECT u.username,\n       COUNT(f.follower_id) AS follower_count,\n       u.created_at AS joined\nFROM users u\nLEFT JOIN follows f ON u.id = f.following_id\nWHERE u.created_at >= CURRENT_DATE - INTERVAL '1 year'\nGROUP BY u.id, u.username, u.created_at\nORDER BY follower_count DESC\nLIMIT 10;\n\n-- 2) Feed for user with id = :user_id\nWITH following AS (\n  SELECT following_id FROM follows WHERE follower_id = :user_id\n),\nauthor_stats AS (\n  SELECT u.id, u.username,\n         COUNT(f.follower_id) AS follower_count\n  FROM users u\n  LEFT JOIN follows f ON u.id = f.following_id\n  WHERE u.id IN (SELECT following_id FROM following)\n  GROUP BY u.id, u.username\n)\nSELECT p.content, p.likes_count, p.created_at,\n       a.username AS author, a.follower_count\nFROM posts p\nJOIN author_stats a ON p.user_id = a.id\nORDER BY p.created_at DESC\nLIMIT 50;\n\n-- 3) Mutual follows\nSELECT f1.follower_id AS user_a, f1.following_id AS user_b\nFROM follows f1\nJOIN follows f2\n  ON f1.follower_id = f2.following_id\n  AND f1.following_id = f2.follower_id\nWHERE f1.follower_id < f1.following_id;  -- avoid duplicate pairs\n\nKey points: Self-join on follows for mutual relationships. WHERE a < b eliminates mirror duplicates. CTE decomposition makes complex feed query readable. LEFT JOIN ensures users with zero followers still appear.",
+    "evaluationCriteria": [
+      "Correct self-join logic for mutual follows with deduplication",
+      "Uses CTEs to decompose the feed query logically",
+      "Proper date interval filtering in PostgreSQL",
+      "LEFT JOIN to include users with zero followers"
+    ],
+    "timeEstimate": 420,
+    "codeTemplate": "-- users (id, username, created_at)\n-- posts (id, user_id, content, created_at, likes_count)\n-- follows (follower_id, following_id, created_at)\n\n-- 1) Top 10 by followers (last year)\n\n-- 2) User feed\n\n-- 3) Mutual follows",
+    "codeLanguage": "sql"
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "sql",
+      "window-functions",
+      "cte"
+    ],
+    "language": "en",
+    "questionText": "Given a 'user_sessions' table (id, user_id, login_time, logout_time) in PostgreSQL, write queries to:\n1) Find the longest session duration for each user\n2) Identify overlapping sessions (same user logged in from multiple devices)\n3) Calculate each user's daily active hours and their 7-day moving average\n4) Find users who were active for more than 8 hours in a single day",
+    "hints": [
+      "Session duration = logout_time - login_time",
+      "Overlapping: session A overlaps with B if A.login < B.logout AND A.logout > B.login",
+      "EXTRACT(EPOCH FROM interval) converts to seconds for calculation",
+      "Use window frame ROWS BETWEEN 6 PRECEDING AND CURRENT ROW for 7-day average"
+    ],
+    "modelAnswer": "-- 1) Longest session per user\nSELECT user_id,\n       MAX(logout_time - login_time) AS longest_session,\n       MAX(EXTRACT(EPOCH FROM (logout_time - login_time)) / 3600) AS longest_hours\nFROM user_sessions\nGROUP BY user_id;\n\n-- 2) Overlapping sessions (same user, different sessions)\nSELECT s1.user_id, s1.id AS session_a, s2.id AS session_b,\n       s1.login_time AS a_login, s1.logout_time AS a_logout,\n       s2.login_time AS b_login, s2.logout_time AS b_logout\nFROM user_sessions s1\nJOIN user_sessions s2\n  ON s1.user_id = s2.user_id\n  AND s1.id < s2.id\n  AND s1.login_time < s2.logout_time\n  AND s1.logout_time > s2.login_time;\n\n-- 3) Daily active hours with 7-day moving average\nWITH daily_hours AS (\n  SELECT user_id,\n         login_time::date AS active_date,\n         SUM(EXTRACT(EPOCH FROM (logout_time - login_time)) / 3600) AS hours_active\n  FROM user_sessions\n  GROUP BY user_id, login_time::date\n)\nSELECT user_id, active_date, ROUND(hours_active::numeric, 2) AS hours_active,\n       ROUND(AVG(hours_active) OVER (\n         PARTITION BY user_id\n         ORDER BY active_date\n         ROWS BETWEEN 6 PRECEDING AND CURRENT ROW\n       )::numeric, 2) AS moving_avg_7d\nFROM daily_hours\nORDER BY user_id, active_date;\n\n-- 4) Users with more than 8 hours in a single day\nSELECT user_id, login_time::date AS active_date,\n       ROUND(SUM(EXTRACT(EPOCH FROM (logout_time - login_time)) / 3600)::numeric, 2) AS total_hours\nFROM user_sessions\nGROUP BY user_id, login_time::date\nHAVING SUM(EXTRACT(EPOCH FROM (logout_time - login_time))) > 8 * 3600;\n\nKey concepts: EXTRACT(EPOCH FROM interval) converts to seconds for arithmetic. Self-join with overlap condition detects concurrent sessions. Moving average window frame 'ROWS BETWEEN 6 PRECEDING AND CURRENT ROW' computes the 7-day window.",
+    "evaluationCriteria": [
+      "Correct interval arithmetic with EXTRACT(EPOCH FROM ...)",
+      "Proper overlap detection logic with self-join",
+      "Correct window frame for 7-day moving average",
+      "Uses HAVING for post-aggregation filtering"
+    ],
+    "timeEstimate": 480,
+    "codeTemplate": "-- user_sessions (id, user_id, login_time, logout_time)\n\n-- 1) Longest session per user\n\n-- 2) Overlapping sessions\n\n-- 3) Daily hours + 7-day moving average\n\n-- 4) Users active > 8 hours in a day",
+    "codeLanguage": "sql"
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "sql",
+      "cte",
+      "aggregations"
+    ],
+    "language": "en",
+    "questionText": "Given an e-commerce database:\n- customers (id, name, email, signup_date)\n- orders (id, customer_id, total_amount, order_date)\n\nWrite PostgreSQL queries to:\n1) Classify customers into cohorts by signup month, and show the retention rate (% who ordered) in each subsequent month\n2) Find customers whose spending is increasing month over month for at least 3 consecutive months\n3) Calculate the Customer Lifetime Value (total spend) distribution: how many customers fall into $0-100, $100-500, $500-1000, $1000+ buckets",
+    "hints": [
+      "Cohort retention: join signup month with order months, count distinct customers per period",
+      "For consecutive increasing months, use LAG to compare with previous month",
+      "Use CASE WHEN or width_bucket() for bucketing"
+    ],
+    "modelAnswer": "-- 1) Cohort retention\nWITH cohorts AS (\n  SELECT id AS customer_id,\n         DATE_TRUNC('month', signup_date) AS cohort_month\n  FROM customers\n),\nmonthly_activity AS (\n  SELECT c.customer_id, c.cohort_month,\n         DATE_TRUNC('month', o.order_date) AS order_month,\n         EXTRACT(MONTH FROM AGE(DATE_TRUNC('month', o.order_date), c.cohort_month)) AS months_since_signup\n  FROM cohorts c\n  JOIN orders o ON c.customer_id = o.customer_id\n)\nSELECT cohort_month,\n       months_since_signup,\n       COUNT(DISTINCT customer_id) AS active_customers,\n       ROUND(COUNT(DISTINCT customer_id)::numeric /\n             (SELECT COUNT(*) FROM cohorts c2 WHERE c2.cohort_month = ma.cohort_month) * 100, 1\n       ) AS retention_pct\nFROM monthly_activity ma\nGROUP BY cohort_month, months_since_signup\nORDER BY cohort_month, months_since_signup;\n\n-- 2) Customers with 3+ consecutive months of increasing spending\nWITH monthly_spend AS (\n  SELECT customer_id,\n         DATE_TRUNC('month', order_date) AS month,\n         SUM(total_amount) AS monthly_total\n  FROM orders\n  GROUP BY customer_id, DATE_TRUNC('month', order_date)\n),\nwith_prev AS (\n  SELECT *,\n         LAG(monthly_total) OVER (PARTITION BY customer_id ORDER BY month) AS prev_total,\n         CASE WHEN monthly_total > LAG(monthly_total) OVER (PARTITION BY customer_id ORDER BY month)\n              THEN 1 ELSE 0 END AS is_increasing\n  FROM monthly_spend\n),\nstreaks AS (\n  SELECT *,\n         SUM(CASE WHEN is_increasing = 0 THEN 1 ELSE 0 END)\n           OVER (PARTITION BY customer_id ORDER BY month) AS streak_group\n  FROM with_prev\n)\nSELECT DISTINCT customer_id\nFROM streaks\nWHERE is_increasing = 1\nGROUP BY customer_id, streak_group\nHAVING COUNT(*) >= 3;\n\n-- 3) CLV distribution buckets\nWITH customer_ltv AS (\n  SELECT customer_id, COALESCE(SUM(total_amount), 0) AS lifetime_value\n  FROM customers c\n  LEFT JOIN orders o ON c.id = o.customer_id\n  GROUP BY customer_id\n)\nSELECT\n  CASE\n    WHEN lifetime_value = 0 THEN '$0 (no orders)'\n    WHEN lifetime_value < 100 THEN '$0-100'\n    WHEN lifetime_value < 500 THEN '$100-500'\n    WHEN lifetime_value < 1000 THEN '$500-1000'\n    ELSE '$1000+'\n  END AS bucket,\n  COUNT(*) AS customer_count,\n  ROUND(AVG(lifetime_value)::numeric, 2) AS avg_ltv\nFROM customer_ltv\nGROUP BY 1\nORDER BY MIN(lifetime_value);\n\nKey concepts: Cohort analysis uses AGE or date arithmetic. Streak detection uses a running-sum technique to group consecutive values. CASE WHEN for flexible bucketing.",
+    "evaluationCriteria": [
+      "Correct cohort identification and month-over-month retention calculation",
+      "Streak detection using window functions and grouping technique",
+      "CASE WHEN bucketing with proper boundary conditions",
+      "LEFT JOIN to include customers with zero orders in CLV"
+    ],
+    "timeEstimate": 480,
+    "codeTemplate": "-- customers (id, name, email, signup_date)\n-- orders (id, customer_id, total_amount, order_date)\n\n-- 1) Cohort retention\n\n-- 2) 3+ consecutive months increasing spend\n\n-- 3) CLV distribution buckets",
+    "codeLanguage": "sql"
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "testing",
+      "junit",
+      "mockito"
+    ],
+    "language": "en",
+    "questionText": "Write JUnit 5 tests with Mockito for an OrderService class that depends on OrderRepository, PaymentGateway, and EmailService. The method placeOrder(Order order) should: validate the order, charge payment, save to repository, and send confirmation email. Write tests for: successful order, payment failure (should not save or email), and repository failure (should refund payment).",
+    "hints": [
+      "Use @Mock for dependencies and @InjectMocks for the service under test",
+      "Use when(...).thenReturn(...) to stub method calls",
+      "Use verify() to assert methods were or were not called",
+      "Use when(...).thenThrow(...) to simulate failures"
+    ],
+    "modelAnswer": "@ExtendWith(MockitoExtension.class)\nclass OrderServiceTest {\n\n    @Mock private OrderRepository orderRepository;\n    @Mock private PaymentGateway paymentGateway;\n    @Mock private EmailService emailService;\n    @InjectMocks private OrderService orderService;\n\n    private Order validOrder;\n\n    @BeforeEach\n    void setUp() {\n        validOrder = new Order(\"item-1\", 2, 29.99);\n    }\n\n    @Test\n    @DisplayName(\"placeOrder: success - charges, saves, and emails\")\n    void placeOrderSuccess() {\n        when(paymentGateway.charge(anyDouble())).thenReturn(new PaymentResult(true, \"txn-123\"));\n        when(orderRepository.save(any(Order.class))).thenReturn(validOrder);\n\n        orderService.placeOrder(validOrder);\n\n        InOrder inOrder = inOrder(paymentGateway, orderRepository, emailService);\n        inOrder.verify(paymentGateway).charge(59.98);\n        inOrder.verify(orderRepository).save(validOrder);\n        inOrder.verify(emailService).sendConfirmation(eq(validOrder), eq(\"txn-123\"));\n    }\n\n    @Test\n    @DisplayName(\"placeOrder: payment failure - does not save or email\")\n    void placeOrderPaymentFails() {\n        when(paymentGateway.charge(anyDouble())).thenReturn(new PaymentResult(false, null));\n\n        assertThrows(PaymentException.class, () -> orderService.placeOrder(validOrder));\n\n        verify(orderRepository, never()).save(any());\n        verify(emailService, never()).sendConfirmation(any(), any());\n    }\n\n    @Test\n    @DisplayName(\"placeOrder: repository failure - refunds payment\")\n    void placeOrderRepositoryFails() {\n        when(paymentGateway.charge(anyDouble())).thenReturn(new PaymentResult(true, \"txn-456\"));\n        when(orderRepository.save(any())).thenThrow(new RuntimeException(\"DB error\"));\n\n        assertThrows(OrderException.class, () -> orderService.placeOrder(validOrder));\n\n        verify(paymentGateway).refund(\"txn-456\");\n        verify(emailService, never()).sendConfirmation(any(), any());\n    }\n}\n\nKey practices: @ExtendWith(MockitoExtension.class) for JUnit 5 integration. InOrder verifies call sequence. never() asserts methods are NOT called. Mocking failures with thenThrow. Isolated tests — each test sets up its own scenario.",
+    "evaluationCriteria": [
+      "Correct Mockito setup with @Mock, @InjectMocks, @ExtendWith",
+      "Uses verify() and never() to assert interaction behavior",
+      "Tests the failure compensation logic (refund on DB error)",
+      "InOrder verification for sequential operations"
+    ],
+    "timeEstimate": 420,
+    "codeTemplate": "@ExtendWith(MockitoExtension.class)\nclass OrderServiceTest {\n    @Mock private OrderRepository orderRepository;\n    @Mock private PaymentGateway paymentGateway;\n    @Mock private EmailService emailService;\n    @InjectMocks private OrderService orderService;\n\n    // Write tests for: success, payment failure, repository failure\n}",
+    "codeLanguage": "java"
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "testing",
+      "angular",
+      "jest"
+    ],
+    "language": "en",
+    "questionText": "Write tests for an Angular component that:\n1. Fetches a list of users from a UserService on init\n2. Displays them in a table with columns: name, email, role\n3. Has a search input that filters the displayed users\n4. Shows a loading spinner while data is being fetched\n5. Shows an error message if the fetch fails\n\nTest all five behaviors using TestBed, component fixture, and mock service.",
+    "hints": [
+      "Create a mock UserService using jasmine.createSpyObj or jest.fn()",
+      "Use fixture.detectChanges() to trigger lifecycle hooks",
+      "Use fakeAsync/tick or done() for async testing",
+      "Query the DOM using fixture.debugElement.query(By.css(...))"
+    ],
+    "modelAnswer": "import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';\nimport { By } from '@angular/platform-browser';\nimport { of, throwError, delay } from 'rxjs';\nimport { UserListComponent } from './user-list.component';\nimport { UserService, User } from './user.service';\n\ndescribe('UserListComponent', () => {\n  let component: UserListComponent;\n  let fixture: ComponentFixture<UserListComponent>;\n  let mockUserService: jasmine.SpyObj<UserService>;\n\n  const mockUsers: User[] = [\n    { id: 1, name: 'Alice', email: 'alice@test.com', role: 'admin' },\n    { id: 2, name: 'Bob', email: 'bob@test.com', role: 'user' },\n  ];\n\n  beforeEach(async () => {\n    mockUserService = jasmine.createSpyObj('UserService', ['getUsers']);\n    mockUserService.getUsers.and.returnValue(of(mockUsers));\n\n    await TestBed.configureTestingModule({\n      declarations: [UserListComponent],\n      providers: [{ provide: UserService, useValue: mockUserService }]\n    }).compileComponents();\n\n    fixture = TestBed.createComponent(UserListComponent);\n    component = fixture.componentInstance;\n  });\n\n  it('should fetch users on init', () => {\n    fixture.detectChanges();\n    expect(mockUserService.getUsers).toHaveBeenCalledOnce();\n    expect(component.users.length).toBe(2);\n  });\n\n  it('should display users in a table', () => {\n    fixture.detectChanges();\n    const rows = fixture.debugElement.queryAll(By.css('table tbody tr'));\n    expect(rows.length).toBe(2);\n    expect(rows[0].nativeElement.textContent).toContain('Alice');\n  });\n\n  it('should filter users by search input', () => {\n    fixture.detectChanges();\n    const input = fixture.debugElement.query(By.css('input[type=\"search\"]'));\n    input.nativeElement.value = 'Alice';\n    input.nativeElement.dispatchEvent(new Event('input'));\n    fixture.detectChanges();\n    const rows = fixture.debugElement.queryAll(By.css('table tbody tr'));\n    expect(rows.length).toBe(1);\n  });\n\n  it('should show loading spinner while fetching', fakeAsync(() => {\n    mockUserService.getUsers.and.returnValue(of(mockUsers).pipe(delay(500)));\n    fixture.detectChanges();\n    expect(fixture.debugElement.query(By.css('.loading-spinner'))).toBeTruthy();\n    tick(500);\n    fixture.detectChanges();\n    expect(fixture.debugElement.query(By.css('.loading-spinner'))).toBeNull();\n  }));\n\n  it('should show error message on fetch failure', () => {\n    mockUserService.getUsers.and.returnValue(throwError(() => new Error('Network error')));\n    fixture.detectChanges();\n    const error = fixture.debugElement.query(By.css('.error-message'));\n    expect(error).toBeTruthy();\n    expect(error.nativeElement.textContent).toContain('error');\n  });\n});\n\nKey practices: Mock service with spyObj. fakeAsync/tick for async timing control. DOM queries verify rendered output. Each test covers one specific behavior.",
+    "evaluationCriteria": [
+      "Correct TestBed configuration with mock service provider",
+      "Uses fixture.detectChanges() to trigger rendering",
+      "DOM queries to verify rendered content (not just component state)",
+      "fakeAsync/tick for async testing of loading state"
+    ],
+    "timeEstimate": 480,
+    "codeTemplate": "import { ComponentFixture, TestBed } from '@angular/core/testing';\nimport { UserListComponent } from './user-list.component';\nimport { UserService } from './user.service';\n\ndescribe('UserListComponent', () => {\n  // Setup and write 5 tests\n});",
+    "codeLanguage": "typescript"
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "typescript",
+      "angular",
+      "rxjs"
+    ],
+    "language": "en",
+    "questionText": "Implement an Angular state management service using BehaviorSubject for a simple todo application. The service should:\n1. Hold an immutable state object with todos, filter, and loading flag\n2. Expose state as observables using selectors (derived streams)\n3. Provide methods: addTodo, toggleTodo, removeTodo, setFilter\n4. All state mutations must be immutable (no direct object mutation)\n\nThis is a lightweight alternative to NgRx for small apps. Show the service and how a component would consume it.",
+    "hints": [
+      "BehaviorSubject holds the current state and emits on changes",
+      "Use .pipe(map(...), distinctUntilChanged()) for selectors",
+      "Spread operator for immutable updates: { ...state, todos: [...state.todos, newTodo] }",
+      "Expose a readonly Observable, not the BehaviorSubject directly"
+    ],
+    "modelAnswer": "import { Injectable } from '@angular/core';\nimport { BehaviorSubject, Observable } from 'rxjs';\nimport { map, distinctUntilChanged } from 'rxjs/operators';\n\nexport interface Todo {\n  id: number;\n  title: string;\n  completed: boolean;\n}\n\nexport type TodoFilter = 'all' | 'active' | 'completed';\n\ninterface TodoState {\n  todos: Todo[];\n  filter: TodoFilter;\n  loading: boolean;\n}\n\nconst initialState: TodoState = {\n  todos: [],\n  filter: 'all',\n  loading: false\n};\n\n@Injectable({ providedIn: 'root' })\nexport class TodoStore {\n  private state$ = new BehaviorSubject<TodoState>(initialState);\n  private nextId = 1;\n\n  // Selectors\n  readonly todos$ = this.select(s => s.todos);\n  readonly filter$ = this.select(s => s.filter);\n  readonly loading$ = this.select(s => s.loading);\n  readonly filteredTodos$ = this.state$.pipe(\n    map(state => {\n      switch (state.filter) {\n        case 'active': return state.todos.filter(t => !t.completed);\n        case 'completed': return state.todos.filter(t => t.completed);\n        default: return state.todos;\n      }\n    })\n  );\n  readonly activeCount$ = this.todos$.pipe(\n    map(todos => todos.filter(t => !t.completed).length)\n  );\n\n  // Actions\n  addTodo(title: string): void {\n    const state = this.state$.getValue();\n    const newTodo: Todo = { id: this.nextId++, title, completed: false };\n    this.state$.next({ ...state, todos: [...state.todos, newTodo] });\n  }\n\n  toggleTodo(id: number): void {\n    const state = this.state$.getValue();\n    this.state$.next({\n      ...state,\n      todos: state.todos.map(t =>\n        t.id === id ? { ...t, completed: !t.completed } : t\n      )\n    });\n  }\n\n  removeTodo(id: number): void {\n    const state = this.state$.getValue();\n    this.state$.next({\n      ...state,\n      todos: state.todos.filter(t => t.id !== id)\n    });\n  }\n\n  setFilter(filter: TodoFilter): void {\n    const state = this.state$.getValue();\n    this.state$.next({ ...state, filter });\n  }\n\n  private select<R>(selector: (state: TodoState) => R): Observable<R> {\n    return this.state$.pipe(map(selector), distinctUntilChanged());\n  }\n}\n\n// Component usage:\n@Component({ ... })\nexport class TodoPageComponent {\n  filteredTodos$ = this.store.filteredTodos$;\n  activeCount$ = this.store.activeCount$;\n\n  constructor(private store: TodoStore) {}\n\n  onAdd(title: string) { this.store.addTodo(title); }\n  onToggle(id: number) { this.store.toggleTodo(id); }\n}\n\nKey patterns: Single source of truth in BehaviorSubject. Immutable updates with spread operator. Selectors with distinctUntilChanged prevent unnecessary re-renders. Private BehaviorSubject ensures state can only change through defined actions.",
+    "evaluationCriteria": [
+      "BehaviorSubject holds centralized state object",
+      "All state mutations are immutable (spread operator)",
+      "Selectors use map + distinctUntilChanged",
+      "Private subject — state only changes through public action methods"
+    ],
+    "timeEstimate": 420,
+    "codeTemplate": "import { Injectable } from '@angular/core';\nimport { BehaviorSubject, Observable } from 'rxjs';\n\n// Implement a lightweight state management service\n@Injectable({ providedIn: 'root' })\nexport class TodoStore {\n  // State, selectors, and action methods\n}",
+    "codeLanguage": "typescript"
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "algorithms",
+      "strings"
+    ],
+    "language": "en",
+    "questionText": "Write a function that finds the length of the longest substring without repeating characters.\n\nExample: 'abcabcbb' -> 3 (the substring is 'abc'), 'bbbbb' -> 1, 'pwwkew' -> 3 ('wke')",
+    "hints": [
+      "Use a sliding window technique with two pointers",
+      "A Set or Map tracks which characters are in the current window",
+      "When a duplicate is found, shrink the window from the left"
+    ],
+    "modelAnswer": "function lengthOfLongestSubstring(s: string): number {\n  const charIndex = new Map<string, number>();\n  let maxLen = 0;\n  let left = 0;\n\n  for (let right = 0; right < s.length; right++) {\n    const ch = s[right];\n    if (charIndex.has(ch) && charIndex.get(ch)! >= left) {\n      left = charIndex.get(ch)! + 1;\n    }\n    charIndex.set(ch, right);\n    maxLen = Math.max(maxLen, right - left + 1);\n  }\n  return maxLen;\n}\n\nKey insight: Instead of shrinking the window one character at a time, jump left to the position after the last occurrence of the duplicate character. The Map stores the most recent index of each character.\n\nTime complexity: O(n) — single pass with the right pointer.\nSpace complexity: O(min(n, charset)) — the map stores at most one entry per unique character.",
+    "evaluationCriteria": [
+      "Uses sliding window with two pointers",
+      "Correctly handles the left pointer jump (not just increment by 1)",
+      "Map stores index (not just presence) for efficient window adjustment",
+      "Handles edge cases: empty string, all same characters"
+    ],
+    "timeEstimate": 360,
+    "codeTemplate": "function lengthOfLongestSubstring(s: string): number {\n  // Sliding window approach\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      {
+        "input": "'abcabcbb'",
+        "expected": "3"
+      },
+      {
+        "input": "'bbbbb'",
+        "expected": "1"
+      },
+      {
+        "input": "'pwwkew'",
+        "expected": "3"
+      },
+      {
+        "input": "''",
+        "expected": "0"
+      }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "algorithms",
+      "trees",
+      "queues"
+    ],
+    "language": "en",
+    "questionText": "Write a function that serializes a binary tree to a string and deserializes it back to the same tree. Your encoding should handle null nodes so the tree structure is perfectly reconstructed.\n\nExample: Tree [1,2,3,null,null,4,5] should serialize and deserialize to the exact same tree.",
+    "hints": [
+      "BFS (level-order) serialization is intuitive: process level by level, include 'null' for missing children",
+      "Preorder DFS also works: serialize as 'value,left_subtree,right_subtree' with 'null' as sentinel",
+      "For deserialization, use the same traversal order"
+    ],
+    "modelAnswer": "// BFS approach\nfunction serialize(root: TreeNode | null): string {\n  if (!root) return '[]';\n  const result: string[] = [];\n  const queue: (TreeNode | null)[] = [root];\n  while (queue.length > 0) {\n    const node = queue.shift()!;\n    if (node === null) {\n      result.push('null');\n    } else {\n      result.push(String(node.val));\n      queue.push(node.left);\n      queue.push(node.right);\n    }\n  }\n  // Trim trailing nulls\n  while (result[result.length - 1] === 'null') result.pop();\n  return '[' + result.join(',') + ']';\n}\n\nfunction deserialize(data: string): TreeNode | null {\n  if (data === '[]') return null;\n  const values = data.slice(1, -1).split(',');\n  const root = new TreeNode(Number(values[0]));\n  const queue: TreeNode[] = [root];\n  let i = 1;\n  while (queue.length > 0 && i < values.length) {\n    const node = queue.shift()!;\n    if (i < values.length && values[i] !== 'null') {\n      node.left = new TreeNode(Number(values[i]));\n      queue.push(node.left);\n    }\n    i++;\n    if (i < values.length && values[i] !== 'null') {\n      node.right = new TreeNode(Number(values[i]));\n      queue.push(node.right);\n    }\n    i++;\n  }\n  return root;\n}\n\nTime complexity: O(n) for both operations.\nSpace complexity: O(n) for the string and queue.",
+    "evaluationCriteria": [
+      "Serialization preserves complete tree structure including nulls",
+      "Deserialization perfectly reconstructs the original tree",
+      "Handles edge cases: empty tree, single node, skewed tree",
+      "Can explain both BFS and DFS approaches"
+    ],
+    "timeEstimate": 420,
+    "codeTemplate": "function serialize(root: TreeNode | null): string {\n  // your code here\n}\n\nfunction deserialize(data: string): TreeNode | null {\n  // your code here\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      {
+        "input": "[1,2,3,null,null,4,5]",
+        "expected": "deserialize(serialize(tree)) === original tree"
+      },
+      {
+        "input": "[]",
+        "expected": "null"
+      },
+      {
+        "input": "[1]",
+        "expected": "TreeNode(1)"
+      }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "java",
+      "concurrency"
+    ],
+    "language": "en",
+    "questionText": "Implement a thread-safe bounded blocking queue in Java that supports:\n- put(item): blocks if the queue is full\n- take(): blocks if the queue is empty\n- size(): returns current number of elements\n\nUse ReentrantLock with Conditions (not synchronized/wait/notify). Explain why Condition is preferred over wait/notify for this use case.",
+    "hints": [
+      "Use a ReentrantLock with two Conditions: notFull and notEmpty",
+      "put() awaits on notFull, signals notEmpty after adding",
+      "take() awaits on notEmpty, signals notFull after removing",
+      "Always use await() inside a while loop, not an if statement"
+    ],
+    "modelAnswer": "import java.util.LinkedList;\nimport java.util.Queue;\nimport java.util.concurrent.locks.Condition;\nimport java.util.concurrent.locks.ReentrantLock;\n\npublic class BoundedBlockingQueue<T> {\n    private final Queue<T> queue = new LinkedList<>();\n    private final int capacity;\n    private final ReentrantLock lock = new ReentrantLock();\n    private final Condition notFull = lock.newCondition();\n    private final Condition notEmpty = lock.newCondition();\n\n    public BoundedBlockingQueue(int capacity) {\n        this.capacity = capacity;\n    }\n\n    public void put(T item) throws InterruptedException {\n        lock.lock();\n        try {\n            while (queue.size() == capacity) {\n                notFull.await(); // block until space is available\n            }\n            queue.add(item);\n            notEmpty.signal(); // wake up a waiting consumer\n        } finally {\n            lock.unlock();\n        }\n    }\n\n    public T take() throws InterruptedException {\n        lock.lock();\n        try {\n            while (queue.isEmpty()) {\n                notEmpty.await(); // block until item is available\n            }\n            T item = queue.remove();\n            notFull.signal(); // wake up a waiting producer\n            return item;\n        } finally {\n            lock.unlock();\n        }\n    }\n\n    public int size() {\n        lock.lock();\n        try {\n            return queue.size();\n        } finally {\n            lock.unlock();\n        }\n    }\n}\n\nWhy Condition over wait/notify:\n1. Multiple conditions: notFull and notEmpty are separate — signal() wakes only the relevant waiting thread. With wait/notify, notifyAll() wakes ALL waiting threads.\n2. Fairness: ReentrantLock(true) can enforce FIFO ordering.\n3. tryLock/lockInterruptibly: More flexible locking options.\n4. Always use while (not if) with await() — guards against spurious wakeups.",
+    "evaluationCriteria": [
+      "Correct use of ReentrantLock with two Condition variables",
+      "while loop (not if) around await() for spurious wakeup safety",
+      "lock.unlock() in finally block to prevent deadlocks",
+      "Can explain advantages of Condition over wait/notify"
+    ],
+    "timeEstimate": 420,
+    "codeTemplate": "import java.util.concurrent.locks.ReentrantLock;\nimport java.util.concurrent.locks.Condition;\n\npublic class BoundedBlockingQueue<T> {\n    // Implement put(), take(), size()\n}",
+    "codeLanguage": "java"
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": [
+      "testing",
+      "mockito",
+      "clean-code"
+    ],
+    "language": "en",
+    "questionText": "You are given a UserRegistrationService that depends on UserRepository, PasswordEncoder, and EmailSender. The register(UserDTO dto) method should:\n1. Check if email is already taken (throw if yes)\n2. Encode the password\n3. Save the user\n4. Send a welcome email\n\nWrite the service implementation following Clean Code principles AND write comprehensive Mockito tests. Include tests for: successful registration, duplicate email, password encoding verification, and ensuring email is sent only after successful save.",
+    "hints": [
+      "The service implementation should follow SRP — each step is delegated to a dependency",
+      "Use ArgumentCaptor to verify the exact User object passed to the repository",
+      "Use InOrder to verify email is sent AFTER save, not before",
+      "Use @ParameterizedTest for testing multiple invalid inputs"
+    ],
+    "modelAnswer": "// Service Implementation\npublic class UserRegistrationService {\n    private final UserRepository userRepository;\n    private final PasswordEncoder passwordEncoder;\n    private final EmailSender emailSender;\n\n    public UserRegistrationService(UserRepository repo, PasswordEncoder encoder, EmailSender sender) {\n        this.userRepository = repo;\n        this.passwordEncoder = encoder;\n        this.emailSender = sender;\n    }\n\n    public User register(UserDTO dto) {\n        validateEmailNotTaken(dto.getEmail());\n        String encodedPassword = passwordEncoder.encode(dto.getPassword());\n        User user = new User(dto.getName(), dto.getEmail(), encodedPassword);\n        User savedUser = userRepository.save(user);\n        emailSender.sendWelcome(savedUser.getEmail(), savedUser.getName());\n        return savedUser;\n    }\n\n    private void validateEmailNotTaken(String email) {\n        if (userRepository.existsByEmail(email)) {\n            throw new DuplicateEmailException(\"Email already registered: \" + email);\n        }\n    }\n}\n\n// Tests\n@ExtendWith(MockitoExtension.class)\nclass UserRegistrationServiceTest {\n    @Mock private UserRepository userRepository;\n    @Mock private PasswordEncoder passwordEncoder;\n    @Mock private EmailSender emailSender;\n    @InjectMocks private UserRegistrationService service;\n\n    private UserDTO validDto;\n\n    @BeforeEach\n    void setUp() {\n        validDto = new UserDTO(\"Alice\", \"alice@test.com\", \"password123\");\n    }\n\n    @Test\n    void register_success_savesUserAndSendsEmail() {\n        when(userRepository.existsByEmail(anyString())).thenReturn(false);\n        when(passwordEncoder.encode(\"password123\")).thenReturn(\"encoded_pw\");\n        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));\n\n        User result = service.register(validDto);\n\n        assertEquals(\"Alice\", result.getName());\n        assertEquals(\"encoded_pw\", result.getPassword());\n\n        InOrder inOrder = inOrder(userRepository, emailSender);\n        inOrder.verify(userRepository).save(any());\n        inOrder.verify(emailSender).sendWelcome(\"alice@test.com\", \"Alice\");\n    }\n\n    @Test\n    void register_duplicateEmail_throwsAndDoesNotSave() {\n        when(userRepository.existsByEmail(\"alice@test.com\")).thenReturn(true);\n\n        assertThrows(DuplicateEmailException.class, () -> service.register(validDto));\n\n        verify(userRepository, never()).save(any());\n        verify(emailSender, never()).sendWelcome(anyString(), anyString());\n    }\n\n    @Test\n    void register_encodesPassword() {\n        when(userRepository.existsByEmail(anyString())).thenReturn(false);\n        when(passwordEncoder.encode(\"password123\")).thenReturn(\"hashed_abc\");\n        when(userRepository.save(any())).thenAnswer(i -> i.getArgument(0));\n\n        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);\n        service.register(validDto);\n\n        verify(userRepository).save(captor.capture());\n        assertEquals(\"hashed_abc\", captor.getValue().getPassword());\n    }\n\n    @Test\n    void register_repositoryFailure_doesNotSendEmail() {\n        when(userRepository.existsByEmail(anyString())).thenReturn(false);\n        when(passwordEncoder.encode(anyString())).thenReturn(\"encoded\");\n        when(userRepository.save(any())).thenThrow(new RuntimeException(\"DB down\"));\n\n        assertThrows(RuntimeException.class, () -> service.register(validDto));\n\n        verify(emailSender, never()).sendWelcome(anyString(), anyString());\n    }\n}",
+    "evaluationCriteria": [
+      "Service follows SRP — delegates to dependencies cleanly",
+      "Uses ArgumentCaptor to verify object contents, not just method calls",
+      "InOrder verification for correct operation sequence",
+      "Tests failure scenarios and verifies side effects did NOT happen"
+    ],
+    "timeEstimate": 480,
+    "codeTemplate": "// Implement UserRegistrationService and write Mockito tests\n// Service depends on: UserRepository, PasswordEncoder, EmailSender",
+    "codeLanguage": "java"
+  },
+  {
+    "category": "coding",
+    "difficulty": "senior",
+    "tags": [
+      "algorithms",
+      "design",
+      "clean-code"
+    ],
+    "language": "en",
+    "questionText": "Design and implement a rate limiter that supports multiple strategies:\n1. Fixed Window: Allow N requests per time window\n2. Sliding Window Log: Track timestamps of each request for precise rate limiting\n3. Token Bucket: Tokens are added at a fixed rate, each request consumes a token\n\nUse the Strategy pattern so the rate limiting algorithm can be swapped without changing client code. Include proper interfaces, concurrency handling, and unit tests for each strategy. Discuss the trade-offs between each approach.",
+    "hints": [
+      "Define a RateLimiter interface with isAllowed(clientId: string): boolean",
+      "Fixed Window: use a map of clientId -> { count, windowStart }",
+      "Token Bucket: track tokens and last refill time, compute tokens on each call",
+      "Consider memory usage: Sliding Window Log stores every timestamp"
+    ],
+    "modelAnswer": "// Interface\ninterface RateLimiter {\n  isAllowed(clientId: string): boolean;\n}\n\n// 1. Fixed Window\nclass FixedWindowLimiter implements RateLimiter {\n  private windows = new Map<string, { count: number; windowStart: number }>();\n\n  constructor(private maxRequests: number, private windowMs: number) {}\n\n  isAllowed(clientId: string): boolean {\n    const now = Date.now();\n    const window = this.windows.get(clientId);\n\n    if (!window || now - window.windowStart >= this.windowMs) {\n      this.windows.set(clientId, { count: 1, windowStart: now });\n      return true;\n    }\n    if (window.count < this.maxRequests) {\n      window.count++;\n      return true;\n    }\n    return false;\n  }\n}\n\n// 2. Sliding Window Log\nclass SlidingWindowLogLimiter implements RateLimiter {\n  private logs = new Map<string, number[]>();\n\n  constructor(private maxRequests: number, private windowMs: number) {}\n\n  isAllowed(clientId: string): boolean {\n    const now = Date.now();\n    let timestamps = this.logs.get(clientId) || [];\n    timestamps = timestamps.filter(t => now - t < this.windowMs);\n    this.logs.set(clientId, timestamps);\n\n    if (timestamps.length < this.maxRequests) {\n      timestamps.push(now);\n      return true;\n    }\n    return false;\n  }\n}\n\n// 3. Token Bucket\nclass TokenBucketLimiter implements RateLimiter {\n  private buckets = new Map<string, { tokens: number; lastRefill: number }>();\n\n  constructor(\n    private maxTokens: number,\n    private refillRate: number, // tokens per second\n  ) {}\n\n  isAllowed(clientId: string): boolean {\n    const now = Date.now();\n    let bucket = this.buckets.get(clientId);\n\n    if (!bucket) {\n      this.buckets.set(clientId, { tokens: this.maxTokens - 1, lastRefill: now });\n      return true;\n    }\n\n    const elapsed = (now - bucket.lastRefill) / 1000;\n    bucket.tokens = Math.min(this.maxTokens, bucket.tokens + elapsed * this.refillRate);\n    bucket.lastRefill = now;\n\n    if (bucket.tokens >= 1) {\n      bucket.tokens -= 1;\n      return true;\n    }\n    return false;\n  }\n}\n\n// Factory\nfunction createRateLimiter(\n  strategy: 'fixed' | 'sliding' | 'token',\n  config: { maxRequests: number; windowMs?: number; refillRate?: number }\n): RateLimiter {\n  switch (strategy) {\n    case 'fixed': return new FixedWindowLimiter(config.maxRequests, config.windowMs!);\n    case 'sliding': return new SlidingWindowLogLimiter(config.maxRequests, config.windowMs!);\n    case 'token': return new TokenBucketLimiter(config.maxRequests, config.refillRate!);\n  }\n}\n\nTrade-offs:\n- Fixed Window: O(1) memory per client, but allows burst at window boundaries (up to 2x rate).\n- Sliding Window Log: Most precise, but O(n) memory per client where n = max requests. Expensive for high-rate limits.\n- Token Bucket: O(1) memory, allows controlled bursts (up to maxTokens), smoothest rate limiting. Best for APIs.\n\nConcurrency note: In production, use mutex/lock per client ID, or atomic operations. For distributed systems, use Redis with Lua scripts for atomicity.",
+    "evaluationCriteria": [
+      "Clean Strategy pattern with common interface",
+      "All three algorithms implemented correctly",
+      "Discusses trade-offs: memory, precision, burst handling",
+      "Considers concurrency and distributed scenarios"
+    ],
+    "timeEstimate": 600,
+    "codeTemplate": "// Design a rate limiter with Strategy pattern\n// Implement: Fixed Window, Sliding Window Log, Token Bucket\n\ninterface RateLimiter {\n  isAllowed(clientId: string): boolean;\n}",
+    "codeLanguage": "typescript"
+  },
+  {
+    "category": "coding",
+    "difficulty": "senior",
+    "tags": [
+      "algorithms",
+      "design"
+    ],
+    "language": "en",
+    "questionText": "Design and implement a simplified in-memory key-value store that supports:\n1. get(key): Return the value for key\n2. set(key, value): Set a key-value pair\n3. delete(key): Remove a key\n4. begin(): Start a new transaction\n5. commit(): Commit the current transaction\n6. rollback(): Rollback the current transaction\n\nTransactions should be nestable — you can begin a transaction within a transaction. Rollback only undoes the most recent transaction. All operations should be O(1) average time. Show your implementation and explain the data structure choices.",
+    "hints": [
+      "Use a stack of 'change logs' to track modifications per transaction",
+      "Each transaction level records what changed so it can be undone on rollback",
+      "The main store is always up-to-date — rollback replays the undo log",
+      "Consider storing the previous value (or 'deleted' sentinel) in the log"
+    ],
+    "modelAnswer": "type ChangeLog = Map<string, { existed: boolean; value?: string }>;\n\nclass KVStore {\n  private store = new Map<string, string>();\n  private transactionStack: ChangeLog[] = [];\n\n  get(key: string): string | undefined {\n    return this.store.get(key);\n  }\n\n  set(key: string, value: string): void {\n    this.recordChange(key);\n    this.store.set(key, value);\n  }\n\n  delete(key: string): boolean {\n    if (!this.store.has(key)) return false;\n    this.recordChange(key);\n    this.store.delete(key);\n    return true;\n  }\n\n  begin(): void {\n    this.transactionStack.push(new Map());\n  }\n\n  commit(): void {\n    if (this.transactionStack.length === 0) {\n      throw new Error('No active transaction');\n    }\n    const committed = this.transactionStack.pop()!;\n    // Merge into parent transaction (if nested) so parent rollback works\n    if (this.transactionStack.length > 0) {\n      const parent = this.transactionStack[this.transactionStack.length - 1];\n      for (const [key, prev] of committed) {\n        if (!parent.has(key)) {\n          parent.set(key, prev);\n        }\n      }\n    }\n  }\n\n  rollback(): void {\n    if (this.transactionStack.length === 0) {\n      throw new Error('No active transaction');\n    }\n    const changes = this.transactionStack.pop()!;\n    for (const [key, prev] of changes) {\n      if (prev.existed) {\n        this.store.set(key, prev.value!);\n      } else {\n        this.store.delete(key);\n      }\n    }\n  }\n\n  private recordChange(key: string): void {\n    if (this.transactionStack.length === 0) return;\n    const currentTx = this.transactionStack[this.transactionStack.length - 1];\n    // Only record the FIRST change to this key in this transaction\n    if (!currentTx.has(key)) {\n      currentTx.set(key, {\n        existed: this.store.has(key),\n        value: this.store.get(key)\n      });\n    }\n  }\n}\n\n// Usage:\nconst db = new KVStore();\ndb.set('a', '1');\ndb.begin();\ndb.set('a', '2');\ndb.begin();\ndb.set('a', '3');\ndb.rollback();    // a = '2'\ndb.commit();      // a = '2' (committed)\n\nKey design decisions:\n- Store is always up-to-date (reads are always O(1))\n- Undo log only records FIRST change per key per transaction (subsequent changes don't need a new log entry)\n- Commit merges into parent transaction so that a rollback of the parent also undoes committed nested changes\n- All operations are O(1) average time\n\nSpace complexity: O(k) per transaction where k is unique keys modified.",
+    "evaluationCriteria": [
+      "All 6 operations implemented correctly with O(1) average time",
+      "Nested transactions work (rollback only undoes innermost)",
+      "Commit correctly merges undo log into parent transaction",
+      "Only records first change per key per transaction for efficiency"
+    ],
+    "timeEstimate": 600,
+    "codeTemplate": "class KVStore {\n  // Implement: get, set, delete, begin, commit, rollback\n  // Support nested transactions\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      {
+        "input": "set(a,1), begin, set(a,2), get(a), rollback, get(a)",
+        "expected": "get->2, get->1"
+      },
+      {
+        "input": "begin, set(a,1), begin, set(a,2), commit, rollback, get(a)",
+        "expected": "undefined (parent rolled back)"
+      },
+      {
+        "input": "set(a,1), begin, delete(a), rollback, get(a)",
+        "expected": "1"
+      }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "senior",
+    "tags": [
+      "sql",
+      "performance",
+      "design"
+    ],
+    "language": "en",
+    "questionText": "You are given a PostgreSQL database for an e-commerce platform that is experiencing performance issues. The main query causing problems is a dashboard query that shows:\n- Total revenue per category for the last 30 days\n- Compared with the previous 30-day period (growth %)\n- Top 5 products per category by units sold\n- Average delivery time per category\n\nTables:\n- orders (id, customer_id, status, created_at, delivered_at) — 50M rows\n- order_items (id, order_id, product_id, quantity, unit_price) — 200M rows\n- products (id, name, category_id, price) — 100K rows\n- categories (id, name) — 50 rows\n\nWrite the optimized query, suggest appropriate indexes, and explain your optimization strategy. Consider: indexing, CTEs vs subqueries, materialized views, and partitioning.",
+    "hints": [
+      "Start with the unoptimized query, then optimize step by step",
+      "Composite indexes on (created_at, status) for the orders table",
+      "Consider a materialized view for the expensive aggregation",
+      "Partitioning orders by month can dramatically improve date range queries",
+      "Use EXPLAIN ANALYZE to identify bottlenecks"
+    ],
+    "modelAnswer": "-- Step 1: Optimized query using CTEs for clarity and reuse\nWITH date_ranges AS (\n  SELECT\n    CURRENT_DATE - INTERVAL '30 days' AS current_start,\n    CURRENT_DATE AS current_end,\n    CURRENT_DATE - INTERVAL '60 days' AS prev_start,\n    CURRENT_DATE - INTERVAL '30 days' AS prev_end\n),\nperiod_revenue AS (\n  SELECT\n    c.id AS category_id,\n    c.name AS category_name,\n    SUM(CASE WHEN o.created_at >= dr.current_start THEN oi.quantity * oi.unit_price ELSE 0 END) AS current_revenue,\n    SUM(CASE WHEN o.created_at >= dr.prev_start AND o.created_at < dr.prev_end THEN oi.quantity * oi.unit_price ELSE 0 END) AS prev_revenue,\n    AVG(CASE WHEN o.created_at >= dr.current_start AND o.delivered_at IS NOT NULL\n        THEN EXTRACT(EPOCH FROM (o.delivered_at - o.created_at)) / 3600.0\n        ELSE NULL END) AS avg_delivery_hours\n  FROM categories c\n  JOIN products p ON c.id = p.category_id\n  JOIN order_items oi ON p.id = oi.product_id\n  JOIN orders o ON oi.order_id = o.id\n  CROSS JOIN date_ranges dr\n  WHERE o.created_at >= dr.prev_start\n    AND o.status IN ('completed', 'delivered')\n  GROUP BY c.id, c.name\n),\ntop_products AS (\n  SELECT\n    p.category_id,\n    p.name AS product_name,\n    SUM(oi.quantity) AS units_sold,\n    ROW_NUMBER() OVER (PARTITION BY p.category_id ORDER BY SUM(oi.quantity) DESC) AS rn\n  FROM products p\n  JOIN order_items oi ON p.id = oi.product_id\n  JOIN orders o ON oi.order_id = o.id\n  WHERE o.created_at >= CURRENT_DATE - INTERVAL '30 days'\n    AND o.status IN ('completed', 'delivered')\n  GROUP BY p.category_id, p.id, p.name\n)\nSELECT\n  pr.category_name,\n  ROUND(pr.current_revenue::numeric, 2) AS revenue_30d,\n  ROUND(pr.prev_revenue::numeric, 2) AS revenue_prev_30d,\n  CASE WHEN pr.prev_revenue > 0\n    THEN ROUND(((pr.current_revenue - pr.prev_revenue) / pr.prev_revenue * 100)::numeric, 1)\n    ELSE NULL END AS growth_pct,\n  ROUND(pr.avg_delivery_hours::numeric, 1) AS avg_delivery_hours,\n  ARRAY_AGG(tp.product_name ORDER BY tp.rn) FILTER (WHERE tp.rn <= 5) AS top_5_products\nFROM period_revenue pr\nLEFT JOIN top_products tp ON pr.category_id = tp.category_id AND tp.rn <= 5\nGROUP BY pr.category_id, pr.category_name, pr.current_revenue, pr.prev_revenue, pr.avg_delivery_hours\nORDER BY pr.current_revenue DESC;\n\n-- Step 2: Indexes\nCREATE INDEX idx_orders_created_status ON orders (created_at, status)\n  WHERE status IN ('completed', 'delivered');\n  -- Partial index: only indexes relevant statuses, much smaller\n\nCREATE INDEX idx_order_items_order_product ON order_items (order_id, product_id, quantity, unit_price);\n  -- Covering index: all needed columns, avoids table lookup\n\nCREATE INDEX idx_products_category ON products (category_id);\n\n-- Step 3: Partitioning (for the 50M orders table)\nCREATE TABLE orders (\n  id BIGSERIAL,\n  customer_id BIGINT,\n  status TEXT,\n  created_at TIMESTAMPTZ,\n  delivered_at TIMESTAMPTZ\n) PARTITION BY RANGE (created_at);\n\nCREATE TABLE orders_2026_01 PARTITION OF orders\n  FOR VALUES FROM ('2026-01-01') TO ('2026-02-01');\n-- ... one partition per month\n-- Query now only scans 2 partitions instead of 50M rows\n\n-- Step 4: Materialized view for the dashboard\nCREATE MATERIALIZED VIEW mv_daily_category_stats AS\nSELECT\n  p.category_id,\n  o.created_at::date AS order_date,\n  SUM(oi.quantity * oi.unit_price) AS revenue,\n  SUM(oi.quantity) AS units_sold,\n  AVG(EXTRACT(EPOCH FROM (o.delivered_at - o.created_at)) / 3600) FILTER (WHERE o.delivered_at IS NOT NULL) AS avg_delivery_hours\nFROM orders o\nJOIN order_items oi ON o.id = oi.order_id\nJOIN products p ON oi.product_id = p.id\nWHERE o.status IN ('completed', 'delivered')\nGROUP BY p.category_id, o.created_at::date;\n\nCREATE UNIQUE INDEX ON mv_daily_category_stats (category_id, order_date);\n-- REFRESH MATERIALIZED VIEW CONCURRENTLY mv_daily_category_stats;\n-- Schedule refresh every 15 minutes via pg_cron\n\nOptimization strategy summary:\n1. Partial indexes reduce index size by 60%+ (only completed/delivered orders)\n2. Covering indexes eliminate table lookups for order_items\n3. Monthly partitioning: 60-day query scans 2-3 partitions instead of 50M rows\n4. Materialized view pre-aggregates daily stats, dashboard query becomes trivial\n5. CONCURRENTLY refresh allows reads during refresh\n6. The original scan of 200M order_items becomes ~10M (2 months of data)",
+    "evaluationCriteria": [
+      "Query produces correct results with proper date range handling",
+      "Proposes partial indexes and covering indexes with justification",
+      "Suggests partitioning with proper partition key choice",
+      "Materialized view strategy with refresh approach",
+      "Can estimate performance improvement for each optimization"
+    ],
+    "timeEstimate": 600,
+    "codeTemplate": "-- Given tables with 50M+ orders, 200M+ order_items\n-- Write the dashboard query, indexes, and optimization strategy",
+    "codeLanguage": "sql"
+  },
+  {
+    "category": "coding",
+    "difficulty": "senior",
+    "tags": [
+      "typescript",
+      "angular",
+      "architecture"
+    ],
+    "language": "en",
+    "questionText": "Design and implement a plugin-based form validation system for an Angular application. Requirements:\n1. Validators are loaded dynamically (lazy-loaded modules can register custom validators)\n2. Validation rules are defined in JSON configuration (fetched from an API)\n3. Support for sync and async validators (e.g., checking username availability)\n4. Cross-field validation (e.g., password confirmation, date range)\n5. Custom error message templating with field name and constraint values\n6. The system should integrate with Angular's ReactiveFormsModule\n\nProvide the core architecture: interfaces, the validation engine service, a few example validators, and show how a component would use it.",
+    "hints": [
+      "Define a ValidatorPlugin interface with name, validate(), and optional async validateAsync()",
+      "A ValidationEngine service holds a registry of plugins and builds Angular ValidatorFn/AsyncValidatorFn from JSON config",
+      "Use InjectionToken and multi-provider for plugin registration",
+      "Cross-field validators receive the parent FormGroup, not individual controls"
+    ],
+    "modelAnswer": "// --- Interfaces ---\nexport interface ValidationRule {\n  validator: string;           // plugin name\n  params?: Record<string, any>; // e.g., { min: 3, max: 50 }\n  message?: string;            // custom message template\n  async?: boolean;\n}\n\nexport interface FieldConfig {\n  name: string;\n  validators: ValidationRule[];\n}\n\nexport interface FormValidationConfig {\n  fields: FieldConfig[];\n  crossField?: ValidationRule[];  // validators that span multiple fields\n}\n\nexport interface ValidatorPlugin {\n  name: string;\n  validate(value: any, params?: Record<string, any>): string | null;\n}\n\nexport interface AsyncValidatorPlugin {\n  name: string;\n  validate(value: any, params?: Record<string, any>): Observable<string | null>;\n}\n\n// --- Injection Token ---\nexport const VALIDATOR_PLUGINS = new InjectionToken<ValidatorPlugin[]>('VALIDATOR_PLUGINS');\nexport const ASYNC_VALIDATOR_PLUGINS = new InjectionToken<AsyncValidatorPlugin[]>('ASYNC_VALIDATOR_PLUGINS');\n\n// --- Built-in plugins ---\nexport const requiredValidator: ValidatorPlugin = {\n  name: 'required',\n  validate: (value) => (value == null || value === '') ? 'This field is required' : null\n};\n\nexport const minLengthValidator: ValidatorPlugin = {\n  name: 'minLength',\n  validate: (value, params) => {\n    if (!value || value.length < params!.min) {\n      return `Must be at least ${params!.min} characters`;\n    }\n    return null;\n  }\n};\n\nexport const patternValidator: ValidatorPlugin = {\n  name: 'pattern',\n  validate: (value, params) => {\n    if (value && !new RegExp(params!.regex).test(value)) {\n      return params!.message || 'Invalid format';\n    }\n    return null;\n  }\n};\n\nexport const uniqueUsernameValidator: AsyncValidatorPlugin = {\n  name: 'uniqueUsername',\n  validate: (value, params) => {\n    // In real implementation, inject HttpClient\n    return of(value).pipe(\n      delay(300),\n      switchMap(v => inject(HttpClient).get<boolean>(`/api/users/check?username=${v}`)),\n      map(taken => taken ? 'Username is already taken' : null),\n      catchError(() => of(null))\n    );\n  }\n};\n\n// --- Validation Engine ---\n@Injectable({ providedIn: 'root' })\nexport class ValidationEngine {\n  private syncPlugins = new Map<string, ValidatorPlugin>();\n  private asyncPlugins = new Map<string, AsyncValidatorPlugin>();\n\n  constructor(\n    @Inject(VALIDATOR_PLUGINS) @Optional() syncPlugins: ValidatorPlugin[] = [],\n    @Inject(ASYNC_VALIDATOR_PLUGINS) @Optional() asyncPlugins: AsyncValidatorPlugin[] = []\n  ) {\n    syncPlugins.forEach(p => this.registerSync(p));\n    asyncPlugins.forEach(p => this.registerAsync(p));\n  }\n\n  registerSync(plugin: ValidatorPlugin): void {\n    this.syncPlugins.set(plugin.name, plugin);\n  }\n\n  registerAsync(plugin: AsyncValidatorPlugin): void {\n    this.asyncPlugins.set(plugin.name, plugin);\n  }\n\n  buildFormGroup(config: FormValidationConfig, fb: FormBuilder): FormGroup {\n    const controls: Record<string, any> = {};\n    for (const field of config.fields) {\n      const syncValidators = this.buildSyncValidators(field.validators.filter(v => !v.async));\n      const asyncValidators = this.buildAsyncValidators(field.validators.filter(v => v.async));\n      controls[field.name] = ['', { validators: syncValidators, asyncValidators }];\n    }\n    const group = fb.group(controls);\n    if (config.crossField) {\n      group.setValidators(this.buildCrossFieldValidators(config.crossField));\n    }\n    return group;\n  }\n\n  private buildSyncValidators(rules: ValidationRule[]): ValidatorFn[] {\n    return rules.map(rule => {\n      const plugin = this.syncPlugins.get(rule.validator);\n      if (!plugin) throw new Error(`Unknown validator: ${rule.validator}`);\n      return (control: AbstractControl): ValidationErrors | null => {\n        const error = plugin.validate(control.value, rule.params);\n        return error ? { [rule.validator]: this.formatMessage(error, rule) } : null;\n      };\n    });\n  }\n\n  private buildAsyncValidators(rules: ValidationRule[]): AsyncValidatorFn[] {\n    return rules.map(rule => {\n      const plugin = this.asyncPlugins.get(rule.validator);\n      if (!plugin) throw new Error(`Unknown async validator: ${rule.validator}`);\n      return (control: AbstractControl): Observable<ValidationErrors | null> => {\n        return plugin.validate(control.value, rule.params).pipe(\n          map(error => error ? { [rule.validator]: this.formatMessage(error, rule) } : null)\n        );\n      };\n    });\n  }\n\n  private buildCrossFieldValidators(rules: ValidationRule[]): ValidatorFn {\n    return (group: AbstractControl): ValidationErrors | null => {\n      const errors: ValidationErrors = {};\n      for (const rule of rules) {\n        const plugin = this.syncPlugins.get(rule.validator);\n        if (plugin) {\n          const error = plugin.validate(group.value, rule.params);\n          if (error) errors[rule.validator] = error;\n        }\n      }\n      return Object.keys(errors).length ? errors : null;\n    };\n  }\n\n  private formatMessage(error: string, rule: ValidationRule): string {\n    if (!rule.message) return error;\n    let msg = rule.message;\n    if (rule.params) {\n      Object.entries(rule.params).forEach(([key, val]) => {\n        msg = msg.replace(`{{${key}}}`, String(val));\n      });\n    }\n    return msg;\n  }\n}\n\n// --- Component Usage ---\n@Component({ ... })\nexport class RegistrationComponent implements OnInit {\n  form!: FormGroup;\n\n  constructor(\n    private fb: FormBuilder,\n    private validationEngine: ValidationEngine,\n    private http: HttpClient\n  ) {}\n\n  ngOnInit() {\n    this.http.get<FormValidationConfig>('/api/forms/registration').subscribe(config => {\n      this.form = this.validationEngine.buildFormGroup(config, this.fb);\n    });\n  }\n}\n\n// --- Module Registration (lazy-loaded module adds custom validators) ---\n@NgModule({\n  providers: [\n    { provide: VALIDATOR_PLUGINS, useValue: customDomainValidator, multi: true }\n  ]\n})\nexport class CustomFeatureModule {}\n\nArchitecture benefits:\n1. Validators are decoupled from forms — JSON config drives validation\n2. Lazy modules register domain-specific validators via multi-providers\n3. Sync and async handled uniformly\n4. Cross-field validation integrated at FormGroup level\n5. Message templates allow i18n and customization\n6. Full integration with Angular's ReactiveFormsModule validation pipeline",
+    "evaluationCriteria": [
+      "Clean plugin interface with registration mechanism",
+      "JSON-driven validation config that builds Angular ValidatorFn/AsyncValidatorFn",
+      "Support for both sync and async validators with proper Observable handling",
+      "Cross-field validation at FormGroup level",
+      "Dynamic registration from lazy-loaded modules using InjectionToken"
+    ],
+    "timeEstimate": 600,
+    "codeTemplate": "// Design a plugin-based form validation system\n// Interfaces, ValidationEngine service, example plugins, component usage",
+    "codeLanguage": "typescript"
+  },
+  {
+    "category": "coding",
+    "difficulty": "senior",
+    "tags": [
+      "java",
+      "architecture",
+      "design-patterns"
+    ],
+    "language": "en",
+    "questionText": "Design and implement a lightweight event-driven pipeline framework in Java for processing data records. Requirements:\n1. Processors are composable stages (Filter, Transform, Enrich, Validate) connected in a pipeline\n2. Each stage can be sync or async (CompletableFuture-based)\n3. Support branching (split stream based on condition) and merging\n4. Error handling: dead-letter queue for failed records with retry capability\n5. Backpressure: if a downstream stage is slow, upstream should slow down\n6. Pipeline definition should be fluent API: pipeline.from(source).filter(...).transform(...).branch(...).to(sink)\n\nProvide the core framework classes, demonstrate with a real-world example (e.g., processing user registration events), and discuss how this compares to reactive streams.",
+    "hints": [
+      "Define a Stage<I, O> interface with process(I input): CompletableFuture<O>",
+      "Pipeline builder chains stages using composition",
+      "Use BlockingQueue for backpressure between stages",
+      "Dead-letter queue stores the original record + error + retry count",
+      "Compare with Project Reactor's Flux/Mono API"
+    ],
+    "modelAnswer": "// --- Core Interfaces ---\n@FunctionalInterface\npublic interface Stage<I, O> {\n    CompletableFuture<O> process(I input);\n\n    default <R> Stage<I, R> andThen(Stage<O, R> next) {\n        return input -> this.process(input).thenCompose(next::process);\n    }\n}\n\npublic interface Filter<T> extends Stage<T, T> {\n    boolean test(T input);\n\n    @Override\n    default CompletableFuture<T> process(T input) {\n        return test(input)\n            ? CompletableFuture.completedFuture(input)\n            : CompletableFuture.failedFuture(new FilteredException(input));\n    }\n}\n\npublic record DeadLetterRecord<T>(T record, Throwable error, int retryCount, Instant timestamp) {}\n\n// --- Pipeline Builder ---\npublic class Pipeline<I> {\n    private final BlockingQueue<I> inputQueue;\n    private final List<StageWrapper<?, ?>> stages = new ArrayList<>();\n    private final BlockingQueue<DeadLetterRecord<?>> deadLetterQueue;\n    private final ExecutorService executor;\n    private final int maxRetries;\n\n    private Pipeline(int bufferSize, int maxRetries) {\n        this.inputQueue = new ArrayBlockingQueue<>(bufferSize); // backpressure!\n        this.deadLetterQueue = new LinkedBlockingQueue<>();\n        this.executor = Executors.newVirtualThreadPerTaskExecutor();\n        this.maxRetries = maxRetries;\n    }\n\n    public static <I> PipelineBuilder<I, I> from(Source<I> source) {\n        return new PipelineBuilder<>(source);\n    }\n\n    // --- Builder (fluent API) ---\n    public static class PipelineBuilder<I, C> {\n        private final Source<I> source;\n        private final List<Stage<?, ?>> stages = new ArrayList<>();\n        private int bufferSize = 1000;\n        private int maxRetries = 3;\n\n        PipelineBuilder(Source<I> source) { this.source = source; }\n\n        @SuppressWarnings(\"unchecked\")\n        public <O> PipelineBuilder<I, O> transform(Stage<C, O> stage) {\n            stages.add(stage);\n            return (PipelineBuilder<I, O>) this;\n        }\n\n        public PipelineBuilder<I, C> filter(Predicate<C> predicate) {\n            stages.add((Stage<C, C>) input ->\n                predicate.test(input)\n                    ? CompletableFuture.completedFuture(input)\n                    : CompletableFuture.failedFuture(new FilteredException(input))\n            );\n            return this;\n        }\n\n        public PipelineBuilder<I, C> validate(Predicate<C> validator, String errorMsg) {\n            stages.add((Stage<C, C>) input -> {\n                if (!validator.test(input)) {\n                    return CompletableFuture.failedFuture(new ValidationException(errorMsg));\n                }\n                return CompletableFuture.completedFuture(input);\n            });\n            return this;\n        }\n\n        public BranchBuilder<I, C> branch(Predicate<C> condition) {\n            return new BranchBuilder<>(this, condition);\n        }\n\n        public PipelineBuilder<I, C> withBackpressure(int bufferSize) {\n            this.bufferSize = bufferSize;\n            return this;\n        }\n\n        public PipelineBuilder<I, C> withRetries(int maxRetries) {\n            this.maxRetries = maxRetries;\n            return this;\n        }\n\n        public Pipeline<I> to(Sink<C> sink) {\n            stages.add((Stage<C, Void>) input -> {\n                sink.accept(input);\n                return CompletableFuture.completedFuture(null);\n            });\n            return build();\n        }\n\n        private Pipeline<I> build() { /* wire everything together */ }\n    }\n\n    // --- Execution with error handling ---\n    @SuppressWarnings(\"unchecked\")\n    private <T> void processRecord(T record, int stageIndex) {\n        if (stageIndex >= stages.size()) return;\n        StageWrapper<T, ?> wrapper = (StageWrapper<T, ?>) stages.get(stageIndex);\n\n        wrapper.stage.process(record)\n            .thenAccept(result -> processRecord(result, stageIndex + 1))\n            .exceptionally(error -> {\n                if (error.getCause() instanceof FilteredException) {\n                    return null; // filtered records are silently dropped\n                }\n                handleError(record, error, stageIndex);\n                return null;\n            });\n    }\n\n    private <T> void handleError(T record, Throwable error, int stageIndex) {\n        DeadLetterRecord<T> dlr = new DeadLetterRecord<>(record, error, 1, Instant.now());\n        deadLetterQueue.add(dlr);\n        // Retry logic could re-enqueue after delay\n    }\n\n    public void start() {\n        executor.submit(() -> {\n            // Source produces into inputQueue (backpressure via blocking put)\n            // Consumer thread pulls and processes\n        });\n    }\n}\n\n// --- Real-world example ---\nPipeline<UserEvent> pipeline = Pipeline\n    .<UserEvent>from(kafkaSource)\n    .filter(event -> event.getType() == EventType.REGISTRATION)\n    .validate(event -> event.getEmail() != null, \"Email is required\")\n    .transform(event -> enrichWithGeoData(event))       // async HTTP call\n    .transform(event -> normalizePhoneNumber(event))    // sync transform\n    .branch(event -> event.isPremium())\n        .ifTrue(premiumSink)\n        .ifFalse(standardSink)\n    .withBackpressure(5000)\n    .withRetries(3)\n    .to(databaseSink);\n\npipeline.start();\n\nComparison with Reactive Streams:\n- This framework is simpler and more explicit — good for team learning\n- Reactive Streams (Reactor/RxJava) provide better backpressure (pull-based vs our push-with-blocking)\n- Reactive Streams have richer operator ecosystem (buffer, window, merge, zip)\n- Our approach: easier to debug (stack traces are readable), CompletableFuture is standard Java\n- For production at scale, prefer Reactor/RxJava or Kafka Streams. This pattern works well for moderate-throughput application-level pipelines.",
+    "evaluationCriteria": [
+      "Clean Stage<I,O> interface with composition via andThen",
+      "Fluent builder API for pipeline construction",
+      "Backpressure mechanism (bounded queue or similar)",
+      "Dead-letter queue with retry capability",
+      "Branching support for conditional routing",
+      "Thoughtful comparison with reactive streams"
+    ],
+    "timeEstimate": 600,
+    "codeTemplate": "// Design a composable, async pipeline framework\n// Core interfaces, pipeline builder, error handling, backpressure",
+    "codeLanguage": "java"
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": [
+      "typescript",
+      "arrays",
+      "fundamentals"
+    ],
+    "language": "en",
+    "questionText": "Write a function that takes an array of numbers and returns an object with the count of positive, negative, and zero values.",
+    "hints": [
+      "Iterate through the array and categorize each number",
+      "Initialize counters for each category"
+    ],
+    "modelAnswer": "function countNumbers(arr: number[]): { positive: number; negative: number; zero: number } {\n  return arr.reduce((acc, num) => {\n    if (num > 0) acc.positive++;\n    else if (num < 0) acc.negative++;\n    else acc.zero++;\n    return acc;\n  }, { positive: 0, negative: 0, zero: 0 });\n}\n\nTime complexity: O(n) where n is the array length. Space complexity: O(1) since we only store three counters. Alternative: could use filter().length for each category but that traverses the array three times.",
+    "evaluationCriteria": [
+      "Correctly categorizes positive, negative, and zero values",
+      "Handles edge cases (empty array)",
+      "Uses clean, readable code",
+      "Mentions time complexity"
+    ],
+    "timeEstimate": 180,
+    "codeTemplate": "function countNumbers(arr: number[]): { positive: number; negative: number; zero: number } {\n  // your code here\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      {
+        "input": "[1, -1, 0, 3, -2]",
+        "expected": "{ positive: 2, negative: 2, zero: 1 }"
+      },
+      {
+        "input": "[]",
+        "expected": "{ positive: 0, negative: 0, zero: 0 }"
+      }
+    ]
+  }
+]

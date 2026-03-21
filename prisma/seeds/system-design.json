@@ -1,0 +1,1349 @@
+[
+  {
+    "category": "system_design",
+    "difficulty": "junior",
+    "tags": [
+      "architecture",
+      "monolith",
+      "microservices"
+    ],
+    "language": "en",
+    "questionText": "Your team maintains a monolithic Spring Boot application that handles user management, order processing, and notifications. A new developer asks why the team hasn't split it into microservices yet. Explain the trade-offs between keeping a monolith and migrating to microservices, and under what circumstances you would recommend the migration.",
+    "hints": [
+      "Consider team size and deployment frequency",
+      "Think about operational complexity of microservices",
+      "Consider the 'monolith first' approach"
+    ],
+    "modelAnswer": "A monolith is simpler to develop, test, deploy, and debug — one codebase, one deployment artifact, straightforward local development. Microservices introduce distributed system complexity: network latency, service discovery, distributed transactions, independent deployments, and the need for container orchestration. Migration makes sense when the team grows large enough that independent deployments reduce coordination overhead, when specific modules need to scale independently (e.g., notifications spiking during campaigns), or when different parts benefit from different tech stacks. The recommended approach is 'monolith first' — keep it modular internally (clear package boundaries), and extract services only when there's a concrete pain point like deployment bottlenecks or scaling needs. Premature decomposition often costs more than it saves.",
+    "evaluationCriteria": [
+      "Identifies key monolith advantages: simplicity, easier debugging, single deployment",
+      "Identifies microservice advantages: independent scaling, independent deployments, team autonomy",
+      "Mentions concrete downsides of microservices: network complexity, distributed transactions, operational overhead",
+      "Recommends a pragmatic approach rather than dogmatic preference"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "system_design",
+    "difficulty": "junior",
+    "tags": [
+      "architecture",
+      "mvc",
+      "layered-architecture"
+    ],
+    "language": "en",
+    "questionText": "You are building a new Spring Boot REST API for a task management application. Describe how you would organize the codebase using a layered architecture. What are the responsibilities of each layer, and how do they communicate?",
+    "hints": [
+      "Think about Controller, Service, and Repository layers",
+      "Consider where validation logic belongs",
+      "Think about DTOs vs entities"
+    ],
+    "modelAnswer": "A typical Spring Boot layered architecture has three main layers: (1) Controller layer — handles HTTP requests and responses, input validation via annotations (@Valid), maps DTOs to/from service calls, returns appropriate HTTP status codes. (2) Service layer — contains business logic, orchestrates operations, handles transactions (@Transactional), converts between DTOs and entities. (3) Repository layer — handles database access via Spring Data JPA, defines queries, works with entity objects. Communication flows top-down: Controllers call Services, Services call Repositories. Each layer only depends on the one below it, never upward. DTOs are used at the controller boundary to decouple the API contract from the internal domain model. This separation makes the code testable (mock the layer below), maintainable (changes in one layer don't ripple), and allows swapping implementations (e.g., changing database without touching business logic).",
+    "evaluationCriteria": [
+      "Correctly identifies the three core layers and their responsibilities",
+      "Explains the direction of dependencies (top-down only)",
+      "Mentions DTOs for decoupling API contract from domain model",
+      "Discusses testability or maintainability benefits"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "system_design",
+    "difficulty": "junior",
+    "tags": [
+      "architecture",
+      "api-design",
+      "rest"
+    ],
+    "language": "en",
+    "questionText": "You are designing a REST API for a bookstore application. Define the endpoints for managing books (CRUD operations). What HTTP methods and status codes would you use, and how would you structure the URL paths?",
+    "hints": [
+      "Think about resource naming conventions (plural nouns)",
+      "Consider which HTTP methods map to which operations",
+      "Think about what status codes communicate success vs failure"
+    ],
+    "modelAnswer": "Resource: /api/v1/books. GET /api/v1/books — list all books (200 OK, supports query params for filtering/pagination). GET /api/v1/books/{id} — get a specific book (200 OK, 404 Not Found). POST /api/v1/books — create a new book (201 Created with Location header, 400 Bad Request for validation errors). PUT /api/v1/books/{id} — full update of a book (200 OK, 404 Not Found). PATCH /api/v1/books/{id} — partial update (200 OK). DELETE /api/v1/books/{id} — delete a book (204 No Content, 404 Not Found). URLs use plural nouns, not verbs. The version prefix /v1 allows future breaking changes. Nested resources like /api/v1/books/{id}/reviews follow the same pattern. Consistent error responses should include a message and error code in a standard JSON structure.",
+    "evaluationCriteria": [
+      "Uses correct HTTP methods for each CRUD operation",
+      "Uses appropriate HTTP status codes (201 for creation, 204 for delete, etc.)",
+      "Follows RESTful URL naming conventions (plural nouns, no verbs)",
+      "Mentions API versioning strategy"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "system_design",
+    "difficulty": "junior",
+    "tags": [
+      "architecture",
+      "error-handling"
+    ],
+    "language": "en",
+    "questionText": "Your Spring Boot API currently returns generic 500 Internal Server Error responses when something goes wrong. Your team lead asks you to implement a proper error handling strategy. How would you design a consistent error response structure and handle different types of errors?",
+    "hints": [
+      "Think about @ControllerAdvice and @ExceptionHandler",
+      "Consider different error categories: validation, not found, business logic, unexpected",
+      "Think about what information a client needs in an error response"
+    ],
+    "modelAnswer": "Implement a global exception handler using @ControllerAdvice with @ExceptionHandler methods for each exception type. Define a standard error response DTO with fields: timestamp, status, error code (application-specific like BOOK_NOT_FOUND), message (human-readable), path, and optionally a details array for validation errors. Handle categories: (1) Validation errors (400) — catch MethodArgumentNotValidException, return field-level errors. (2) Not found (404) — custom ResourceNotFoundException. (3) Business logic errors (409/422) — custom exceptions for things like duplicate ISBN. (4) Authentication/authorization (401/403) — handled by Spring Security. (5) Unexpected errors (500) — catch generic Exception, log the full stack trace but return a safe message to the client (never expose internals). This gives API consumers predictable error structures they can programmatically handle.",
+    "evaluationCriteria": [
+      "Proposes a consistent error response structure with useful fields",
+      "Mentions @ControllerAdvice or global exception handling",
+      "Differentiates between client errors (4xx) and server errors (5xx)",
+      "Emphasizes not leaking internal details in 500 responses"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "system_design",
+    "difficulty": "junior",
+    "tags": [
+      "architecture",
+      "api-design",
+      "versioning"
+    ],
+    "language": "en",
+    "questionText": "Your REST API is consumed by a mobile app and a web frontend. You need to make a breaking change to the response format of one endpoint. How would you handle API versioning so existing clients are not affected?",
+    "hints": [
+      "Consider URL path versioning vs header-based versioning",
+      "Think about how long you need to support old versions",
+      "Consider the impact on documentation and testing"
+    ],
+    "modelAnswer": "The most common and practical approach is URL path versioning: /api/v1/resource and /api/v2/resource. It is explicit, easy to understand, simple to route, and visible in logs and documentation. Alternative approaches include header versioning (Accept: application/vnd.api.v2+json) which keeps URLs clean but is harder to test in a browser, and query parameter versioning (?version=2) which is less conventional. For the migration: deploy v2 alongside v1, announce a deprecation timeline (e.g., v1 supported for 6 months), add deprecation headers to v1 responses, monitor v1 usage, and remove it only when traffic drops to zero. In Spring Boot, you can implement this with separate controllers per version or use a common service layer with different DTOs per version.",
+    "evaluationCriteria": [
+      "Describes at least two versioning strategies with trade-offs",
+      "Recommends a specific approach with justification",
+      "Mentions a deprecation and migration strategy for the old version",
+      "Considers impact on existing clients"
+    ],
+    "timeEstimate": 180
+  },
+  {
+    "category": "system_design",
+    "difficulty": "junior",
+    "tags": [
+      "scalability",
+      "caching"
+    ],
+    "language": "en",
+    "questionText": "Your web application fetches product details from a database on every page load, and the product data changes infrequently. A senior developer suggests adding caching. Explain what caching is in this context, where you could add it, and what problems caching introduces.",
+    "hints": [
+      "Think about different levels: application-level, CDN, browser",
+      "Consider cache invalidation as a key challenge",
+      "Think about what happens when cached data becomes stale"
+    ],
+    "modelAnswer": "Caching stores frequently accessed data in a faster storage layer to reduce database load and improve response times. In this scenario, you could cache at multiple levels: (1) Application-level cache — use Redis or an in-memory cache (Spring @Cacheable) to store product data after the first DB query; subsequent requests read from cache. (2) CDN cache — if product pages are rendered as HTML or served as static JSON, a CDN like CloudFront can cache responses at edge locations closer to users. (3) Browser cache — set appropriate Cache-Control headers so the browser doesn't re-fetch unchanged data. Problems caching introduces: stale data (cache shows old price after an update), cache invalidation complexity (when and how to clear/update the cache), memory limits (what to evict when cache is full — LRU, TTL), and cache stampede (many requests hitting DB simultaneously when cache expires). A common strategy for infrequently changing data is TTL-based expiration (e.g., 5 minutes) combined with explicit invalidation on writes.",
+    "evaluationCriteria": [
+      "Explains caching concept and its purpose clearly",
+      "Identifies multiple caching layers (application, CDN, browser)",
+      "Discusses cache invalidation as a core challenge",
+      "Mentions at least one eviction or expiration strategy"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "system_design",
+    "difficulty": "junior",
+    "tags": [
+      "scalability",
+      "load-balancing"
+    ],
+    "language": "en",
+    "questionText": "Your Spring Boot application runs on a single server and is starting to struggle under peak traffic. Your manager mentions 'adding a load balancer.' Explain what a load balancer does, how it distributes traffic, and what changes your application needs to work behind one.",
+    "hints": [
+      "Think about session management with multiple servers",
+      "Consider different load balancing algorithms",
+      "Think about health checks"
+    ],
+    "modelAnswer": "A load balancer sits in front of multiple application server instances and distributes incoming requests across them. Common algorithms: round-robin (each server takes turns), least connections (sends to the server handling fewest requests), and IP hash (same client always goes to the same server). To work behind a load balancer, the application must be stateless — no in-memory sessions, because consecutive requests from the same user may hit different servers. Solutions: store sessions in Redis or a database, or use JWTs for authentication (no server-side session needed). The load balancer also performs health checks (e.g., hitting /actuator/health) and stops sending traffic to unhealthy instances. In AWS, an Application Load Balancer (ALB) handles this, operating at Layer 7 (HTTP) and supporting path-based routing. This setup enables horizontal scaling — add more instances during peak traffic and remove them when traffic subsides.",
+    "evaluationCriteria": [
+      "Explains the core purpose of a load balancer",
+      "Describes at least two load balancing algorithms",
+      "Identifies the stateless application requirement and session management solutions",
+      "Mentions health checks"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "system_design",
+    "difficulty": "junior",
+    "tags": [
+      "scalability",
+      "horizontal-vertical-scaling"
+    ],
+    "language": "en",
+    "questionText": "A colleague mentions that the team is debating between 'scaling up' and 'scaling out' to handle increased traffic. Explain the difference between horizontal and vertical scaling, and discuss when each approach is more appropriate.",
+    "hints": [
+      "Think about cost curves for each approach",
+      "Consider single points of failure",
+      "Think about application architecture requirements for each"
+    ],
+    "modelAnswer": "Vertical scaling (scaling up) means upgrading the existing server — more CPU, RAM, faster disk. It is simpler because the application doesn't need code changes, but it has a hard ceiling (there's a maximum server size), creates a single point of failure, and costs increase non-linearly. Horizontal scaling (scaling out) means adding more server instances behind a load balancer. It has no theoretical ceiling, provides redundancy (one server failing doesn't take down the system), and can be cost-effective with commodity hardware or cloud instances. However, it requires the application to be stateless, adds complexity (load balancing, distributed caching, data synchronization), and not all workloads parallelize well. Use vertical scaling for: databases (scaling out DBs is complex), quick fixes, applications with shared mutable state. Use horizontal scaling for: stateless web servers, microservices, applications with unpredictable traffic (auto-scaling). Most production systems use a combination of both.",
+    "evaluationCriteria": [
+      "Clearly defines both scaling approaches",
+      "Identifies advantages and limitations of each",
+      "Provides practical guidance on when to use each",
+      "Mentions that most real systems combine both approaches"
+    ],
+    "timeEstimate": 200
+  },
+  {
+    "category": "system_design",
+    "difficulty": "junior",
+    "tags": [
+      "scalability",
+      "pagination"
+    ],
+    "language": "en",
+    "questionText": "Your API endpoint GET /api/products returns all 50,000 products in a single response, causing slow load times and high memory usage. How would you implement pagination, and what are the different pagination strategies you could use?",
+    "hints": [
+      "Compare offset-based and cursor-based pagination",
+      "Think about what metadata the response should include",
+      "Consider what happens when data changes between pages"
+    ],
+    "modelAnswer": "Offset-based pagination: Use query parameters like ?page=2&size=20. The server applies LIMIT and OFFSET in SQL. Easy to implement, allows jumping to any page, but performance degrades on large offsets (DB still scans skipped rows) and results can shift if data is inserted/deleted between requests. Cursor-based pagination: Use a cursor (usually the last item's ID or timestamp) like ?after=abc123&size=20. The server queries WHERE id > cursor LIMIT size. More performant for large datasets (uses index seek instead of scan), stable results regardless of insertions, but cannot jump to arbitrary pages. Response should include metadata: total count (for offset), page size, current page/cursor, and links to next/previous pages (HATEOAS). For this API, if users need to browse page by page (typical web UI), offset-based is simpler. If it's an infinite scroll or real-time feed, cursor-based is better. Spring Data JPA supports both via Pageable and Slice.",
+    "evaluationCriteria": [
+      "Explains offset-based pagination with query parameters",
+      "Explains cursor-based pagination as an alternative",
+      "Compares trade-offs between the two approaches",
+      "Mentions response metadata (total count, links, next/previous)"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "system_design",
+    "difficulty": "junior",
+    "tags": [
+      "scalability",
+      "database",
+      "read-replicas"
+    ],
+    "language": "en",
+    "questionText": "Your application's database is becoming a bottleneck because it handles both heavy read traffic (product listings, search) and write traffic (orders, inventory updates). A senior engineer suggests using read replicas. Explain what read replicas are and how they help.",
+    "hints": [
+      "Think about how data is synchronized between primary and replicas",
+      "Consider replication lag and its implications",
+      "Think about which queries go where"
+    ],
+    "modelAnswer": "Read replicas are copies of the primary database that receive replicated data and handle read-only queries. The primary (writer) database handles all INSERT, UPDATE, DELETE operations and asynchronously replicates changes to one or more replicas. This distributes read load across multiple database instances. In the application, you route write operations to the primary and read operations to replicas — in Spring Boot, this can be configured with a read-write routing DataSource or manually using @Transactional(readOnly = true). Benefits: reduced load on the primary DB, improved read performance, geographic distribution (replicas in different regions). Key concern: replication lag — there's a brief delay (milliseconds to seconds) before a write on the primary appears on replicas. This means a user who just placed an order might not see it immediately if the read hits a replica. Mitigation: for critical reads-after-writes, route to the primary; for eventually-consistent reads (product catalog), use replicas. AWS RDS makes this straightforward with managed read replicas.",
+    "evaluationCriteria": [
+      "Explains the primary-replica relationship and data flow",
+      "Describes how read/write queries are routed differently",
+      "Identifies replication lag as the main trade-off",
+      "Mentions a mitigation strategy for consistency-sensitive reads"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "system_design",
+    "difficulty": "junior",
+    "tags": [
+      "cicd",
+      "github-actions"
+    ],
+    "language": "en",
+    "questionText": "Your team has been deploying a Spring Boot application manually — running tests locally, building a JAR, and copying it to the server via SSH. Describe what a basic CI/CD pipeline is and outline the stages you would include in a GitHub Actions workflow for this application.",
+    "hints": [
+      "Think about what CI and CD stand for and their purposes",
+      "Consider what should happen on every push vs on merge to main",
+      "Think about the build artifact"
+    ],
+    "modelAnswer": "CI (Continuous Integration) automatically builds and tests code on every push, catching issues early. CD (Continuous Delivery/Deployment) automates the release process so tested code reaches production reliably. A basic GitHub Actions pipeline for a Spring Boot app: (1) Trigger: on push to any branch and on pull request to main. (2) Build stage: checkout code, set up JDK 17, cache Maven/Gradle dependencies, compile the project. (3) Test stage: run unit tests, run integration tests (possibly with a PostgreSQL service container). (4) Quality checks: run linter (Checkstyle/SpotBugs), check code coverage thresholds. (5) Build artifact: package the JAR (mvn package -DskipTests since tests already ran). (6) Deploy stage (only on merge to main): upload the JAR or Docker image to the server/registry. This eliminates the 'works on my machine' problem, ensures every change is tested, and makes deployments repeatable. The pipeline configuration lives in .github/workflows/ci.yml, versioned alongside the code.",
+    "evaluationCriteria": [
+      "Clearly explains what CI and CD mean",
+      "Outlines a logical sequence of pipeline stages",
+      "Includes both testing and building steps",
+      "Distinguishes between what runs on every push vs deployment triggers"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "system_design",
+    "difficulty": "junior",
+    "tags": [
+      "cicd",
+      "docker"
+    ],
+    "language": "en",
+    "questionText": "Your team decides to containerize the Spring Boot application using Docker. Explain what Docker does, write a basic Dockerfile for a Spring Boot app, and describe the benefits of using containers for deployment.",
+    "hints": [
+      "Think about the difference between a Docker image and a container",
+      "Consider multi-stage builds for smaller images",
+      "Think about environment consistency"
+    ],
+    "modelAnswer": "Docker packages an application and all its dependencies into a standardized unit called a container. A container includes the OS libraries, runtime (JDK), application code, and configuration — everything needed to run, isolated from the host. A basic multi-stage Dockerfile: Stage 1 (build) — FROM maven:3.9-eclipse-temurin-17 AS build, COPY the source, run mvn package to create the JAR. Stage 2 (runtime) — FROM eclipse-temurin:17-jre-alpine, COPY the JAR from the build stage, EXPOSE 8080, set the ENTRYPOINT to java -jar app.jar. Multi-stage builds keep the final image small (no Maven or source code in production image). Benefits: consistency across environments (same image in dev, staging, prod), isolation (no dependency conflicts between apps), fast scaling (spin up new containers in seconds), reproducibility (image is immutable, tagged with version). The image is pushed to a registry (Docker Hub, AWS ECR) and pulled for deployment.",
+    "evaluationCriteria": [
+      "Explains Docker images vs containers clearly",
+      "Describes a sensible Dockerfile structure for Spring Boot",
+      "Mentions multi-stage builds and why they matter",
+      "Identifies deployment benefits: consistency, isolation, reproducibility"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "system_design",
+    "difficulty": "junior",
+    "tags": [
+      "cicd",
+      "deployment-strategies"
+    ],
+    "language": "en",
+    "questionText": "Your team currently deploys by stopping the running application, uploading the new version, and starting it again, causing several minutes of downtime. Describe at least two deployment strategies that achieve zero-downtime deployments and their trade-offs.",
+    "hints": [
+      "Think about blue-green and rolling deployments",
+      "Consider how rollback works with each strategy",
+      "Think about resource requirements"
+    ],
+    "modelAnswer": "Blue-green deployment: Maintain two identical environments (blue = current, green = new version). Deploy the new version to the idle environment (green), run smoke tests, then switch the load balancer to point to green. If something is wrong, switch back to blue instantly. Trade-offs: requires double the infrastructure (cost), but rollback is instant and simple. Rolling deployment: Gradually replace instances one at a time — take one out of the load balancer, update it, put it back, move to the next. At any point, some instances run the old version and some the new. Trade-offs: uses the same infrastructure (no extra cost), but rollback is slower (must re-deploy the old version), and there's a period where both versions coexist (must handle backward compatibility). A third option, canary deployment, routes a small percentage of traffic (e.g., 5%) to the new version first, monitors for errors, then gradually increases. This is more complex but safest for critical systems.",
+    "evaluationCriteria": [
+      "Correctly describes blue-green deployment with environment switching",
+      "Correctly describes rolling deployment with gradual replacement",
+      "Compares trade-offs: cost, rollback speed, complexity",
+      "Mentions backward compatibility considerations"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "system_design",
+    "difficulty": "junior",
+    "tags": [
+      "database",
+      "schema-design"
+    ],
+    "language": "en",
+    "questionText": "You are designing the database schema for a blog platform that supports users, posts, comments, and tags. A post can have multiple tags, and a tag can belong to multiple posts. Design the tables, their relationships, and explain your primary key and foreign key choices.",
+    "hints": [
+      "Think about the many-to-many relationship between posts and tags",
+      "Consider what fields each table needs",
+      "Think about indexing for common queries"
+    ],
+    "modelAnswer": "Tables: (1) users — id (PK, UUID or serial), email (unique), name, created_at. (2) posts — id (PK), user_id (FK to users), title, content, status (draft/published), created_at, updated_at. (3) comments — id (PK), post_id (FK to posts), user_id (FK to users), body, created_at. (4) tags — id (PK), name (unique). (5) post_tags — post_id (FK to posts), tag_id (FK to tags), PRIMARY KEY (post_id, tag_id). The post_tags junction table resolves the many-to-many relationship between posts and tags. Foreign keys enforce referential integrity (can't comment on a non-existent post). Indexes: posts.user_id (look up a user's posts), comments.post_id (load comments for a post), tags.name (search by tag). Consider adding ON DELETE CASCADE on comments.post_id (delete comments when post is deleted) but ON DELETE RESTRICT on posts.user_id (prevent deleting users who have posts).",
+    "evaluationCriteria": [
+      "Identifies all necessary tables including the junction table for many-to-many",
+      "Defines appropriate primary keys and foreign keys",
+      "Mentions indexing strategy for common query patterns",
+      "Discusses referential integrity (CASCADE, RESTRICT)"
+    ],
+    "timeEstimate": 300
+  },
+  {
+    "category": "system_design",
+    "difficulty": "junior",
+    "tags": [
+      "database",
+      "indexing"
+    ],
+    "language": "en",
+    "questionText": "Your application's 'orders' table has 2 million rows, and queries filtering by customer_id and status are taking several seconds. Explain what database indexes are, how they improve performance, and what trade-offs they introduce.",
+    "hints": [
+      "Think about how a database finds rows without an index",
+      "Consider composite indexes for multi-column queries",
+      "Think about write performance impact"
+    ],
+    "modelAnswer": "Without an index, the database performs a sequential scan — reading every row to find matches (2 million rows). An index is a separate data structure (typically a B-tree in PostgreSQL) that maintains a sorted reference to rows, enabling the database to find matching rows in O(log n) time instead of O(n). For the orders table: CREATE INDEX idx_orders_customer_status ON orders(customer_id, status) — a composite index that covers the common query pattern. Column order matters: put the most selective (most unique values) or the equality-filtered column first. Trade-offs: (1) Indexes speed up reads but slow down writes (every INSERT, UPDATE, DELETE must also update the index). (2) Indexes consume disk space. (3) Too many indexes on a write-heavy table degrade performance. (4) The query planner may not use an index if it estimates a sequential scan is faster (e.g., when the query returns most of the table). Use EXPLAIN ANALYZE to verify the index is actually being used. Best practice: add indexes based on actual slow queries, not speculatively.",
+    "evaluationCriteria": [
+      "Explains what an index is and how it improves read performance",
+      "Proposes a composite index matching the query pattern",
+      "Identifies write performance and storage trade-offs",
+      "Mentions EXPLAIN ANALYZE or query plan verification"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "architecture",
+      "microservices",
+      "api-design"
+    ],
+    "language": "en",
+    "questionText": "Your e-commerce platform has three microservices: Product Catalog, Inventory, and Order Processing. The frontend needs to fetch product details along with inventory availability and pricing in a single API call. Design the API gateway or aggregation layer that composes these responses. Address how you handle partial failures (e.g., Inventory service is down but Product Catalog responds).",
+    "hints": [
+      "Consider the API Gateway pattern vs Backend-for-Frontend (BFF)",
+      "Think about circuit breakers and fallback responses",
+      "Consider whether calls should be parallel or sequential"
+    ],
+    "modelAnswer": "Implement a Backend-for-Frontend (BFF) layer or API Gateway that receives the client request and fans out to the three services in parallel. The gateway sends concurrent requests to Product Catalog (product details), Inventory (stock levels), and Order Processing (pricing/promotions). For partial failures, use the circuit breaker pattern (e.g., Resilience4j in Spring Boot): if a service fails or times out, the circuit opens and a fallback response is returned. Example: if Inventory is down, return the product with availability marked as 'unknown' rather than failing the entire request. Implementation: define a composed DTO that includes product data, inventory status, and pricing. Use CompletableFuture or reactive WebClient to make parallel calls with individual timeouts (e.g., 500ms per service). If a call fails, populate that section with a degraded response. The client receives a response with a 'degraded' flag indicating which sections have fallback data. For caching: product catalog data (changes infrequently) can be cached aggressively in the gateway, while inventory (changes frequently) should have short TTL or no cache.",
+    "evaluationCriteria": [
+      "Proposes an aggregation layer with parallel service calls",
+      "Handles partial failures with circuit breakers and fallback responses",
+      "Defines a composed response DTO with degraded state indicators",
+      "Considers timeout and caching strategies per service"
+    ],
+    "timeEstimate": 360,
+    "constraints": {
+      "latency": "300ms",
+      "availability": "99.9%"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "architecture",
+      "api-design",
+      "rest"
+    ],
+    "language": "en",
+    "questionText": "You are designing the API for a project management tool similar to Jira. Projects contain boards, boards contain columns, and columns contain tasks. Tasks can be assigned to users, have comments, attachments, and labels. Design the REST API endpoints for this system, addressing nested resource URLs, bulk operations, and filtering.",
+    "hints": [
+      "Consider when to nest resources vs use flat URLs with query params",
+      "Think about common bulk operations (move multiple tasks, bulk assign)",
+      "Consider how filtering, sorting, and searching should work"
+    ],
+    "modelAnswer": "Core resources with shallow nesting: GET/POST /api/v1/projects, GET/PUT/DELETE /api/v1/projects/{projectId}, GET/POST /api/v1/projects/{projectId}/boards, GET /api/v1/boards/{boardId} (flat after creation context). Tasks: GET /api/v1/boards/{boardId}/tasks (list within board), POST /api/v1/boards/{boardId}/tasks, GET/PUT/DELETE /api/v1/tasks/{taskId} (flat for direct access). Sub-resources: GET/POST /api/v1/tasks/{taskId}/comments, POST /api/v1/tasks/{taskId}/attachments. Filtering: GET /api/v1/tasks?assignee=userId&label=bug&status=in_progress&sort=priority:desc&page=1&size=25. Bulk operations: PATCH /api/v1/tasks/bulk with body {taskIds: [...], update: {status: 'done'}} for moving/updating multiple tasks. Search: GET /api/v1/tasks/search?q=payment+bug for full-text search. Design principles: keep nesting to maximum 2 levels, use flat URLs when a resource has a unique ID, support PATCH for partial updates, use query parameters for filtering rather than creating custom endpoints. Return 207 Multi-Status for bulk operations where some may fail.",
+    "evaluationCriteria": [
+      "Designs a coherent URL structure with appropriate nesting depth",
+      "Includes filtering, sorting, and pagination on list endpoints",
+      "Addresses bulk operations with appropriate HTTP semantics",
+      "Follows REST conventions consistently"
+    ],
+    "timeEstimate": 360,
+    "constraints": {
+      "entities": "100K tasks per project"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "scalability",
+      "caching",
+      "redis"
+    ],
+    "language": "en",
+    "questionText": "Your application has a product detail page that receives 10,000 requests per minute. The page data comes from three sources: product info (PostgreSQL), reviews summary (computed aggregation), and recommendations (ML service, 200ms latency). Design a caching strategy using Redis that keeps the page fast while ensuring data freshness within acceptable bounds.",
+    "hints": [
+      "Consider different TTLs for different data sources based on change frequency",
+      "Think about cache warming and stampede prevention",
+      "Consider what happens when the cache is cold or Redis is down"
+    ],
+    "modelAnswer": "Multi-tier caching with different TTLs per data source: (1) Product info — changes occasionally (admin updates), cache with 10-minute TTL, invalidate explicitly on product update via a publish/subscribe event. Key: product:{id}:info. (2) Reviews summary — changes when users post reviews but exact real-time accuracy isn't critical, cache with 5-minute TTL, recompute lazily. Key: product:{id}:reviews. (3) Recommendations — expensive to compute (ML service), cache with 30-minute TTL. Key: product:{id}:recs:{user_segment}. Cache stampede prevention: use a mutex/lock pattern — when the cache expires, the first request acquires a lock and recomputes while other requests either wait briefly or receive a stale value (stale-while-revalidate). Cache warming: on product update events, proactively recompute and populate the cache instead of waiting for the next request. Fallback when Redis is down: the application should degrade gracefully — bypass cache and hit sources directly, potentially with reduced features (skip recommendations). Data structure: store each section as a separate Redis key (not one big object) so they can expire independently and a reviews update doesn't invalidate product info.",
+    "evaluationCriteria": [
+      "Assigns different TTLs based on data change frequency and tolerance",
+      "Addresses cache stampede prevention",
+      "Designs cache keys with appropriate granularity",
+      "Includes a fallback strategy when cache is unavailable"
+    ],
+    "timeEstimate": 360,
+    "constraints": {
+      "requests": "10K/min",
+      "freshness": "product info < 1min, reviews < 5min"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "scalability",
+      "caching",
+      "cdn"
+    ],
+    "language": "en",
+    "questionText": "Your Angular SPA loads slowly for users in South America while your servers are in US East. The app bundles are 2MB, and API responses for the landing page are mostly static (promotional content, featured products). Design a CDN and caching strategy to improve global performance.",
+    "hints": [
+      "Think about what can be served from a CDN vs what needs the origin server",
+      "Consider cache headers for static assets vs API responses",
+      "Think about cache invalidation when you deploy a new version"
+    ],
+    "modelAnswer": "Strategy: serve static assets and cacheable API responses from CloudFront (CDN) with edge locations near users. (1) Static assets (JS bundles, CSS, images): Deploy to S3, serve through CloudFront with long Cache-Control: max-age=31536000 (1 year). Use content-hash filenames (main.a3f8b2c.js) so new deployments create new URLs, automatically busting the cache. (2) Landing page API responses (featured products, promotions): Configure the API endpoint as a CloudFront origin with short TTL (5 minutes). Use Cache-Control: public, max-age=300, stale-while-revalidate=60. Vary header by Accept-Language if content is localized. (3) Dynamic API responses (user-specific data, cart): bypass CDN entirely with Cache-Control: private, no-store. Implementation: CloudFront distribution with two origins — S3 for /static/* and ALB for /api/*. Behavior rules route requests to the correct origin. For Angular: enable lazy loading and code splitting to reduce initial bundle size. Pre-compress assets with gzip/brotli. Add a Service Worker for offline capability and additional caching. Cache invalidation: for assets, hash-based naming means no invalidation needed. For API cache, use CloudFront invalidation API on content updates or rely on TTL expiration.",
+    "evaluationCriteria": [
+      "Differentiates caching strategy for static assets vs API responses vs dynamic data",
+      "Uses content-hash filenames for cache busting on deployments",
+      "Configures appropriate Cache-Control headers for each content type",
+      "Addresses the multi-origin CDN setup"
+    ],
+    "timeEstimate": 360,
+    "constraints": {
+      "target_latency": "under 2s initial load globally",
+      "bundle_size": "2MB"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "scalability",
+      "performance",
+      "database"
+    ],
+    "language": "en",
+    "questionText": "Your application has a reporting dashboard that runs complex aggregation queries (total sales by region, monthly trends, top products). These queries take 15-30 seconds and are degrading the performance of the main application database. Design a solution that provides fast dashboard queries without impacting transactional operations.",
+    "hints": [
+      "Consider separating read and write workloads",
+      "Think about materialized views or pre-computed tables",
+      "Consider how often the dashboard data needs to be refreshed"
+    ],
+    "modelAnswer": "Separate the analytical workload from the transactional database using a read-optimized reporting layer. Architecture: (1) Main OLTP database (PostgreSQL) handles transactional operations as-is. (2) Create a read replica specifically for reporting, or better, maintain materialized views or a denormalized reporting schema. Approach A — Materialized Views: Create PostgreSQL materialized views that pre-compute the aggregations (e.g., sales_by_region_monthly). Refresh them on a schedule (every 15 minutes via pg_cron or a scheduled job). Dashboard queries hit these views instead of running live aggregations. Approach B — Denormalized reporting tables: A background job (triggered by a cron schedule or event-driven) reads from the transactional tables, computes aggregations, and writes to flat reporting tables optimized for dashboard queries. The dashboard API reads only from these tables. Approach C — If data volume grows significantly, consider a dedicated analytical store (e.g., a columnar database or data warehouse like Amazon Redshift) with an ETL pipeline. For most mid-size applications, materialized views are the sweet spot — simple to implement, stay within PostgreSQL, and can bring query times from 30 seconds to under 100ms. Add Redis caching on top for the dashboard API to handle concurrent users without repeatedly querying even the materialized views.",
+    "evaluationCriteria": [
+      "Separates analytical queries from the transactional database",
+      "Proposes at least two approaches with trade-offs",
+      "Addresses data freshness and refresh scheduling",
+      "Considers caching for the dashboard API layer"
+    ],
+    "timeEstimate": 360,
+    "constraints": {
+      "data_volume": "50M rows in orders table",
+      "dashboard_freshness": "15 minutes acceptable"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "cicd",
+      "github-actions",
+      "spring-boot",
+      "angular"
+    ],
+    "language": "en",
+    "questionText": "Your team maintains a full-stack application with a Spring Boot backend and Angular frontend in a monorepo. Design a GitHub Actions CI/CD pipeline that builds and tests both, creates Docker images, and deploys to a staging environment on merge to main. The pipeline should avoid redundant work — if only frontend code changed, the backend should not be rebuilt.",
+    "hints": [
+      "Think about path filters in GitHub Actions triggers",
+      "Consider a matrix strategy or separate jobs with dependencies",
+      "Think about Docker layer caching and image tagging"
+    ],
+    "modelAnswer": "Pipeline design with conditional builds using path filters and job dependencies. Workflow file: trigger on push to main and pull_request. Jobs: (1) detect-changes — uses dorny/paths-filter action to determine if backend (src/main/**, pom.xml), frontend (frontend/**, package.json), or infrastructure (Dockerfile, docker-compose, .github/**) changed. Outputs boolean flags. (2) backend-ci (if backend or infra changed) — set up JDK 17, cache Maven dependencies (actions/cache with ~/.m2 key), run mvn verify (compile + test), run SpotBugs/Checkstyle, upload test reports as artifacts. (3) frontend-ci (if frontend or infra changed) — set up Node 18, cache node_modules, run npm ci, npm run lint, npm run test -- --no-watch --code-coverage, npm run build -- --configuration=production. (4) docker-build (needs: [backend-ci, frontend-ci], if main branch) — build multi-stage Docker image. Backend Dockerfile copies JAR from target/. Frontend Dockerfile uses nginx to serve the built Angular app. Tag images with git SHA and 'latest'. Push to ECR. Use Docker layer caching (actions/cache or buildx cache-to). (5) deploy-staging (needs: docker-build) — SSH into staging or update ECS service with new image tag. Run smoke tests after deployment. On PR: run only ci jobs (no deploy). On merge to main: run full pipeline including deploy.",
+    "evaluationCriteria": [
+      "Uses path filters to avoid rebuilding unchanged components",
+      "Defines proper job dependencies and conditional execution",
+      "Includes caching for build dependencies (Maven, npm, Docker layers)",
+      "Separates CI (on PR) from CD (on merge to main)"
+    ],
+    "timeEstimate": 420,
+    "constraints": {
+      "build_time_target": "under 10 minutes",
+      "monorepo": true
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "cicd",
+      "deployment-strategies",
+      "docker"
+    ],
+    "language": "en",
+    "questionText": "Your team deploys a Spring Boot microservice to AWS ECS (Elastic Container Service). Currently, deployments cause brief 503 errors because the new container takes 30 seconds to start while the old one is already removed. Design a zero-downtime deployment process, including health checks, graceful shutdown, and rollback strategy.",
+    "hints": [
+      "Think about ECS rolling deployment configuration",
+      "Consider Spring Boot Actuator health endpoints",
+      "Think about connection draining and graceful shutdown"
+    ],
+    "modelAnswer": "Zero-downtime deployment with ECS rolling updates. Configuration: (1) Health checks — Spring Boot Actuator exposes /actuator/health. Configure the ALB target group health check to hit this endpoint with a 30-second initial delay (matching app startup), 10-second interval, 3 healthy threshold, 2 unhealthy threshold. (2) ECS service deployment config — set minimumHealthyPercent: 100 and maximumPercent: 200. This means ECS launches new tasks first (up to double capacity) and only drains old tasks after new ones pass health checks. (3) Graceful shutdown — configure Spring Boot with server.shutdown=graceful and spring.lifecycle.timeout-per-shutdown-phase=30s. When ECS sends SIGTERM, the app stops accepting new requests, finishes in-flight requests (up to 30s), then exits. Configure the ECS stop timeout to 45 seconds (longer than the graceful shutdown period). (4) Connection draining — ALB deregistration delay set to 30 seconds, allowing in-flight requests to complete before the old container is removed. (5) Rollback — ECS circuit breaker with rollback: if the new tasks repeatedly fail health checks, ECS automatically rolls back to the previous task definition. Deployment order: ECS registers new task -> new task passes health check -> ALB routes traffic to new task -> old task deregistered from ALB -> connection draining completes -> old task stopped.",
+    "evaluationCriteria": [
+      "Configures health checks with appropriate delays matching app startup time",
+      "Sets ECS deployment parameters to maintain capacity during deployment",
+      "Implements graceful shutdown handling SIGTERM and in-flight requests",
+      "Includes automatic rollback mechanism"
+    ],
+    "timeEstimate": 420,
+    "constraints": {
+      "startup_time": "30 seconds",
+      "zero_downtime": true
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "cicd",
+      "github-actions",
+      "testing"
+    ],
+    "language": "en",
+    "questionText": "Your team's CI pipeline takes 25 minutes because it runs all tests sequentially, including slow integration tests that need a database. Design an optimized GitHub Actions pipeline that runs tests in parallel, uses service containers for integration tests, and provides fast feedback on PRs.",
+    "hints": [
+      "Think about splitting unit tests and integration tests into separate jobs",
+      "Consider GitHub Actions service containers for PostgreSQL",
+      "Think about test parallelization strategies"
+    ],
+    "modelAnswer": "Optimized pipeline with parallelization and fast feedback. Structure: (1) Fast feedback job (runs first, ~2 min) — compile, lint, and run unit tests only (mvn test -Dgroups=unit or separate source sets). This gives developers quick feedback. (2) Integration test job (parallel with other checks, ~8 min) — define a PostgreSQL service container in the job: services.postgres with image postgres:15, env vars for test DB, health check with pg_isready. Run integration tests (mvn verify -Dgroups=integration) against this ephemeral database. (3) Frontend tests (parallel with backend, ~4 min) — npm run test with Karma/Jest, split into unit and e2e jobs if needed. (4) Test parallelization within jobs — use Maven Surefire's parallel=methods,classes with threadCount=4, or split integration tests across multiple jobs using a matrix strategy (matrix.test-group: [orders, products, users]) where each job runs a subset. (5) Caching — cache Maven dependencies, cache Docker layers for service containers, cache compiled test classes between jobs using actions/cache. (6) Required checks — configure branch protection to require only the 'unit-tests' job for fast PR approval, while integration tests must pass before merge. Total pipeline time target: ~8 minutes (bounded by slowest parallel job) vs the original 25 minutes sequential.",
+    "evaluationCriteria": [
+      "Separates fast unit tests from slow integration tests",
+      "Uses service containers for database-dependent tests",
+      "Implements parallelization at the job and/or test level",
+      "Configures caching to reduce pipeline time"
+    ],
+    "timeEstimate": 360,
+    "constraints": {
+      "target_pipeline_time": "under 10 minutes",
+      "current_time": "25 minutes"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "database",
+      "schema-design",
+      "normalization"
+    ],
+    "language": "en",
+    "questionText": "You are designing the database for an e-commerce platform. The orders table needs to store the product name, price, and quantity at the time of purchase. A colleague suggests just storing the product_id and joining to the products table. Explain why this is problematic and design a schema that preserves order history accurately.",
+    "hints": [
+      "Think about what happens when a product's price changes after an order is placed",
+      "Consider the balance between normalization and data integrity",
+      "Think about order_items as a separate table"
+    ],
+    "modelAnswer": "Storing only a product_id foreign key is problematic because product data changes over time — prices get updated, names are edited, products are discontinued. If you join orders to products, a historical order would show the current price, not the price the customer actually paid. This corrupts financial records and audit trails. Correct design: (1) products table — id, name, price (current values), description, status. (2) orders table — id, user_id, total_amount, status, created_at, shipping_address (snapshot, not FK to address table). (3) order_items table — id, order_id (FK), product_id (FK, for reference/linking), product_name (snapshot), unit_price (snapshot at time of purchase), quantity, subtotal. The snapshots in order_items capture the state at purchase time. The product_id FK allows navigating to the current product page but the order record is self-contained. This is intentional denormalization for data integrity — the order_items table is an immutable historical record. Same principle applies to shipping_address: store the full address in the order, not just an address_id, because the user might update their address later. Additional consideration: if products have complex variants (size, color), store those as snapshots in order_items too.",
+    "evaluationCriteria": [
+      "Identifies the core problem: mutable product data corrupts order history",
+      "Designs order_items with snapshot fields for price and product name",
+      "Maintains the product_id reference alongside snapshots",
+      "Extends the principle to other mutable data like shipping addresses"
+    ],
+    "timeEstimate": 360,
+    "constraints": {
+      "data_integrity": "financial audit requirements"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "database",
+      "migrations"
+    ],
+    "language": "en",
+    "questionText": "Your production PostgreSQL database has a users table with 5 million rows, and you need to add a NOT NULL column 'timezone' with a default value. The application runs on multiple instances and deployments happen with zero downtime. Describe the risks of this migration and design a safe, multi-step migration strategy.",
+    "hints": [
+      "Think about table locks during ALTER TABLE on large tables",
+      "Consider breaking the migration into multiple deployments",
+      "Think about backward compatibility between old and new application code"
+    ],
+    "modelAnswer": "Risk: In older PostgreSQL versions (< 11), adding a NOT NULL column with a DEFAULT rewrites the entire table, acquiring an ACCESS EXCLUSIVE lock that blocks all reads and writes for minutes on a 5M row table. Even in PostgreSQL 11+ where ADD COLUMN with DEFAULT is fast (stores the default in the catalog, no rewrite), adding NOT NULL constraint on existing rows requires a full table scan with a lock. Safe multi-step migration: Step 1 (migration) — ALTER TABLE users ADD COLUMN timezone VARCHAR(50) DEFAULT 'UTC'. In PG 11+, this is instant, no rewrite. Step 2 (code deployment) — Deploy application code that writes to the timezone column for all new/updated users. Existing code must handle NULL gracefully (COALESCE in queries or application-level default). Step 3 (backfill) — Run a background job that updates existing NULL rows in batches: UPDATE users SET timezone = 'UTC' WHERE timezone IS NULL AND id BETWEEN X AND Y. Use batches of 10,000 with short pauses to avoid locking issues. Step 4 (add constraint) — Once all rows are populated, add the NOT NULL constraint: ALTER TABLE users ALTER COLUMN timezone SET NOT NULL. Use ALTER TABLE ... VALIDATE CONSTRAINT in PG 12+ to separate validation (ShareUpdateExclusiveLock) from enforcement. Step 5 (cleanup) — Remove COALESCE/null-handling code. Each step is a separate deployment, ensuring backward compatibility at every point. If anything goes wrong, you can stop without having broken the running application.",
+    "evaluationCriteria": [
+      "Identifies the locking risk of ALTER TABLE on large tables",
+      "Proposes a multi-step migration with separate deployments",
+      "Includes a batched backfill strategy to avoid long-running locks",
+      "Ensures backward compatibility between old and new application code at each step"
+    ],
+    "timeEstimate": 420,
+    "constraints": {
+      "table_size": "5M rows",
+      "zero_downtime": true
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "database",
+      "indexing",
+      "performance"
+    ],
+    "language": "en",
+    "questionText": "Your application has a search feature that allows users to filter orders by status, date range, customer name, and total amount. Queries are slow on the 10M row orders table. The current indexes are: a primary key on id and a single-column index on customer_id. Analyze the query patterns and design an indexing strategy.",
+    "hints": [
+      "Think about composite indexes and column order",
+      "Consider partial indexes for common filter values",
+      "Think about the trade-off between read and write performance"
+    ],
+    "modelAnswer": "Analysis: The existing indexes don't cover the common query patterns. Strategy: (1) Composite index for status + date filtering — CREATE INDEX idx_orders_status_created ON orders(status, created_at DESC). This covers the most common query (filter by status, sort by date). Status first because it has low cardinality and is used as an equality filter, while created_at is used as a range filter. (2) Partial index for active orders — CREATE INDEX idx_orders_active ON orders(created_at DESC) WHERE status IN ('pending', 'processing'). Since most queries are about active orders (which are a small fraction of 10M rows), this index is small and fast. (3) Customer search — the existing customer_id index works for exact lookups. For name search, add a trigram index: CREATE EXTENSION pg_trgm; CREATE INDEX idx_orders_customer_name_trgm ON orders USING gin(customer_name gin_trgm_ops). This enables fast LIKE '%smith%' queries. (4) Amount range — rarely filtered alone, so don't create a dedicated index. If needed, include it as the last column in a composite index. (5) Cover common queries — consider an include index: CREATE INDEX idx_orders_status_date_include ON orders(status, created_at DESC) INCLUDE (total_amount, customer_name) to enable index-only scans. Monitor with pg_stat_user_indexes to verify indexes are being used and remove unused ones. Total: 3-4 targeted indexes rather than indexing every column.",
+    "evaluationCriteria": [
+      "Designs composite indexes matching actual query patterns with correct column order",
+      "Uses partial indexes to optimize for common filter values",
+      "Considers index-only scans with INCLUDE columns",
+      "Balances read performance with write overhead"
+    ],
+    "timeEstimate": 360,
+    "constraints": {
+      "table_size": "10M rows",
+      "query_patterns": "status + date (80%), customer search (15%), amount range (5%)"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "database",
+      "normalization",
+      "denormalization"
+    ],
+    "language": "en",
+    "questionText": "Your team is building a social media feed. The feed shows posts with author name, author avatar URL, like count, and comment count. The normalized schema requires joining 4 tables (posts, users, likes, comments) and running COUNT aggregations. Feed queries are slow. Propose a denormalization strategy and explain how to keep the denormalized data consistent.",
+    "hints": [
+      "Think about what data to duplicate and where",
+      "Consider event-driven updates vs periodic reconciliation",
+      "Think about acceptable staleness for different fields"
+    ],
+    "modelAnswer": "Denormalization strategy: Add redundant columns directly to the posts table — author_name, author_avatar_url, like_count, comment_count. The feed query becomes a single SELECT on the posts table with no joins or aggregations, bringing query time from hundreds of milliseconds to single-digit milliseconds. Consistency mechanisms: (1) Like/comment counts — update via atomic increment (UPDATE posts SET like_count = like_count + 1 WHERE id = X) when a like is added. Use a database trigger or application event listener. For high-traffic posts, use a buffered counter: accumulate count changes in Redis and flush to the database periodically (every 30 seconds). (2) Author name/avatar — update asynchronously via application events. When a user updates their profile, publish an event (or use a database trigger) that updates all their posts. Since profile changes are rare, eventual consistency (seconds of delay) is acceptable. (3) Reconciliation job — run a scheduled job (daily or hourly) that recalculates all counts from the source tables and corrects any drift: UPDATE posts SET like_count = (SELECT COUNT(*) FROM likes WHERE post_id = posts.id). This catches edge cases where events were lost. (4) For the author info, if the feed is cached in Redis, update the cache entries instead of querying the DB at all. Trade-off: writes are slightly more complex and slower, but reads (which are 100x more frequent for a feed) are dramatically faster.",
+    "evaluationCriteria": [
+      "Identifies specific columns to denormalize with clear justification",
+      "Proposes atomic updates for count fields",
+      "Includes a reconciliation mechanism to correct drift",
+      "Acknowledges the trade-off between write complexity and read performance"
+    ],
+    "timeEstimate": 360,
+    "constraints": {
+      "read_write_ratio": "100:1",
+      "feed_latency": "under 50ms"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "infrastructure",
+      "aws",
+      "vpc"
+    ],
+    "language": "en",
+    "questionText": "You are setting up the AWS infrastructure for a new web application with a Spring Boot backend, PostgreSQL database, and Angular frontend. Design the VPC architecture including subnets, security groups, and how each component is placed for security and availability.",
+    "hints": [
+      "Think about public vs private subnets",
+      "Consider which components need internet access and which don't",
+      "Think about multi-AZ for high availability"
+    ],
+    "modelAnswer": "VPC design with public and private subnet tiers across 2 Availability Zones for high availability. Network layout: (1) Public subnets (2, one per AZ) — contain the Application Load Balancer (ALB) and NAT Gateways. The ALB has a public IP and routes traffic to backend instances. (2) Private app subnets (2, one per AZ) — contain EC2 instances or ECS tasks running the Spring Boot backend. No public IPs; outbound internet access via NAT Gateway (for pulling Docker images, calling external APIs). (3) Private data subnets (2, one per AZ) — contain RDS PostgreSQL in Multi-AZ configuration. No internet access at all. Security groups: (1) ALB SG — inbound: 443 (HTTPS) from 0.0.0.0/0. (2) App SG — inbound: 8080 from ALB SG only. Outbound: 5432 to DB SG, 443 to internet (via NAT). (3) DB SG — inbound: 5432 from App SG only. No outbound internet. Angular frontend: Build artifacts (static files) deployed to S3 bucket, served via CloudFront CDN. Not on EC2. This separation means the database is never directly accessible from the internet (two layers deep), the application servers are shielded by the ALB, and the static frontend is globally distributed. NACL as an additional layer: restrict the data subnets to only allow traffic from the app subnet CIDR on port 5432.",
+    "evaluationCriteria": [
+      "Separates resources into public, private app, and private data subnets",
+      "Designs security groups with minimal required access (principle of least privilege)",
+      "Uses multi-AZ for high availability",
+      "Places the database in private subnets with no internet access"
+    ],
+    "timeEstimate": 420,
+    "constraints": {
+      "availability": "99.9%",
+      "compliance": "no database internet exposure"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "infrastructure",
+      "aws",
+      "s3"
+    ],
+    "language": "en",
+    "questionText": "Your application allows users to upload profile pictures and documents (up to 50MB). Currently, files are stored on the EC2 instance's local disk. Design a file storage solution using S3 that handles uploads, access control, and serving files to users.",
+    "hints": [
+      "Think about pre-signed URLs for direct uploads",
+      "Consider who should be able to access which files",
+      "Think about thumbnails and file processing"
+    ],
+    "modelAnswer": "Migration from local disk to S3 with secure access patterns. Upload flow: (1) Client requests an upload URL from the backend. (2) Backend generates a pre-signed S3 PUT URL (valid for 15 minutes) with constraints: max file size (50MB), allowed content types (image/jpeg, image/png, application/pdf). The key includes the user ID for organization: uploads/{userId}/{uuid}.{ext}. (3) Client uploads directly to S3 using the pre-signed URL (bypasses the backend, no 50MB through the API server). (4) Backend stores the S3 key in the database. Serving files: For profile pictures (public) — serve through CloudFront with the S3 bucket as origin. Long cache TTL since profile pictures use unique keys. For private documents — generate pre-signed GET URLs (valid for 1 hour) when the user requests access. The backend verifies authorization before generating the URL. Bucket configuration: Block all public access at the bucket level. Use bucket policies to allow CloudFront OAI (Origin Access Identity) for the public profile pictures path. Use a lifecycle rule to delete incomplete multipart uploads after 24 hours. File processing: Configure S3 event notification to trigger a Lambda function on upload — generate image thumbnails (store at uploads/{userId}/thumbnails/{uuid}.jpg) and scan documents for viruses. S3 key structure: separate prefixes for public (profile-pictures/) and private (documents/) content, with different CloudFront behaviors or no CloudFront for private content.",
+    "evaluationCriteria": [
+      "Uses pre-signed URLs for direct client-to-S3 uploads",
+      "Separates public and private file access patterns",
+      "Configures appropriate S3 security (block public access, OAI for CloudFront)",
+      "Addresses file processing needs (thumbnails, virus scanning)"
+    ],
+    "timeEstimate": 360,
+    "constraints": {
+      "max_file_size": "50MB",
+      "file_types": "images and PDFs"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "infrastructure",
+      "aws",
+      "rds"
+    ],
+    "language": "en",
+    "questionText": "You are configuring AWS RDS PostgreSQL for a production application that currently handles 500 requests per second with expected growth to 2,000 rps. Design the RDS setup including instance sizing, Multi-AZ configuration, backup strategy, and connection management from the Spring Boot application.",
+    "hints": [
+      "Think about connection pooling and why it matters",
+      "Consider the difference between Multi-AZ and read replicas",
+      "Think about automated vs manual snapshots and point-in-time recovery"
+    ],
+    "modelAnswer": "RDS PostgreSQL configuration for production: (1) Instance sizing — start with db.r6g.large (2 vCPUs, 16GB RAM) for 500 rps. Monitor CPU and memory via CloudWatch; scale to db.r6g.xlarge as traffic grows. Use gp3 storage (baseline 3000 IOPS, scalable) starting at 100GB with auto-scaling enabled. (2) Multi-AZ — enable Multi-AZ deployment for high availability. RDS maintains a synchronous standby in another AZ; automatic failover (~60 seconds) if the primary fails. This is for HA, not read scaling. (3) Read replicas — add 1-2 read replicas for read-heavy traffic. Route reporting queries and non-critical reads to replicas via Spring's @Transactional(readOnly = true) with a read/write routing DataSource. (4) Connection management — RDS default max connections is based on instance memory (~700 for r6g.large). Use PgBouncer as a connection pooler (deployed as a sidecar or on a small EC2 instance) or RDS Proxy to manage connections. In Spring Boot, configure HikariCP with maximumPoolSize=20 per instance (with 4 instances = 80 connections, well under limit). (5) Backup strategy — enable automated backups with 7-day retention (free, enables point-in-time recovery to any second within the window). Take manual snapshots before major migrations (retained indefinitely). (6) Security — encryption at rest (KMS), enforce SSL connections (rds.force_ssl=1), store credentials in AWS Secrets Manager with rotation. (7) Monitoring — enable Performance Insights (free tier) to identify slow queries, set CloudWatch alarms on CPU > 80%, freeable memory < 1GB, read/write latency.",
+    "evaluationCriteria": [
+      "Configures Multi-AZ for HA with read replicas for read scaling",
+      "Addresses connection pooling with PgBouncer or RDS Proxy",
+      "Designs a backup strategy with point-in-time recovery",
+      "Includes monitoring and alerting configuration"
+    ],
+    "timeEstimate": 420,
+    "constraints": {
+      "current_traffic": "500 rps",
+      "growth_target": "2000 rps",
+      "availability": "99.95%"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "infrastructure",
+      "monitoring",
+      "logging"
+    ],
+    "language": "en",
+    "questionText": "Your team's Spring Boot microservices are running in production but when issues occur, debugging is difficult because logs are scattered across multiple EC2 instances and there is no monitoring. Design a monitoring and logging strategy that gives the team visibility into application health, performance, and errors.",
+    "hints": [
+      "Think about the three pillars: logs, metrics, and traces",
+      "Consider centralized logging vs checking each server",
+      "Think about what alerts are actionable vs noisy"
+    ],
+    "modelAnswer": "Three-pillar observability strategy: Logging, Metrics, and Tracing. (1) Centralized logging — use the ELK stack (Elasticsearch, Logstash, Kibana) or AWS CloudWatch Logs. Spring Boot apps log in structured JSON format (using Logback with JSON encoder). Include correlation ID (request ID) in every log line, propagated through all service calls. Ship logs using CloudWatch agent or Filebeat. Key log fields: timestamp, level, service, correlationId, userId, endpoint, duration, error. (2) Metrics — expose application metrics via Spring Boot Actuator + Micrometer, scraped by Prometheus or pushed to CloudWatch. Key metrics: request rate (rps), error rate (5xx/total), latency percentiles (p50, p95, p99), JVM heap usage, thread pool utilization, database connection pool usage, external service call durations. Dashboard in Grafana or CloudWatch showing the four golden signals: latency, traffic, errors, saturation. (3) Distributed tracing — integrate Spring Cloud Sleuth (or Micrometer Tracing) with Zipkin or AWS X-Ray. Automatically propagates trace IDs across service boundaries so you can see the full request path and identify which service is slow. (4) Alerting — configure alerts on actionable conditions: error rate > 5% for 5 minutes (PagerDuty/Slack), p99 latency > 2s for 10 minutes, disk usage > 85%, health check failures. Avoid alert fatigue by setting appropriate thresholds and using severity levels (critical = pages on-call, warning = Slack notification).",
+    "evaluationCriteria": [
+      "Covers all three pillars: logging, metrics, and tracing",
+      "Designs structured logging with correlation IDs for cross-service debugging",
+      "Identifies key metrics and the four golden signals",
+      "Configures actionable alerting with appropriate thresholds"
+    ],
+    "timeEstimate": 420,
+    "constraints": {
+      "services": "5 microservices",
+      "team_size": "on-call rotation of 4 developers"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "infrastructure",
+      "aws",
+      "iam"
+    ],
+    "language": "en",
+    "questionText": "Your team's AWS setup has every service using the same IAM user with AdministratorAccess. The security team has flagged this as a critical risk. Design an IAM strategy that follows the principle of least privilege for a typical web application stack (EC2, RDS, S3, CloudFront, ECS).",
+    "hints": [
+      "Think about IAM roles vs IAM users for services",
+      "Consider what permissions each service actually needs",
+      "Think about how developers and CI/CD should access AWS"
+    ],
+    "modelAnswer": "IAM strategy with least privilege: (1) Services use IAM Roles, not users — attach IAM roles to EC2 instances (instance profiles), ECS task roles, and Lambda execution roles. No access keys needed on servers; credentials are automatically provided and rotated by AWS. (2) Per-service role definitions — ECS Task Role for the Spring Boot app: allow s3:PutObject and s3:GetObject on the specific upload bucket only (arn:aws:s3:::myapp-uploads/*), allow rds-db:connect for IAM database authentication, allow sqs:SendMessage on specific queue ARNs. No S3 bucket deletion, no RDS modification, no EC2 management. CloudFront: use an OAI with read-only access to the S3 static assets bucket. (3) CI/CD pipeline (GitHub Actions) — use OIDC federation with GitHub (no stored AWS keys). The pipeline assumes a deployment role that can push to ECR, update ECS services, and invalidate CloudFront — nothing else. (4) Developer access — use AWS SSO (IAM Identity Center) with role-based access. Developers get ReadOnlyAccess for production, PowerUserAccess for development/staging accounts. Only the platform team has IAM management permissions. (5) Guardrails — service control policies (SCPs) at the organization level prevent anyone from disabling CloudTrail, deleting S3 buckets with versioning, or launching resources outside approved regions. (6) Audit — enable CloudTrail for all API calls, AWS Config for resource compliance, and IAM Access Analyzer to identify over-permissioned roles.",
+    "evaluationCriteria": [
+      "Uses IAM roles instead of IAM users for services",
+      "Defines granular permissions scoped to specific resources (ARNs)",
+      "Addresses CI/CD access with OIDC federation or scoped deployment roles",
+      "Includes audit and governance mechanisms"
+    ],
+    "timeEstimate": 420,
+    "constraints": {
+      "compliance": "security audit requirement",
+      "team_size": "8 developers, 2 platform engineers"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "infrastructure",
+      "aws",
+      "deployment"
+    ],
+    "language": "en",
+    "questionText": "You need to deploy a full-stack application (Angular frontend, Spring Boot API, PostgreSQL database) to AWS for the first time. The team has 4 developers and a limited budget. Design the AWS architecture, choosing specific services for each component and justifying your choices over alternatives.",
+    "hints": [
+      "Think about managed services vs self-managed for a small team",
+      "Consider cost optimization for a limited budget",
+      "Think about what's needed now vs what you might need later"
+    ],
+    "modelAnswer": "AWS architecture for a small team with cost optimization: (1) Frontend (Angular) — S3 + CloudFront. Build Angular to static files, host in S3 ($0.023/GB), serve via CloudFront CDN (free tier: 1TB/month). Why not EC2 with Nginx: S3+CloudFront is cheaper, zero maintenance, globally distributed, auto-scales infinitely. (2) Backend (Spring Boot) — ECS Fargate with 2 tasks (1 vCPU, 2GB RAM each) behind an ALB. Why Fargate over EC2: no server patching, pay per task (scale to zero possible), simpler operations for a small team. Why not Lambda: Spring Boot cold starts are 10+ seconds, poor fit for synchronous APIs. Alternative: a single EC2 t3.medium ($30/month) if budget is very tight, but you lose auto-scaling and HA. (3) Database — RDS PostgreSQL db.t3.medium, Multi-AZ for production. Why RDS over self-managed PostgreSQL on EC2: automated backups, patching, failover — critical for a 4-person team without a DBA. Start single-AZ in staging to save costs. (4) Infrastructure as Code — use Terraform or AWS CDK to define all resources. Essential for reproducibility and disaster recovery. (5) Cost optimization — use Savings Plans for Fargate (up to 50% discount with 1-year commitment), S3 Intelligent-Tiering for infrequent assets, RDS Reserved Instances after 3 months of stable usage patterns. Estimated monthly cost: ~$150-250 (Fargate ~$70, RDS ~$100, ALB ~$20, S3+CloudFront ~$5, NAT Gateway ~$35). (6) DNS and SSL — Route 53 for DNS, ACM (free) for SSL certificates on ALB and CloudFront.",
+    "evaluationCriteria": [
+      "Selects appropriate AWS services for each component with justification",
+      "Considers operational burden appropriate for a small team",
+      "Provides cost estimates and optimization strategies",
+      "Addresses infrastructure as code and reproducibility"
+    ],
+    "timeEstimate": 420,
+    "constraints": {
+      "team_size": "4 developers",
+      "budget": "under $300/month",
+      "availability": "99.9%"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "architecture",
+      "monolith",
+      "modular"
+    ],
+    "language": "en",
+    "questionText": "Your team's Spring Boot monolith has grown to 200K lines of code. Different features (user management, billing, notifications, reporting) are tangled together — a change in billing sometimes breaks notifications. Without migrating to microservices, design a modular monolith architecture that enforces boundaries between features.",
+    "hints": [
+      "Think about package structure and access modifiers",
+      "Consider how modules should communicate with each other",
+      "Think about database schema ownership per module"
+    ],
+    "modelAnswer": "Modular monolith design with enforced boundaries: (1) Package structure — organize by feature (module), not by layer. Instead of com.app.controller, com.app.service, com.app.repository, use com.app.billing, com.app.notifications, com.app.users, com.app.reporting. Each module has its own controller, service, repository sub-packages. (2) Module APIs — each module exposes a public interface (e.g., BillingService) in a dedicated 'api' sub-package. Internal classes are package-private. Other modules depend only on the API, never on internal classes. Use ArchUnit tests to enforce: no direct access from com.app.notifications to com.app.billing.internal. (3) Inter-module communication — modules communicate through their public APIs for synchronous operations, and through Spring application events (ApplicationEventPublisher) for asynchronous notifications. Example: when billing processes a payment, it publishes a PaymentCompletedEvent. Notifications listens and sends the receipt email. No direct dependency from billing to notifications. (4) Database ownership — each module owns its tables. Billing owns invoices, payments. Users owns users, roles. No cross-module joins at the repository level. If notifications needs user data, it calls the Users module API. Consider using separate schemas in PostgreSQL for stronger enforcement. (5) Shared kernel — minimal shared code: common DTOs, exception types, utility classes in a com.app.shared module that all modules can depend on. Keep it thin. This architecture makes each module independently testable, reduces coupling, and creates a clear migration path to microservices if needed later — each module is a potential service boundary.",
+    "evaluationCriteria": [
+      "Defines clear module boundaries with package structure",
+      "Enforces boundaries with access modifiers and automated tests (ArchUnit)",
+      "Uses events for cross-module communication to reduce coupling",
+      "Addresses database ownership per module"
+    ],
+    "timeEstimate": 420,
+    "constraints": {
+      "codebase_size": "200K lines",
+      "team": "keep as monolith deployment"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "architecture",
+      "api-design",
+      "real-time"
+    ],
+    "language": "en",
+    "questionText": "Your project management application needs real-time features: task updates should appear instantly for all team members viewing the same board, and users should see who else is currently viewing the board. Design the real-time communication architecture, choosing between WebSockets, Server-Sent Events, and polling.",
+    "hints": [
+      "Consider which direction data flows for each feature",
+      "Think about scaling WebSocket connections across multiple server instances",
+      "Consider fallback strategies for unreliable connections"
+    ],
+    "modelAnswer": "Real-time architecture using WebSockets for bidirectional communication. Technology choice: WebSockets over SSE because the application needs bidirectional communication — presence (who's online) requires the client to send heartbeats, and task updates need to flow both directions. SSE is server-to-client only. Polling wastes resources and adds latency. Architecture: (1) Connection management — when a user opens a board, the Angular client connects to ws://api/boards/{boardId}. The backend (Spring Boot with spring-websocket or a dedicated WebSocket service) manages connections grouped by board ID. (2) Task updates — when any user modifies a task (via REST API), the backend publishes the change to all WebSocket connections for that board. Message format: {type: 'TASK_UPDATED', payload: {taskId, changes, updatedBy}}. The Angular frontend applies the update optimistically on the sender's side and via WebSocket on other clients. (3) Presence — clients send heartbeats every 30 seconds. The server tracks active users per board in Redis (SADD board:{id}:viewers userId, with TTL). On connect/disconnect/heartbeat, broadcast the current viewer list. (4) Scaling across instances — use Redis Pub/Sub as a message broker. When instance A receives a task update, it publishes to a Redis channel board:{id}. All instances subscribe and forward to their local WebSocket connections. Spring's SimpMessagingTemplate with a Redis message broker handles this. (5) Reconnection — client implements exponential backoff reconnection. On reconnect, fetch the current board state via REST to catch any missed updates. (6) Fallback — if WebSocket connection fails after retries, degrade to polling (GET /api/boards/{id}/updates?since=timestamp) every 5 seconds with a UI indicator showing 'limited real-time updates'.",
+    "evaluationCriteria": [
+      "Justifies WebSocket choice over SSE and polling for this use case",
+      "Designs a message format and broadcasting mechanism",
+      "Addresses scaling WebSocket connections across multiple server instances using Redis Pub/Sub",
+      "Includes reconnection and fallback strategies"
+    ],
+    "timeEstimate": 420,
+    "constraints": {
+      "concurrent_users_per_board": "up to 50",
+      "update_latency": "under 500ms"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "scalability",
+      "performance",
+      "rate-limiting"
+    ],
+    "language": "en",
+    "questionText": "Your public API is being abused — some clients send thousands of requests per second, degrading performance for everyone. Design a rate limiting strategy that protects the API while being fair to legitimate users. Consider different tiers (free, pro) and different rate limits per endpoint.",
+    "hints": [
+      "Think about where to implement rate limiting (API gateway vs application)",
+      "Consider different rate limiting algorithms",
+      "Think about how to communicate rate limits to API consumers"
+    ],
+    "modelAnswer": "Rate limiting strategy with tiered limits and per-endpoint configuration. Implementation layer: API Gateway (e.g., AWS API Gateway, Kong, or a Spring Cloud Gateway) for first-line defense, with application-level rate limiting for finer control. Algorithm: Token bucket — allows bursts while enforcing an average rate. Each client gets a bucket that refills at a steady rate; each request consumes a token. If the bucket is empty, requests are rejected with 429 Too Many Requests. Tier configuration: Free tier — 100 requests/minute global, 10 requests/minute for expensive endpoints (search, reports). Pro tier — 1,000 requests/minute global, 100 requests/minute for expensive endpoints. Internal services — no rate limit (authenticated via API key). Identification: use API keys for authenticated clients (rate limit per key), IP address for unauthenticated requests (with awareness of shared IPs behind NATs). Implementation with Redis: use a sorted set per client — ZADD with timestamp as score, ZREMRANGEBYSCORE to remove old entries, ZCARD to count requests in the window. This sliding window approach is more accurate than fixed windows. Response headers: include X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, and Retry-After (on 429 responses) so clients can self-regulate. Graceful degradation: before hard rejection, serve cached/degraded responses when possible. For known abusers, implement progressive penalties (temporary ban after repeated 429s).",
+    "evaluationCriteria": [
+      "Chooses an appropriate rate limiting algorithm with justification",
+      "Designs tiered limits per client type and per endpoint",
+      "Uses Redis or similar for distributed rate limit tracking",
+      "Includes proper HTTP headers and client communication"
+    ],
+    "timeEstimate": 360,
+    "constraints": {
+      "tiers": "free and pro",
+      "distributed": "multiple API server instances"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "database",
+      "postgresql",
+      "partitioning"
+    ],
+    "language": "en",
+    "questionText": "Your application's events table stores user activity logs and has grown to 500 million rows. Queries that filter by date range are slow despite proper indexing, and the table's index maintenance during writes is becoming expensive. The team only queries recent data (last 3 months) frequently. Design a PostgreSQL partitioning strategy.",
+    "hints": [
+      "Think about range partitioning by date",
+      "Consider partition maintenance (creating new, archiving old)",
+      "Think about how queries and indexes change with partitioning"
+    ],
+    "modelAnswer": "Range partitioning by month on the created_at column. Design: (1) Create a partitioned table — CREATE TABLE events (...) PARTITION BY RANGE (created_at). Create monthly partitions: events_2025_01, events_2025_02, etc. PostgreSQL's query planner automatically routes queries to the relevant partitions (partition pruning) when WHERE created_at BETWEEN '2025-01-01' AND '2025-03-31' is used — only 3 partitions scanned instead of 500M rows. (2) Indexes per partition — each partition has its own indexes, which are smaller and faster to maintain. CREATE INDEX ON events_2025_01 (user_id, created_at). Smaller indexes mean faster inserts (B-tree updates are cheaper) and faster queries. (3) Partition maintenance — automate partition creation: a scheduled job (pg_cron or application cron) creates next month's partition in advance (at least 1 month ahead). For archiving: detach old partitions (ALTER TABLE events DETACH PARTITION events_2024_01), then either drop them, move to cheaper storage, or dump to S3 as Parquet files. Detaching is instant and doesn't lock the parent table. (4) Retention policy — keep last 3 months as active partitions (hot data), 12 months as attached but potentially on slower storage, archive older partitions. (5) Considerations — all queries must include created_at in the WHERE clause for partition pruning to work. Update the application to always filter by date range. Foreign keys referencing the partitioned table require careful handling (partitioned tables can be FK targets in PG 12+). Unique constraints must include the partition key. (6) Migration — create the new partitioned table alongside the existing one, migrate data in batches by date range, then swap table names. Avoid trying to partition an existing table in-place.",
+    "evaluationCriteria": [
+      "Chooses range partitioning by date with clear justification",
+      "Explains partition pruning and its query performance benefits",
+      "Designs partition maintenance automation (creation, archiving, retention)",
+      "Addresses migration strategy from the unpartitioned table"
+    ],
+    "timeEstimate": 420,
+    "constraints": {
+      "table_size": "500M rows",
+      "query_pattern": "90% queries on last 3 months",
+      "retention": "indefinite archival"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "cicd",
+      "github-actions",
+      "security"
+    ],
+    "language": "en",
+    "questionText": "Your GitHub Actions CI/CD pipeline needs to access secrets (database credentials, AWS keys, Docker registry tokens) for building and deploying the application. Currently, secrets are hardcoded in the workflow file. Design a secure secrets management strategy for the pipeline.",
+    "hints": [
+      "Think about GitHub Actions secrets and environments",
+      "Consider using OIDC for AWS instead of storing keys",
+      "Think about secret rotation and audit"
+    ],
+    "modelAnswer": "Secure secrets management strategy for GitHub Actions: (1) Immediate fix — move all hardcoded secrets to GitHub Actions encrypted secrets (Settings > Secrets). Reference in workflow as ${{ secrets.AWS_ACCESS_KEY_ID }}. Secrets are encrypted at rest, masked in logs, and not exposed to forked PRs. (2) Environment-based secrets — create GitHub environments (staging, production) with separate secrets per environment. Production environment requires reviewer approval before the deployment job runs. This prevents accidental production deployments. (3) AWS access — replace static AWS credentials with OIDC federation. Configure an AWS IAM OIDC provider trusting GitHub's token endpoint. Create IAM roles with trust policies scoped to specific repositories and branches. In the workflow: use aws-actions/configure-aws-credentials with role-to-assume. No stored AWS keys at all — the workflow receives temporary credentials valid for 1 hour. (4) Docker registry — use GitHub Container Registry (ghcr.io) with the built-in GITHUB_TOKEN (no additional secrets needed). If using AWS ECR, the OIDC-based AWS credentials handle authentication. (5) Application secrets (database credentials) — don't store in GitHub secrets at all. Use AWS Secrets Manager or SSM Parameter Store. The deployment step retrieves secrets at runtime using the OIDC-based AWS role. The application reads from Secrets Manager on startup. This means rotating a database password only requires updating Secrets Manager, not GitHub secrets. (6) Audit — enable GitHub audit log to track secret access, review dependabot alerts for exposed secrets in dependencies, use git-secrets or truffleHog in the pipeline to scan for accidentally committed credentials.",
+    "evaluationCriteria": [
+      "Uses GitHub environments with approval gates for production secrets",
+      "Implements OIDC federation for AWS access (no static credentials)",
+      "Separates CI/CD pipeline secrets from application runtime secrets",
+      "Includes audit and secret rotation strategies"
+    ],
+    "timeEstimate": 360,
+    "constraints": {
+      "environments": "staging and production",
+      "cloud": "AWS"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "scalability",
+      "performance",
+      "async"
+    ],
+    "language": "en",
+    "questionText": "Your e-commerce checkout endpoint currently processes payment, sends confirmation email, updates inventory, notifies the warehouse, and generates an invoice — all synchronously. The endpoint takes 8 seconds to respond and frequently times out. Redesign the checkout flow to be fast and reliable.",
+    "hints": [
+      "Think about what must happen synchronously vs what can be deferred",
+      "Consider a message queue for asynchronous processing",
+      "Think about what happens if one of the async steps fails"
+    ],
+    "modelAnswer": "Redesign with synchronous core + asynchronous side effects. Principle: the checkout endpoint should only do what the user is waiting for, and defer everything else. Synchronous path (~500ms): (1) Validate the order and stock availability. (2) Process the payment (Stripe API call, ~300ms). (3) Create the order record in the database with status 'confirmed'. (4) Return 201 Created with order confirmation to the user. Asynchronous path via message queue (SQS or RabbitMQ): After the order is confirmed, publish an OrderConfirmed event to the message queue. Separate consumers process each side effect independently: (1) Email consumer — sends confirmation email. (2) Inventory consumer — decrements stock. (3) Warehouse consumer — sends pick-and-pack notification. (4) Invoice consumer — generates PDF invoice and stores in S3. Each consumer retries independently on failure with exponential backoff. If the email service is down, it doesn't affect inventory updates. Dead letter queue (DLQ) captures messages that fail after max retries for manual investigation. Idempotency: each consumer must be idempotent — processing the same message twice should not send duplicate emails or double-decrement inventory. Use the order ID as an idempotency key and check if the action was already performed. Result: checkout responds in under 1 second, side effects complete within minutes, and each step is independently reliable and retryable.",
+    "evaluationCriteria": [
+      "Clearly separates synchronous and asynchronous operations with justification",
+      "Uses a message queue with independent consumers for side effects",
+      "Addresses failure handling with retries and dead letter queues",
+      "Ensures idempotency of async consumers"
+    ],
+    "timeEstimate": 360,
+    "constraints": {
+      "checkout_latency": "under 1 second",
+      "reliability": "no lost orders or duplicate charges"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "infrastructure",
+      "networking",
+      "dns"
+    ],
+    "language": "en",
+    "questionText": "Your application serves api.yourapp.com (Spring Boot API), app.yourapp.com (Angular frontend), and admin.yourapp.com (admin panel). Design the DNS, SSL, and routing configuration on AWS, explaining how requests flow from the user's browser to the correct service.",
+    "hints": [
+      "Think about Route 53 for DNS and ALB for routing",
+      "Consider how SSL termination works",
+      "Think about host-based routing on the load balancer"
+    ],
+    "modelAnswer": "DNS, SSL, and routing architecture: (1) DNS (Route 53) — Register or transfer the domain to Route 53. Create hosted zone for yourapp.com. Records: app.yourapp.com -> ALIAS to CloudFront distribution (frontend). api.yourapp.com -> ALIAS to Application Load Balancer (backend API). admin.yourapp.com -> ALIAS to the same ALB (routed by host header). (2) SSL certificates (ACM) — Request certificates in ACM: one for *.yourapp.com (wildcard) in us-east-1 (required for CloudFront) and the same in the ALB's region. ACM auto-renews, free of charge. (3) Frontend routing — CloudFront distribution with S3 origin serving the Angular build. Custom error response: 403/404 -> /index.html (200) to support client-side routing. HTTPS only; redirect HTTP to HTTPS. (4) API routing — ALB with HTTPS listener (port 443) using the ACM certificate for SSL termination. ALB decrypts HTTPS and forwards HTTP to target groups. Host-based routing rules: Host: api.yourapp.com -> Target Group: api-service (ECS tasks on port 8080). Host: admin.yourapp.com -> Target Group: admin-service (ECS tasks on port 3000). Default rule -> return 404. (5) Request flow for api.yourapp.com: Browser resolves DNS via Route 53 -> gets ALB IP -> sends HTTPS request -> ALB terminates SSL -> matches host header 'api.yourapp.com' -> forwards to api-service target group -> Spring Boot responds -> ALB encrypts response back to browser. (6) Security — ALB security group: allow 443 from 0.0.0.0/0. Backend SG: allow traffic only from ALB SG. admin.yourapp.com: add an additional ALB rule restricting access to the company VPN IP range.",
+    "evaluationCriteria": [
+      "Configures DNS records correctly with Route 53 aliases",
+      "Uses ACM for SSL with appropriate certificate placement",
+      "Implements host-based routing on the ALB",
+      "Traces the complete request flow from browser to service"
+    ],
+    "timeEstimate": 360,
+    "constraints": {
+      "subdomains": 3,
+      "ssl": "required on all endpoints"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "architecture",
+      "error-handling",
+      "resilience"
+    ],
+    "language": "en",
+    "questionText": "Your Spring Boot application calls three external services: a payment gateway, an email service, and a shipping API. Each service occasionally times out or returns errors, causing cascading failures that bring down your entire application. Design a resilience strategy that keeps the application functional even when external services are degraded.",
+    "hints": [
+      "Think about circuit breakers, timeouts, and bulkheads",
+      "Consider what a graceful degradation looks like for each service",
+      "Think about retry strategies and when retries are dangerous"
+    ],
+    "modelAnswer": "Resilience strategy using Resilience4j in Spring Boot: (1) Timeouts — set aggressive timeouts per service: payment gateway 5s (critical, must wait), email service 2s (non-critical), shipping API 3s. Never use the default infinite timeout. Configure via WebClient or RestTemplate interceptors. (2) Circuit breakers — wrap each external service call with a circuit breaker. Configuration: failure rate threshold 50% in a sliding window of 10 calls -> open circuit for 30 seconds -> half-open (allow 3 probe requests) -> close if probes succeed. When the circuit is open, fail fast without making the network call. (3) Fallback behavior per service — Payment gateway (critical): circuit breaker, but no automatic fallback. Return 503 to the user with a message to retry. Queue the order attempt for manual processing if the outage persists. Email service (non-critical): on failure, queue the email in a database table and retry via a background job. The checkout succeeds even if email fails. Shipping API (semi-critical): cache the last known shipping rates with a 1-hour TTL. If the API is down, use cached rates and flag the order for rate verification later. (4) Bulkhead — isolate thread pools per external service. Payment gets 20 threads, email gets 5, shipping gets 5. This prevents a slow shipping API from consuming all threads and blocking payment processing. (5) Retry — retry only on transient failures (5xx, timeouts) with exponential backoff. Never retry payment charges (not idempotent without an idempotency key). Retry emails up to 3 times with 1s, 2s, 4s delays. (6) Monitoring — track circuit breaker state transitions, fallback invocations, and retry counts in metrics. Alert when a circuit opens.",
+    "evaluationCriteria": [
+      "Implements circuit breakers with appropriate thresholds",
+      "Designs different fallback strategies based on service criticality",
+      "Uses bulkhead pattern to isolate failures between services",
+      "Configures safe retry strategies with awareness of idempotency"
+    ],
+    "timeEstimate": 420,
+    "constraints": {
+      "external_services": 3,
+      "availability_target": "99.9% for checkout"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "database",
+      "schema-design",
+      "multi-tenancy"
+    ],
+    "language": "en",
+    "questionText": "You are building a SaaS project management tool where each company (tenant) has their own projects, tasks, and users. Design the database multi-tenancy strategy. Should each tenant get their own database, their own schema, or share tables with a tenant_id column? Justify your choice and address data isolation, performance, and operational complexity.",
+    "hints": [
+      "Consider the expected number of tenants and data volume per tenant",
+      "Think about query complexity with shared tables",
+      "Consider migration and backup complexity"
+    ],
+    "modelAnswer": "For a typical SaaS with hundreds to thousands of tenants of varying sizes, the shared tables with tenant_id approach (also called 'pool' model) is the best balance. Design: (1) Every table includes a tenant_id column (NOT NULL, indexed). All queries filter by tenant_id. A composite index (tenant_id, id) on major tables ensures efficient lookups. (2) Application-level enforcement — implement a TenantContext (ThreadLocal or request-scoped bean) set by a servlet filter from the JWT claims. A Hibernate filter (@FilterDef with tenant_id) automatically appends WHERE tenant_id = :tenantId to every query, preventing accidental cross-tenant data access. (3) Row-Level Security (RLS) in PostgreSQL as a defense-in-depth layer — CREATE POLICY tenant_isolation ON tasks USING (tenant_id = current_setting('app.current_tenant')::uuid). Even if the application has a bug, the database enforces isolation. Why not separate databases: operational nightmare at scale (500 tenants = 500 databases to migrate, backup, monitor). Connection pool explosion. Cannot do cross-tenant analytics. Why not separate schemas: better isolation than shared tables but still complex migrations (must run ALTER TABLE on each schema). Reasonable for 10-50 large enterprise tenants, not hundreds. Trade-offs of shared tables: risk of noisy neighbor (one tenant's large query affecting others — mitigate with query timeouts and resource limits), all data in one place (easier backups but larger tables). For large tenants, consider PostgreSQL partitioning by tenant_id on the biggest tables.",
+    "evaluationCriteria": [
+      "Compares all three multi-tenancy strategies with trade-offs",
+      "Recommends an approach with clear justification based on scale",
+      "Addresses data isolation at both application and database levels",
+      "Considers the noisy neighbor problem and mitigation"
+    ],
+    "timeEstimate": 420,
+    "constraints": {
+      "tenants": "500+",
+      "tenant_sizes": "vary from 5 to 5000 users"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "cicd",
+      "docker",
+      "environments"
+    ],
+    "language": "en",
+    "questionText": "Your team struggles with environment-specific configuration — the Spring Boot app behaves differently in local development, staging, and production because configuration is managed inconsistently. Docker images built locally work differently from those in CI. Design a configuration management strategy that ensures consistency across all environments.",
+    "hints": [
+      "Think about the twelve-factor app methodology for configuration",
+      "Consider how Docker images should be environment-agnostic",
+      "Think about secrets vs non-secret configuration"
+    ],
+    "modelAnswer": "Configuration management following the Twelve-Factor App principle: strict separation of config from code. (1) Single immutable Docker image — the same Docker image is deployed to all environments. The image contains the application code and dependencies, but zero environment-specific configuration. No per-environment Dockerfiles or build args for config. (2) Spring Boot profile activation via environment variable — set SPRING_PROFILES_ACTIVE=staging or =production as a container environment variable. Spring Boot loads application-staging.yml or application-production.yml, but these files only contain non-secret, environment-specific settings (log levels, feature flags). (3) Secrets via environment variables — database URLs, API keys, and credentials are injected as environment variables at runtime, never baked into the image or config files. Sources: local development -> .env file loaded by Docker Compose. Staging/production -> AWS Secrets Manager or SSM Parameter Store, injected into ECS task definitions. (4) Environment variable hierarchy in Spring Boot: container env vars override application.yml properties. So application.yml contains sensible defaults, and each environment overrides only what differs. (5) Docker Compose for local development — docker-compose.yml defines the app, PostgreSQL, and Redis with a .env file for local overrides. Developers run docker compose up and get a consistent environment matching CI. (6) CI/CD pipeline — builds the Docker image once, pushes to ECR. Deployment to staging and production pulls the same image, only changing environment variables. (7) Validation — Spring Boot @ConfigurationProperties with @Validated ensures the app fails fast on startup if required config is missing, rather than failing at runtime.",
+    "evaluationCriteria": [
+      "Builds a single immutable Docker image for all environments",
+      "Uses environment variables for environment-specific configuration",
+      "Separates secrets from non-secret configuration with appropriate sources",
+      "Ensures local development environment matches CI/production behavior"
+    ],
+    "timeEstimate": 360,
+    "constraints": {
+      "environments": "local, staging, production",
+      "framework": "Spring Boot with Docker"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "scalability",
+      "performance",
+      "search"
+    ],
+    "language": "en",
+    "questionText": "Your application's product search feature uses SQL LIKE queries (WHERE name LIKE '%keyword%') and is becoming unacceptably slow with 2 million products. Users expect features like typo tolerance, faceted filtering (by category, price range, brand), and relevance-based ranking. Design a search solution.",
+    "hints": [
+      "Think about dedicated search engines vs database-level solutions",
+      "Consider how to keep the search index synchronized with the database",
+      "Think about what 'relevance' means and how to tune it"
+    ],
+    "modelAnswer": "Replace SQL LIKE with a dedicated search engine — Elasticsearch (or OpenSearch on AWS). Architecture: (1) PostgreSQL remains the source of truth for product data. Elasticsearch serves as a read-optimized search index. (2) Index design — create a 'products' index with fields: name (text, analyzed for full-text search), description (text), category (keyword, for exact match filtering), brand (keyword), price (float, for range queries), tags (keyword array), created_at (date). Configure a custom analyzer with edge n-grams for autocomplete and a phonetic analyzer for typo tolerance. (3) Synchronization — on product create/update/delete, publish an event to a message queue (SQS). A consumer reads the event and updates the Elasticsearch index. This asynchronous approach means search results may lag writes by 1-2 seconds but doesn't slow down the write path. For initial load, use a bulk indexing job. (4) Search API — the application's search endpoint queries Elasticsearch, not PostgreSQL. Query DSL: bool query combining must (full-text match on name/description with boosting — name matches scored 3x higher) and filter (category, price range, brand — exact matches, cached by ES). (5) Faceted filtering — use Elasticsearch aggregations to return counts per category, price range buckets, and brands alongside results. The frontend renders these as filter sidebar options. (6) Relevance tuning — boost exact matches over partial, boost newer products slightly, use function_score to factor in sales count or ratings. A/B test different scoring formulas. (7) Fallback — if Elasticsearch is unavailable, degrade to a basic PostgreSQL full-text search (tsvector/tsquery) with limited functionality.",
+    "evaluationCriteria": [
+      "Proposes a dedicated search engine with justification over SQL",
+      "Designs a synchronization strategy between the database and search index",
+      "Addresses faceted filtering and relevance ranking",
+      "Includes a fallback strategy"
+    ],
+    "timeEstimate": 420,
+    "constraints": {
+      "products": "2M",
+      "search_latency": "under 200ms",
+      "features": "typo tolerance, facets, autocomplete"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "senior",
+    "tags": [
+      "architecture",
+      "scalability",
+      "event-driven"
+    ],
+    "language": "en",
+    "questionText": "You are the lead architect for a fintech company processing loan applications. The workflow involves: credit check (external API, 2-5s), document verification (ML service, 10-30s), fraud detection (external API, 1-3s), risk scoring (internal service, 5s), and human review for edge cases. The system must process 10,000 applications per day, maintain a complete audit trail, support workflow changes without redeployment, and recover gracefully from any service failure mid-workflow. Design the system architecture.",
+    "hints": [
+      "Consider orchestration vs choreography for complex workflows",
+      "Think about saga patterns and compensation logic",
+      "Consider a workflow engine like Temporal or Step Functions"
+    ],
+    "modelAnswer": "Event-driven architecture with a workflow orchestrator for reliability and auditability. Core design: Use a workflow engine (Temporal.io or AWS Step Functions) as the central orchestrator, not ad-hoc service choreography — this workflow is too complex and critical for fire-and-forget events. Architecture: (1) Workflow orchestrator (Temporal) — defines the loan application workflow as code. Each step is an 'activity' with its own timeout, retry policy, and compensation logic. The workflow state is durably persisted — if a worker crashes mid-step, it resumes exactly where it left off. (2) Step design — Step 1: Credit check activity (timeout: 10s, retry: 3 with backoff). Step 2: Document verification activity (timeout: 60s, retry: 2). Step 3: Fraud detection (timeout: 10s, retry: 3). Steps 1-3 run in parallel since they're independent. Step 4: Risk scoring (takes outputs from 1-3, timeout: 15s). Step 5: If risk score is in the edge-case band (e.g., 40-60), create a human review task and wait (with a 48-hour timeout). Step 6: Final decision (approve/reject) and notification. (3) Saga pattern with compensation — if fraud detection fails after credit check and doc verification succeeded, the workflow executes compensation: release the credit check hold, mark documents as unprocessed. Each activity defines its compensating action. (4) Audit trail — Temporal automatically records every workflow event (step started, completed, failed, retried, input/output). This provides a complete, immutable audit trail with millisecond precision — critical for fintech compliance. Supplement with event publishing to an append-only audit table in PostgreSQL. (5) Workflow versioning — Temporal supports workflow versioning: deploy new workflow logic without affecting in-flight applications. Running applications complete with v1 logic; new applications use v2. No redeployment needed for workflow changes. (6) Scalability — Temporal workers are stateless and horizontally scalable. 10K applications/day is ~7/minute — a modest load. Scale workers independently per activity type (more doc-verification workers since they take longest). (7) Monitoring — dashboard showing applications in each stage, SLA tracking (time from submission to decision), alerts on stuck workflows (past expected duration), error rate per step.",
+    "evaluationCriteria": [
+      "Chooses orchestration over choreography with clear justification for this use case",
+      "Designs parallel and sequential steps appropriately based on dependencies",
+      "Implements saga pattern with compensation logic for failure recovery",
+      "Addresses audit trail requirements with durable workflow state",
+      "Handles workflow versioning for changes without affecting in-flight processes"
+    ],
+    "timeEstimate": 600,
+    "constraints": {
+      "throughput": "10K applications/day",
+      "audit": "complete trail required",
+      "SLA": "decision within 24 hours for automated cases"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "senior",
+    "tags": [
+      "scalability",
+      "infrastructure",
+      "data-pipeline"
+    ],
+    "language": "en",
+    "questionText": "You are designing the analytics platform for a SaaS product that tracks user behavior events (page views, clicks, feature usage). The system receives 50 million events per day, must support real-time dashboards (events visible within 30 seconds), ad-hoc analytical queries on historical data, and multi-tenant data isolation. Design the data ingestion, storage, and query architecture, discussing trade-offs between different storage engines and processing approaches.",
+    "hints": [
+      "Think about the Lambda or Kappa architecture for combining real-time and batch processing",
+      "Consider column-oriented storage for analytical queries",
+      "Think about data retention tiers and cost optimization"
+    ],
+    "modelAnswer": "Analytics platform using a Kappa-inspired architecture with tiered storage. (1) Ingestion layer — events are sent from the frontend via a lightweight REST endpoint (or direct to Kinesis using Cognito temporary credentials). The API writes to Amazon Kinesis Data Streams (or Kafka) as the durable event log. Kinesis handles 50M events/day (~580 events/sec average, 5,000/sec peak) easily with a few shards. Events are schema-validated and enriched (add tenant_id from auth, timestamp normalization, GeoIP lookup) in a Kinesis Data Analytics (Flink) job before downstream processing. (2) Real-time path — a Flink streaming job reads from Kinesis, computes sliding-window aggregations (active users per tenant, events per minute per feature), and writes to Redis. Real-time dashboards query Redis, seeing events within 10-30 seconds. This handles the 'what is happening now' use case. (3) Batch/analytical storage — a Kinesis Firehose stream delivers raw events to S3 in Parquet format, partitioned by tenant_id/year/month/day. Parquet is columnar (fast for analytical queries scanning specific columns across millions of rows), compressed (10:1 reduction), and supports predicate pushdown. (4) Query layer — Amazon Athena (serverless, pay-per-query) queries S3/Parquet directly for ad-hoc analysis. For frequently-run dashboard queries, materialize aggregations into PostgreSQL (or ClickHouse for sub-second performance on larger datasets). Why not just a relational database: 50M events/day = 18B/year. PostgreSQL would struggle with this volume for analytical queries. Parquet on S3 costs $0.023/GB/month; PostgreSQL RDS at this scale costs 100x more. (5) Multi-tenant isolation — data is partitioned by tenant_id in S3 paths and in query predicates. Row-level access control in Athena via Lake Formation. Each tenant's dashboard queries are scoped to their partition, so a small tenant's queries are fast regardless of total data volume. (6) Data retention — hot tier (Redis): 24 hours of aggregates. Warm tier (S3 Standard): 3 months of raw events. Cold tier (S3 Glacier): 3 months to 2 years. Archive (S3 Glacier Deep Archive): 2+ years for compliance. S3 Lifecycle policies automate transitions. (7) Trade-offs discussed: Kappa (single stream processing) vs Lambda (separate batch and stream): Kappa is simpler to maintain but reprocessing historical data requires replaying the stream. We mitigate by keeping raw events in S3 and reprocessing with Athena/Spark if needed. ClickHouse vs Athena: ClickHouse offers faster queries but requires managing infrastructure; Athena is serverless and scales to zero.",
+    "evaluationCriteria": [
+      "Designs separate real-time and analytical query paths with appropriate technologies",
+      "Chooses columnar storage format with cost and performance justification",
+      "Implements multi-tenant data isolation at the storage and query levels",
+      "Addresses data retention tiers with cost optimization",
+      "Discusses trade-offs between architecture choices (Lambda vs Kappa, storage engines)"
+    ],
+    "timeEstimate": 600,
+    "constraints": {
+      "events": "50M/day",
+      "real_time_latency": "30 seconds",
+      "retention": "2 years",
+      "tenants": "500+"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "senior",
+    "tags": [
+      "architecture",
+      "distributed-systems",
+      "consistency"
+    ],
+    "language": "en",
+    "questionText": "You are designing an inventory management system for a flash-sale e-commerce platform. During a flash sale, 100,000 users attempt to purchase 500 units of a limited product within 10 seconds. The system must prevent overselling (never sell more than available stock), maintain low latency (under 200ms per purchase attempt), and provide a fair ordering. Design the system, addressing the concurrency challenges, consistency model, and what happens when things go wrong.",
+    "hints": [
+      "Think about optimistic vs pessimistic locking at the database level",
+      "Consider using Redis for atomic inventory operations",
+      "Think about queuing and backpressure to handle the burst"
+    ],
+    "modelAnswer": "High-concurrency inventory system with a multi-layer approach. Architecture: (1) Front door — rate limiting and queue-based admission control. When a flash sale starts, requests hit an API Gateway with aggressive rate limiting (10K rps cap per endpoint). A 'virtual queue' mechanism: users get a position in line (Redis INCR counter), and only N concurrent users are processed at a time. Users beyond the limit receive a 'waiting' response with their queue position, polled via WebSocket. This converts a thundering herd into a controlled flow. (2) Inventory reservation — Redis as the authoritative stock counter during the flash sale. Pre-load the available quantity into Redis: SET inventory:product123 500. Each purchase attempt executes a Lua script atomically: EVAL 'local stock = redis.call(\"GET\", KEYS[1]); if tonumber(stock) > 0 then redis.call(\"DECR\", KEYS[1]); return 1 else return 0 end'. This is a single-threaded atomic operation — no race conditions, sub-millisecond execution. On success (return 1), proceed to payment. On failure (return 0), return 'sold out' immediately. (3) Order processing — after successful reservation, publish to a message queue (SQS/Kafka). Order processing workers handle payment, order creation in PostgreSQL, and confirmation asynchronously. The user sees 'order confirmed, processing payment' immediately. (4) Payment failure handling — if payment fails after inventory was decremented, a compensation step increments the Redis counter (INCR), making that unit available again. Use a timeout: if payment isn't confirmed within 5 minutes, auto-release the reservation. (5) PostgreSQL as durable record — Redis is the fast path during the sale. A background sync writes completed orders to PostgreSQL as the durable source of truth. After the flash sale ends, reconcile Redis counter with actual order count in PostgreSQL. If there's a discrepancy (should be zero or very small), investigate and handle manually. (6) Consistency model — during the flash sale: strong consistency for inventory count (Redis single-threaded guarantees), eventual consistency for order details (async processing). The invariant 'never oversell' is guaranteed by the atomic Redis operation. Users may briefly see 'processing' instead of instant confirmation — an acceptable trade-off. (7) Failure scenarios — Redis failure: circuit breaker activates, fall back to PostgreSQL with SELECT FOR UPDATE (much slower, 10% throughput, but correct). Queue failure: retry with idempotency keys on the order ID. Application instance failure: stateless workers, load balancer routes to healthy instances.",
+    "evaluationCriteria": [
+      "Prevents overselling with an atomic inventory operation",
+      "Handles the 100K concurrent users with admission control or queuing",
+      "Designs compensation logic for payment failures",
+      "Discusses the consistency model and trade-offs explicitly",
+      "Addresses failure scenarios with fallback strategies"
+    ],
+    "timeEstimate": 600,
+    "constraints": {
+      "concurrent_users": "100K in 10 seconds",
+      "inventory": "500 units",
+      "latency": "under 200ms",
+      "correctness": "zero overselling"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "senior",
+    "tags": [
+      "infrastructure",
+      "disaster-recovery",
+      "aws"
+    ],
+    "language": "en",
+    "questionText": "You are the infrastructure lead for a B2B platform where customers have SLAs guaranteeing 99.99% uptime (less than 53 minutes of downtime per year). The platform runs on AWS in a single region. Design a disaster recovery strategy that meets this SLA, covering multi-region architecture, data replication, failover automation, and the trade-offs between RTO/RPO targets and cost.",
+    "hints": [
+      "Think about active-active vs active-passive multi-region setups",
+      "Consider RDS cross-region replication and its consistency implications",
+      "Think about DNS-based failover and health checks"
+    ],
+    "modelAnswer": "Multi-region disaster recovery strategy achieving 99.99% uptime. DR classification: This requires a 'warm standby' or 'multi-site active-active' approach. A simple backup-and-restore strategy cannot meet 99.99% (RTO would be hours, not minutes). Architecture: (1) Multi-region setup — Primary region: us-east-1 (full production workload). Secondary region: us-west-2 (warm standby). Both regions have identical infrastructure defined in Terraform — VPC, ECS clusters, ALB, S3 buckets. The secondary region runs at reduced capacity (e.g., 50% of primary) to reduce cost while maintaining a warm standby. (2) Data replication — RDS: cross-region read replica in us-west-2, asynchronous replication (RPO: typically 1-5 seconds of data loss). During failover, promote the replica to primary (takes 1-5 minutes). S3: cross-region replication (CRR) enabled for all buckets. New objects replicate within seconds. Redis/ElastiCache: use ElastiCache Global Datastore for Redis, which replicates to the secondary region with sub-second lag. (3) DNS-based failover — Route 53 health checks monitor the primary region's ALB. If the health check fails (3 consecutive failures over 30 seconds), Route 53 automatically updates DNS to point to the secondary region's ALB. TTL set to 60 seconds. Total failover time: ~2-3 minutes (detection: 30s, DNS propagation: 60s, replica promotion: 60s). (4) RTO/RPO targets and trade-offs — Current design: RTO = 3 minutes, RPO = 5 seconds. To achieve RPO = 0 (zero data loss): would need synchronous cross-region replication, adding 60-80ms latency to every write (speed of light between regions). Cost: ~2x. Not recommended unless contractually required. To reduce cost: use a 'pilot light' approach (only critical components running in secondary, scale up on failover) — RTO increases to 15-30 minutes but cost drops by 70%. (5) Active-active alternative — for 99.99%, consider running both regions as active-active with Route 53 latency-based routing. Both regions handle traffic, each is a fallback for the other. Challenges: data conflicts (user updates in both regions simultaneously), application must handle conflict resolution (last-write-wins or CRDTs). Significantly more complex but eliminates single-region dependency entirely. (6) Testing — quarterly DR drills: simulate primary region failure, verify failover completes within RTO, verify data integrity after failover, measure actual RPO. Automate these tests in a runbook. Chaos engineering: regularly terminate instances, inject latency, and test auto-recovery. (7) Cost analysis — warm standby adds ~40-60% to infrastructure cost (secondary region at 50% capacity + cross-region data transfer). Active-active adds ~80-100%. Quantify against the SLA penalty cost to justify the investment.",
+    "evaluationCriteria": [
+      "Designs a multi-region architecture with specific RTO/RPO targets",
+      "Addresses data replication for all stateful components (database, cache, storage)",
+      "Implements automated failover with DNS health checks",
+      "Analyzes trade-offs between different DR strategies (warm standby vs active-active) and cost",
+      "Includes DR testing and validation procedures"
+    ],
+    "timeEstimate": 600,
+    "constraints": {
+      "uptime_sla": "99.99%",
+      "rto": "under 5 minutes",
+      "rpo": "under 30 seconds",
+      "budget": "justify cost vs SLA penalties"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "senior",
+    "tags": [
+      "architecture",
+      "migration",
+      "strangler-fig"
+    ],
+    "language": "en",
+    "questionText": "You inherit a 10-year-old monolithic Java application (JSP frontend, EJB backend, Oracle database) serving 200 concurrent users. Management wants to modernize to Spring Boot + Angular + PostgreSQL without any downtime and with minimal risk. The monolith has no tests and sparse documentation. Design a migration strategy covering the technical approach, data migration, risk mitigation, and a realistic timeline with milestones.",
+    "hints": [
+      "Think about the Strangler Fig pattern for incremental migration",
+      "Consider how to run old and new systems in parallel",
+      "Think about database migration as the hardest part"
+    ],
+    "modelAnswer": "Strangler Fig migration strategy — incrementally replace the monolith without a big-bang rewrite. Phase 0: Preparation (4-6 weeks) — (1) Add observability to the monolith: instrument key endpoints with logging and metrics to understand actual usage patterns (which features are used, how frequently, by whom). (2) Write characterization tests: capture actual HTTP request/response pairs for the top 20 most-used endpoints. These become the contract tests for the new system. (3) Set up the new stack: Spring Boot project, Angular project, PostgreSQL database, CI/CD pipeline, all deploying to a staging environment. (4) Deploy an API gateway (Kong or Spring Cloud Gateway) in front of the monolith — all traffic flows through it. This is the strangler fig 'proxy' that will gradually reroute traffic. Phase 1: First slice (6-8 weeks) — Pick the simplest, most self-contained feature (e.g., user profile management). Implement it fully in the new stack: Angular UI, Spring Boot API, PostgreSQL tables. Data migration for this slice: write a sync job that copies user data from Oracle to PostgreSQL, running continuously (CDC with Debezium or a polling job). Both databases stay in sync. Route /profile/* through the API gateway to the new system. Everything else still goes to the monolith. Verify with the characterization tests. Phase 2: Iterative migration (3-6 months) — Migrate feature by feature in order of independence (least coupled first). Each feature follows the same pattern: implement in new stack, sync data, reroute traffic, verify. The monolith shrinks with each iteration. For features that need data from both systems during transition, the new service can call the monolith's API (anti-corruption layer) until the dependent feature is also migrated. Phase 3: Database migration (hardest part, ongoing) — Running dual databases with sync throughout the migration. Options: (1) Debezium CDC from Oracle to PostgreSQL for continuous replication. (2) Dual-write from the new application to both databases during transition, with Oracle as fallback. (3) Once a feature is fully migrated and stable (2+ weeks), stop syncing that data back to Oracle. (4) After all features are migrated, Oracle becomes read-only, then is decommissioned. Schema differences between Oracle and PostgreSQL (sequences, data types, stored procedures) are handled per-table during each feature migration. Phase 4: Decommission (2-4 weeks) — Remove the API gateway routes to the monolith, shut down the monolith, decommission Oracle. Risk mitigation: (1) Feature flags — each migrated feature can be toggled back to the monolith route via the API gateway in under a minute. (2) Parallel running — for critical features (e.g., billing), run both old and new systems simultaneously, compare outputs, and only switch when results match for a week. (3) No big-bang database migration — data moves incrementally with each feature. (4) Team training — pair programming sessions on the new stack before development starts. Realistic timeline: 6-12 months for a medium-complexity monolith (20-30 features), with the first feature live in production within 10-12 weeks.",
+    "evaluationCriteria": [
+      "Uses the Strangler Fig pattern with an API gateway for incremental migration",
+      "Addresses database migration with a continuous synchronization strategy",
+      "Designs rollback capabilities at every stage",
+      "Proposes characterization tests to verify behavioral equivalence",
+      "Provides a realistic phased timeline with clear milestones"
+    ],
+    "timeEstimate": 600,
+    "constraints": {
+      "zero_downtime": true,
+      "no_existing_tests": true,
+      "concurrent_users": 200,
+      "legacy_stack": "JSP, EJB, Oracle"
+    }
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": [
+      "monitoring",
+      "logging",
+      "observability",
+      "aws"
+    ],
+    "language": "en",
+    "questionText": "Your team's Spring Boot microservice has intermittent 500 errors in production on AWS. Design a monitoring and logging strategy that would help you quickly identify and resolve such issues.",
+    "hints": [
+      "Think about the three pillars of observability: logs, metrics, traces",
+      "Consider what AWS services are available for monitoring"
+    ],
+    "modelAnswer": "Implement structured logging with SLF4J + Logback, outputting JSON format with correlation IDs for request tracing. Use AWS CloudWatch for centralized log aggregation with metric filters to alert on error rate spikes. Add Spring Boot Actuator for health checks and Prometheus-compatible metrics (response times, error counts, JVM stats). Set up CloudWatch Alarms for error rate > 1% triggering SNS notifications. For distributed tracing, use AWS X-Ray or OpenTelemetry to trace requests across services. Create a CloudWatch Dashboard showing: error rate, p95 latency, active connections, CPU/memory. Use structured error responses with unique error codes that map to log entries for fast correlation. Set log retention policies (30 days hot, archive to S3 for compliance).",
+    "evaluationCriteria": [
+      "Covers all three pillars: logs, metrics, traces",
+      "Mentions specific tools and AWS services",
+      "Includes alerting strategy with thresholds",
+      "Discusses correlation IDs for request tracing"
+    ],
+    "timeEstimate": 360,
+    "constraints": {
+      "services": "3-5 microservices",
+      "requests": "1000 req/min",
+      "sla": "99.9% uptime"
+    }
+  }
+]
