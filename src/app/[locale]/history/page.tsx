@@ -1,10 +1,10 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { ArrowLeft, History } from "lucide-react";
+import { History } from "lucide-react";
 import { HistoryFilters } from "@/components/history/HistoryFilters";
 import { SessionList } from "@/components/history/SessionList";
+import { getTranslations } from "next-intl/server";
 import type { Prisma } from "@prisma/client";
 
 const PAGE_SIZE = 20;
@@ -25,6 +25,8 @@ export default async function HistoryPage({ searchParams }: Props) {
   if (!session?.user?.id) {
     redirect("/auth/signin");
   }
+
+  const t = await getTranslations("History");
 
   const page = Math.max(1, parseInt(params.page ?? "1", 10) || 1);
   const category = params.category || "all";
@@ -92,22 +94,14 @@ export default async function HistoryPage({ searchParams }: Props) {
     <main className="min-h-screen bg-slate-950 text-white">
       <div className="mx-auto max-w-4xl px-4 py-8">
         {/* Header */}
-        <div className="flex items-center gap-3">
-          <Link
-            href="/dashboard"
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-700 text-slate-400 transition hover:border-slate-500 hover:text-white"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
-          <div>
-            <div className="flex items-center gap-2">
-              <History className="h-5 w-5 text-slate-400" />
-              <h1 className="text-2xl font-bold">Session History</h1>
-            </div>
-            <p className="text-sm text-slate-400">
-              {totalCount} session{totalCount !== 1 && "s"} total
-            </p>
+        <div>
+          <div className="flex items-center gap-2">
+            <History className="h-5 w-5 text-slate-400" />
+            <h1 className="text-2xl font-bold">{t("title")}</h1>
           </div>
+          <p className="text-sm text-slate-400">
+            {t("total", { count: totalCount })}
+          </p>
         </div>
 
         {/* Filters */}
