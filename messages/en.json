@@ -1,0 +1,103 @@
+{
+  "HomePage": {
+    "title": "DevPrep",
+    "subtitle": "AI-Powered Interview Coach",
+    "getStarted": "Get Started"
+  },
+  "Navbar": {
+    "dashboard": "Dashboard",
+    "history": "History",
+    "settings": "Settings",
+    "signIn": "Sign In",
+    "signOut": "Sign Out"
+  },
+  "Metadata": {
+    "title": "DevPrep | AI Interview Coach",
+    "description": "Master your software development interviews with AI-powered simulations."
+  },
+  "Dashboard": {
+    "welcome": "Welcome, {name}",
+    "subtitle": "Ready for your next interview practice?",
+    "stats": {
+      "sessions": "Sessions",
+      "avgScore": "Avg. Score",
+      "practiceTime": "Practice Time"
+    },
+    "recentSessions": "Recent Sessions",
+    "viewAll": "View all",
+    "noSessions": "No sessions yet",
+    "startFirst": "Start your first interview",
+    "inProgress": "In Progress",
+    "questions": "{count} questions"
+  },
+  "Login": {
+    "welcome": "Welcome to DevPrep",
+    "subtitle": "Sign in to start your preparation.",
+    "google": "Continue with Google",
+    "github": "GitHub",
+    "sso": "SSO",
+    "statusOnline": "SYSTEM STATUS: ONLINE",
+    "systemEntry": "SYSTEM ENTRY",
+    "terms": "By continuing, you accept the Terms of Service",
+    "version": "v0.4.2-stable"
+  },
+  "SessionConfig": {
+    "title": "New Interview Session",
+    "subtitle": "Configure your mock interview",
+    "categoryLabel": "Category",
+    "difficultyLabel": "Difficulty",
+    "questionsLabel": "Number of Questions",
+    "technical": "Technical",
+    "coding": "Coding",
+    "systemDesign": "System Design",
+    "behavioral": "Behavioral",
+    "mixed": "Mixed",
+    "junior": "Junior",
+    "mid": "Mid",
+    "senior": "Senior",
+    "questionsCount": "{count} Questions",
+    "q5desc": "Quick",
+    "q10desc": "Standard",
+    "q15desc": "Thorough",
+    "startButton": "Start Interview",
+    "startingButton": "Starting session..."
+  },
+  "Settings": {
+    "title": "Settings",
+    "subtitle": "Configure your interview preferences",
+    "sectionLanguage": "Language",
+    "uiLanguage": "UI Language",
+    "questionLanguage": "Question Language",
+    "sectionDifficulty": "Default Difficulty",
+    "sectionCategories": "Default Categories",
+    "sectionStack": "Target Stack",
+    "saveButton": "Save Changes",
+    "savingButton": "Saving...",
+    "savedButton": "Saved"
+  },
+  "History": {
+    "title": "Session History",
+    "total": "{count, plural, one {# session} other {# sessions}} total",
+    "categoryLabel": "Category",
+    "levelLabel": "Level",
+    "statusLabel": "Status",
+    "sortLabel": "Sort",
+    "all": "All",
+    "technical": "Technical",
+    "coding": "Coding",
+    "systemDesign": "System Design",
+    "behavioral": "Behavioral",
+    "junior": "Junior",
+    "mid": "Mid",
+    "senior": "Senior",
+    "completed": "Completed",
+    "inProgress": "In Progress",
+    "newest": "Newest",
+    "oldest": "Oldest",
+    "scoreHigh": "Score ↑",
+    "scoreLow": "Score ↓",
+    "noMatches": "No sessions match your filters",
+    "startNew": "Start a new interview →",
+    "page": "Page {page} of {total}"
+  }
+}

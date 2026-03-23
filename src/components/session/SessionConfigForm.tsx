@@ -1,32 +1,34 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/navigation";
+import { useTranslations } from "next-intl";
 import { Code, Cpu, MessageSquare, Layers, Shuffle } from "lucide-react";
 import { clsx } from "clsx";
 
 const CATEGORIES = [
-  { id: "technical", label: "Technical", icon: Cpu },
-  { id: "coding", label: "Coding", icon: Code },
-  { id: "system_design", label: "System Design", icon: Layers },
-  { id: "behavioral", label: "Behavioral", icon: MessageSquare },
-  { id: "mixed", label: "Mixed", icon: Shuffle },
+  { id: "technical", tKey: "technical", icon: Cpu },
+  { id: "coding", tKey: "coding", icon: Code },
+  { id: "system_design", tKey: "systemDesign", icon: Layers },
+  { id: "behavioral", tKey: "behavioral", icon: MessageSquare },
+  { id: "mixed", tKey: "mixed", icon: Shuffle },
 ] as const;
 
 const DIFFICULTIES = [
-  { id: "junior", label: "Junior" },
-  { id: "mid", label: "Mid" },
-  { id: "senior", label: "Senior" },
+  { id: "junior", tKey: "junior" },
+  { id: "mid", tKey: "mid" },
+  { id: "senior", tKey: "senior" },
 ] as const;
 
 const QUESTION_COUNTS = [
-  { value: 5, label: "5 Questions", description: "Quick" },
-  { value: 10, label: "10 Questions", description: "Standard" },
-  { value: 15, label: "15 Questions", description: "Thorough" },
+  { value: 5, descKey: "q5desc" },
+  { value: 10, descKey: "q10desc" },
+  { value: 15, descKey: "q15desc" },
 ] as const;
 
 export function SessionConfigForm() {
   const router = useRouter();
+  const t = useTranslations("SessionConfig");
   const [category, setCategory] = useState("technical");
   const [difficulty, setDifficulty] = useState("mid");
   const [totalQuestions, setTotalQuestions] = useState(5);
@@ -60,14 +62,14 @@ export function SessionConfigForm() {
 
   return (
     <form onSubmit={handleSubmit} className="mx-auto max-w-2xl px-4 py-12">
-      <h1 className="text-2xl font-bold">New Interview Session</h1>
-      <p className="mt-1 text-sm text-slate-400">Configure your mock interview</p>
+      <h1 className="text-2xl font-bold">{t("title")}</h1>
+      <p className="mt-1 text-sm text-slate-400">{t("subtitle")}</p>
 
       {/* Category */}
       <fieldset className="mt-8">
-        <legend className="text-sm font-medium text-slate-300">Category</legend>
+        <legend className="text-sm font-medium text-slate-300">{t("categoryLabel")}</legend>
         <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {CATEGORIES.map(({ id, label, icon: Icon }) => (
+          {CATEGORIES.map(({ id, tKey, icon: Icon }) => (
             <button
               key={id}
               type="button"
@@ -80,7 +82,7 @@ export function SessionConfigForm() {
               )}
             >
               <Icon className="h-4 w-4" />
-              {label}
+              {t(tKey)}
             </button>
           ))}
         </div>
@@ -88,9 +90,9 @@ export function SessionConfigForm() {
 
       {/* Difficulty */}
       <fieldset className="mt-8">
-        <legend className="text-sm font-medium text-slate-300">Difficulty</legend>
+        <legend className="text-sm font-medium text-slate-300">{t("difficultyLabel")}</legend>
         <div className="mt-3 flex gap-3">
-          {DIFFICULTIES.map(({ id, label }) => (
+          {DIFFICULTIES.map(({ id, tKey }) => (
             <button
               key={id}
               type="button"
@@ -102,7 +104,7 @@ export function SessionConfigForm() {
                   : "border-slate-700 bg-slate-800 text-slate-300 hover:border-slate-500"
               )}
             >
-              {label}
+              {t(tKey)}
             </button>
           ))}
         </div>
@@ -110,9 +112,9 @@ export function SessionConfigForm() {
 
       {/* Question Count */}
       <fieldset className="mt-8">
-        <legend className="text-sm font-medium text-slate-300">Number of Questions</legend>
+        <legend className="text-sm font-medium text-slate-300">{t("questionsLabel")}</legend>
         <div className="mt-3 flex gap-3">
-          {QUESTION_COUNTS.map(({ value, label, description }) => (
+          {QUESTION_COUNTS.map(({ value, descKey }) => (
             <button
               key={value}
               type="button"
@@ -128,9 +130,9 @@ export function SessionConfigForm() {
                 "text-sm font-medium",
                 totalQuestions === value ? "text-blue-400" : "text-slate-300"
               )}>
-                {label}
+                {t("questionsCount", { count: value })}
               </div>
-              <div className="text-xs text-slate-500">{description}</div>
+              <div className="text-xs text-slate-500">{t(descKey)}</div>
             </button>
           ))}
         </div>
@@ -147,7 +149,7 @@ export function SessionConfigForm() {
         disabled={isSubmitting}
         className="mt-8 w-full rounded-xl bg-blue-600 px-6 py-3 text-sm font-medium text-white transition hover:bg-blue-500 disabled:opacity-50"
       >
-        {isSubmitting ? "Starting session..." : "Start Interview"}
+        {isSubmitting ? t("startingButton") : t("startButton")}
       </button>
     </form>
   );

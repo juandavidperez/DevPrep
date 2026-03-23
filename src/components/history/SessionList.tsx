@@ -1,6 +1,7 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/navigation";
+import { useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface SessionItem {
@@ -60,17 +61,18 @@ export function SessionList({
   status,
   sort,
 }: Props) {
+  const t = useTranslations("History");
   const filters = { category, difficulty, status, sort };
 
   if (sessions.length === 0) {
     return (
       <div className="mt-6 rounded-xl border border-dashed border-slate-700 p-8 text-center">
-        <p className="text-slate-400">No sessions match your filters</p>
+        <p className="text-slate-400">{t("noMatches")}</p>
         <Link
           href="/session/new"
           className="mt-3 inline-block text-sm text-blue-400 hover:text-blue-300"
         >
-          Start a new interview →
+          {t("startNew")}
         </Link>
       </div>
     );
@@ -113,7 +115,7 @@ export function SessionList({
                 </div>
               ) : (
                 <span className="rounded-full bg-yellow-500/10 px-3 py-1 text-xs font-medium text-yellow-400">
-                  In Progress
+                  {t("inProgress")}
                 </span>
               )}
             </div>
@@ -135,7 +137,7 @@ export function SessionList({
             <div className="h-8 w-8" />
           )}
           <span className="text-sm text-slate-400">
-            Page {page} of {totalPages}
+            {t("page", { page, total: totalPages })}
           </span>
           {page < totalPages ? (
             <Link

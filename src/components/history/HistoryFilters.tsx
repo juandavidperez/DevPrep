@@ -1,35 +1,37 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "@/navigation";
+import { useSearchParams } from "next/navigation";
 import { useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { clsx } from "clsx";
 
 const CATEGORIES = [
-  { value: "all", label: "All" },
-  { value: "technical", label: "Technical" },
-  { value: "coding", label: "Coding" },
-  { value: "system_design", label: "System Design" },
-  { value: "behavioral", label: "Behavioral" },
+  { value: "all", tKey: "all" },
+  { value: "technical", tKey: "technical" },
+  { value: "coding", tKey: "coding" },
+  { value: "system_design", tKey: "systemDesign" },
+  { value: "behavioral", tKey: "behavioral" },
 ];
 
 const DIFFICULTIES = [
-  { value: "all", label: "All" },
-  { value: "junior", label: "Junior" },
-  { value: "mid", label: "Mid" },
-  { value: "senior", label: "Senior" },
+  { value: "all", tKey: "all" },
+  { value: "junior", tKey: "junior" },
+  { value: "mid", tKey: "mid" },
+  { value: "senior", tKey: "senior" },
 ];
 
 const STATUSES = [
-  { value: "all", label: "All" },
-  { value: "completed", label: "Completed" },
-  { value: "in_progress", label: "In Progress" },
+  { value: "all", tKey: "all" },
+  { value: "completed", tKey: "completed" },
+  { value: "in_progress", tKey: "inProgress" },
 ];
 
 const SORTS = [
-  { value: "newest", label: "Newest" },
-  { value: "oldest", label: "Oldest" },
-  { value: "score_high", label: "Score ↑" },
-  { value: "score_low", label: "Score ↓" },
+  { value: "newest", tKey: "newest" },
+  { value: "oldest", tKey: "oldest" },
+  { value: "score_high", tKey: "scoreHigh" },
+  { value: "score_low", tKey: "scoreLow" },
 ];
 
 interface Props {
@@ -42,6 +44,7 @@ interface Props {
 export function HistoryFilters({ category, difficulty, status, sort }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const t = useTranslations("History");
 
   const updateParam = useCallback(
     (key: string, value: string) => {
@@ -62,7 +65,7 @@ export function HistoryFilters({ category, difficulty, status, sort }: Props) {
     <div className="mt-6 space-y-3">
       {/* Category */}
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs font-medium text-slate-500 w-16">Category</span>
+        <span className="text-xs font-medium text-slate-500 w-16">{t("categoryLabel")}</span>
         {CATEGORIES.map((c) => (
           <button
             key={c.value}
@@ -74,14 +77,14 @@ export function HistoryFilters({ category, difficulty, status, sort }: Props) {
                 : "bg-slate-800 text-slate-400 hover:text-white"
             )}
           >
-            {c.label}
+            {t(c.tKey)}
           </button>
         ))}
       </div>
 
       {/* Difficulty */}
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs font-medium text-slate-500 w-16">Level</span>
+        <span className="text-xs font-medium text-slate-500 w-16">{t("levelLabel")}</span>
         {DIFFICULTIES.map((d) => (
           <button
             key={d.value}
@@ -93,7 +96,7 @@ export function HistoryFilters({ category, difficulty, status, sort }: Props) {
                 : "bg-slate-800 text-slate-400 hover:text-white"
             )}
           >
-            {d.label}
+            {t(d.tKey)}
           </button>
         ))}
       </div>
@@ -101,7 +104,7 @@ export function HistoryFilters({ category, difficulty, status, sort }: Props) {
       {/* Status + Sort row */}
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-slate-500 w-16">Status</span>
+          <span className="text-xs font-medium text-slate-500 w-16">{t("statusLabel")}</span>
           {STATUSES.map((s) => (
             <button
               key={s.value}
@@ -113,12 +116,12 @@ export function HistoryFilters({ category, difficulty, status, sort }: Props) {
                   : "bg-slate-800 text-slate-400 hover:text-white"
               )}
             >
-              {s.label}
+              {t(s.tKey)}
             </button>
           ))}
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-slate-500">Sort</span>
+          <span className="text-xs font-medium text-slate-500">{t("sortLabel")}</span>
           <select
             value={sort}
             onChange={(e) => updateParam("sort", e.target.value)}
@@ -126,7 +129,7 @@ export function HistoryFilters({ category, difficulty, status, sort }: Props) {
           >
             {SORTS.map((s) => (
               <option key={s.value} value={s.value}>
-                {s.label}
+                {t(s.tKey)}
               </option>
             ))}
           </select>

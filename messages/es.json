@@ -1,0 +1,103 @@
+{
+  "HomePage": {
+    "title": "DevPrep",
+    "subtitle": "Entrenador de Entrevistas con IA",
+    "getStarted": "Empezar"
+  },
+  "Navbar": {
+    "dashboard": "Panel",
+    "history": "Historial",
+    "settings": "Configuración",
+    "signIn": "Iniciar Sesión",
+    "signOut": "Cerrar Sesión"
+  },
+  "Metadata": {
+    "title": "DevPrep | Entrenador de Entrevistas con IA",
+    "description": "Domina tus entrevistas de desarrollo de software con simulaciones impulsadas por IA."
+  },
+  "Dashboard": {
+    "welcome": "Bienvenido, {name}",
+    "subtitle": "¿Listo para tu próxima práctica de entrevista?",
+    "stats": {
+      "sessions": "Sesiones",
+      "avgScore": "Puntaje Promedio",
+      "practiceTime": "Tiempo de Práctica"
+    },
+    "recentSessions": "Sesiones Recientes",
+    "viewAll": "Ver todo",
+    "noSessions": "Aún no hay sesiones",
+    "startFirst": "Comienza tu primera entrevista",
+    "inProgress": "En Progreso",
+    "questions": "{count} preguntas"
+  },
+  "Login": {
+    "welcome": "Bienvenido a DevPrep",
+    "subtitle": "Inicia sesión para comenzar tu preparación.",
+    "google": "Continuar con Google",
+    "github": "GitHub",
+    "sso": "SSO",
+    "statusOnline": "SYSTEM STATUS: ONLINE",
+    "systemEntry": "SYSTEM ENTRY",
+    "terms": "Al continuar, aceptas los Términos de Servicio",
+    "version": "v0.4.2-stable"
+  },
+  "SessionConfig": {
+    "title": "Nueva Sesión de Entrevista",
+    "subtitle": "Configura tu entrevista simulada",
+    "categoryLabel": "Categoría",
+    "difficultyLabel": "Dificultad",
+    "questionsLabel": "Número de Preguntas",
+    "technical": "Técnico",
+    "coding": "Codificación",
+    "systemDesign": "Diseño de Sistemas",
+    "behavioral": "Comportamental",
+    "mixed": "Mixto",
+    "junior": "Junior",
+    "mid": "Medio",
+    "senior": "Senior",
+    "questionsCount": "{count} Preguntas",
+    "q5desc": "Rápido",
+    "q10desc": "Estándar",
+    "q15desc": "Completo",
+    "startButton": "Iniciar Entrevista",
+    "startingButton": "Iniciando sesión..."
+  },
+  "Settings": {
+    "title": "Configuración",
+    "subtitle": "Configura tus preferencias de entrevista",
+    "sectionLanguage": "Idioma",
+    "uiLanguage": "Idioma de Interfaz",
+    "questionLanguage": "Idioma de Preguntas",
+    "sectionDifficulty": "Dificultad Predeterminada",
+    "sectionCategories": "Categorías Predeterminadas",
+    "sectionStack": "Stack Objetivo",
+    "saveButton": "Guardar Cambios",
+    "savingButton": "Guardando...",
+    "savedButton": "Guardado"
+  },
+  "History": {
+    "title": "Historial de Sesiones",
+    "total": "{count, plural, one {# sesión} other {# sesiones}} en total",
+    "categoryLabel": "Categoría",
+    "levelLabel": "Nivel",
+    "statusLabel": "Estado",
+    "sortLabel": "Ordenar",
+    "all": "Todos",
+    "technical": "Técnico",
+    "coding": "Codificación",
+    "systemDesign": "Diseño de Sistemas",
+    "behavioral": "Comportamental",
+    "junior": "Junior",
+    "mid": "Medio",
+    "senior": "Senior",
+    "completed": "Completado",
+    "inProgress": "En Progreso",
+    "newest": "Más Reciente",
+    "oldest": "Más Antiguo",
+    "scoreHigh": "Puntaje ↑",
+    "scoreLow": "Puntaje ↓",
+    "noMatches": "No hay sesiones que coincidan con los filtros",
+    "startNew": "Iniciar una nueva entrevista →",
+    "page": "Página {page} de {total}"
+  }
+}
