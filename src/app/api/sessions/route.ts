@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { getAIProvider } from "@/lib/ai";
-import type { SessionConfig } from "@/lib/ai/types";
+import { selectNextQuestion } from "@/lib/questions";
 import type { CreateSessionRequest } from "@/types/session";
 
 const VALID_CATEGORIES = ["technical", "coding", "system_design", "behavioral", "mixed"];
@@ -40,17 +39,13 @@ export async function POST(request: Request) {
       },
     });
 
-    const aiConfig: SessionConfig = {
-      count: 1,
-      category: category as SessionConfig["category"],
-      difficulty: difficulty as SessionConfig["difficulty"],
+    const firstQuestion = await selectNextQuestion({
+      category: category as Parameters<typeof selectNextQuestion>[0]["category"],
+      difficulty: difficulty as Parameters<typeof selectNextQuestion>[0]["difficulty"],
       stack: interviewSession.targetStack,
       language: language as "en" | "es",
-    };
-
-    const ai = getAIProvider();
-    const questions = await ai.generateQuestions(aiConfig);
-    const firstQuestion = questions[0];
+      userId: session.user.id,
+    });
 
     await prisma.sessionMessage.create({
       data: {

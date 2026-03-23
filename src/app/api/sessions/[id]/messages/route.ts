@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getAIProvider } from "@/lib/ai";
-import type { Question, SessionConfig } from "@/lib/ai/types";
+import { selectNextQuestion, updateQuestionBankScore } from "@/lib/questions";
+import type { Question } from "@/lib/ai/types";
 import type { SendMessageRequest } from "@/types/session";
 
 export async function POST(
@@ -90,6 +91,9 @@ export async function POST(
       },
     });
 
+    // Update question bank score tracking (fire and forget)
+    updateQuestionBankScore(lastQuestion.content, evaluation.score).catch(() => {});
+
     const newMessages = [userMessage, evalMessage];
     const isComplete = currentQuestionIndex >= interviewSession.totalQuestions;
 
@@ -117,18 +121,15 @@ export async function POST(
       });
     }
 
-    // Generate next question
-    const aiConfig: SessionConfig = {
-      count: 1,
-      category: interviewSession.category as SessionConfig["category"],
-      difficulty: interviewSession.difficulty as SessionConfig["difficulty"],
+    // Generate next question (bank first, AI fallback)
+    const nextQuestion = await selectNextQuestion({
+      category: interviewSession.category as Parameters<typeof selectNextQuestion>[0]["category"],
+      difficulty: interviewSession.difficulty as Parameters<typeof selectNextQuestion>[0]["difficulty"],
       stack: interviewSession.targetStack,
       language: interviewSession.language as "en" | "es",
+      userId: session.user.id,
       existingQuestions: questionMessages.map((m) => m.content),
-    };
-
-    const nextQuestions = await ai.generateQuestions(aiConfig);
-    const nextQuestion = nextQuestions[0];
+    });
 
     const nextQuestionMessage = await prisma.sessionMessage.create({
       data: {
