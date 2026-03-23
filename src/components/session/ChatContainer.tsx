@@ -168,8 +168,14 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
               )}
               <p className="mt-1 text-sm text-slate-400">Average score</p>
               <Link
-                href="/dashboard"
+                href={`/session/${initialSession.id}/results`}
                 className="mt-4 inline-block rounded-lg bg-emerald-600 px-6 py-2 text-sm font-medium text-white hover:bg-emerald-500"
+              >
+                View Detailed Results
+              </Link>
+              <Link
+                href="/dashboard"
+                className="mt-2 block text-sm text-slate-400 hover:text-white transition"
               >
                 Back to Dashboard
               </Link>
