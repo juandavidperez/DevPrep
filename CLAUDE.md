@@ -57,7 +57,7 @@ Data Layer: Prisma ORM → PostgreSQL (Supabase, "devprep" schema) + Auth.js
 
 - **Interaction Manager** (`src/lib/interaction/`): All user input and AI output flows through `InteractionManager` regardless of modality. `UserInput` always has `text` (typed or transcribed) + optional `code`/`audioBlob`. `AIOutput` always has `text` + optional `audioUrl`/`avatarDirective`.
 
-- **Auth** (`src/lib/auth.ts`): Auth.js v5 (NextAuth beta) with Google OAuth, JWT session strategy, PrismaAdapter. Middleware in `src/middleware.ts` protects `/dashboard`, `/session`, `/history`, `/bookmarks`, `/settings`.
+- **Auth** (`src/lib/auth.ts`): Auth.js v5 (NextAuth beta) with Google OAuth, JWT session strategy, PrismaAdapter. Middleware in `src/middleware.ts` chains Auth.js with next-intl middleware.
 
 - **Prisma singleton** (`src/lib/db.ts`): Shared PrismaClient instance, prevents multiple clients during hot reload.
 
@@ -88,14 +88,30 @@ The AI acts as a senior interviewer. Evaluation responses use structured JSON wi
 - System design: scalability, trade-offs, completeness, communication
 - Behavioral: STAR structure, specificity, self-awareness, relevance
 
+### i18n (Implemented)
+
+- **Library:** `next-intl ^4.8.3` with `localePrefix: 'always'`
+- **Locales:** `en` (default), `es`
+- **Config:** `src/i18n/config.ts` (locales), `src/i18n/request.ts` (server config)
+- **Navigation:** `src/navigation.ts` exports locale-aware `Link`, `useRouter`, `usePathname`, `redirect` via `createNavigation()`
+- **Translations:** `messages/en.json`, `messages/es.json` — namespaces: HomePage, Navbar, Metadata, Dashboard, Login, SessionConfig, Settings, History
+- **Middleware:** `src/middleware.ts` chains `next-intl` middleware with Auth.js v5. All routes under `src/app/[locale]/`.
+- **IMPORTANT:** In client components, use `Link` and `useRouter` from `@/navigation` (NOT from `next/link` or `next/navigation`), so URLs get the locale prefix automatically. `useSearchParams` still comes from `next/navigation`. Server component `redirect()` uses `next/navigation` (the intl middleware handles the locale redirect).
+- **Language switcher:** `src/components/LanguageSwitcher.tsx`
+
 ### Implemented pages
+
+All pages are under `src/app/[locale]/`:
 
 ```
 /                        → Landing (redirects to /dashboard if authenticated)
-/auth/signin             → Google OAuth sign-in
+/auth/signin             → Google OAuth sign-in (Login component)
 /dashboard               → Stats, recent sessions, new session button
 /session/new             → Configure session (category, difficulty, question count)
 /session/[id]            → Chat interface (main interview experience)
+/session/[id]/results    → Session results with per-question breakdown
+/history                 → Session history with filters and pagination
+/settings                → User preferences (language, difficulty, categories, stack)
 ```
 
 ### API routes
@@ -104,7 +120,59 @@ The AI acts as a senior interviewer. Evaluation responses use structured JSON wi
 POST /api/sessions              → Create session + generate first question
 GET  /api/sessions/[id]         → Get session with messages
 POST /api/sessions/[id]/messages → Send response, get AI evaluation + next question
+PUT  /api/settings              → Update user settings
 ```
+
+## Design System — "The Obsidian Terminal"
+
+Design source: **Google Stitch** (project ID: `15023765856949113622`). The Stitch MCP is configured in `.mcp.json` (gitignored, contains API key). Skill `stitch-design` is installed for design workflows.
+
+### Stitch MCP setup
+
+- **MCP config:** `.mcp.json` with `mcp-remote` bridge to `https://stitch.googleapis.com/mcp`
+- **Skill:** `.agents/skills/stitch-design/` — handles prompt enhancement, design system synthesis, screen generation/editing
+- **Key tools:** `mcp__stitch__list_projects`, `mcp__stitch__list_screens`, `mcp__stitch__get_screen`, `mcp__stitch__generate_screen_from_text`, `mcp__stitch__edit_screens`
+- **Project screens available (with HTML):**
+  - `13f1dcce...` — Dashboard Redesign (desktop)
+  - `a4089fbf...` — Landing Page
+  - `06a7aee6...` — Historial de Sesiones
+  - `8b61ad3b...` — Crear Nueva Sesión
+  - `f46e1030...` — Inicio de Sesión
+  - `6abe91e9...` — Login Refined Layout
+  - `dd09e42f...` — Obsidian Terminal Edition
+  - `36a25a88...` — Dashboard Mobile
+
+### Design tokens (CSS custom properties in `globals.css`)
+
+```
+--background: #131313          (The Infinite Void)
+--text-primary: #EAEAEA
+--text-secondary: #A1A1AA
+--surface-lowest: #0e0e0e      (recessed sections)
+--surface-container: #201f1f   (default card bg)
+--surface-highest: #353534     (hover/elevated)
+--primary: #d2bbff             (Electric Violet)
+--primary-container: #7c3aed   (CTAs, accent)
+--border-subtle: rgba(255,255,255,0.1)
+```
+
+### Design rules
+
+- **"No-Line" rule:** No 1px solid high-contrast borders. Use color shifts or ghost borders (10-15% white opacity).
+- **Glassmorphism:** Floating elements use backdrop-blur (20-40px) + semi-transparent surface fill.
+- **Typography:** Inter for UI, JetBrains Mono for numerical/data/code values.
+- **Elevation:** Hierarchy via surface tier stacking (surface_dim → surface_container → surface_highest).
+- **Accent links:** Use `#d2bbff` (primary) not `blue-400`.
+- **Shadows:** Tinted shadows `rgba(0,0,0,0.4)` with ghost border outline, not standard black drop-shadows.
+- **Border radius:** `rounded-xl` (0.75rem) for cards.
+
+### Design implementation status
+
+- [x] **Login** — Aligned with Stitch (radial glow 0.08, ghost borders, terms footer, version tag, rounded-xl card, font-mono status)
+- [ ] **Dashboard** — Needs major rework: sidebar nav, glassmorphism panels, search bar, stat delta indicators, font-mono numbers, course/prep cards. Comparison done (see memory).
+- [ ] **Landing Page** — Not compared yet
+- [ ] **History** — Not compared yet
+- [ ] **New Session** — Not compared yet
 
 ## Path alias
 
@@ -128,11 +196,8 @@ Copy `.env.example` to `.env`. Key variables:
 
 ## TODO — Remaining MVP features
 
-- [ ] **Results page** — `/session/[id]/results` with detailed session summary, per-question scores, strengths/weaknesses
-- [ ] **History page** — `/history` with full list of past sessions, filtering, sorting
+- [ ] **Design implementation** — Apply Stitch designs to all pages (dashboard, landing, history, new session)
 - [ ] **Bookmarks** — `/bookmarks` with save questions, spaced repetition queue, review UI
-- [ ] **Settings page** — `/settings` for user preferences (language, difficulty, stack, modality)
 - [ ] **Monaco Editor** — Code editor integration in chat for coding questions
-- [ ] **i18n (EN/ES)** — next-intl integration, language switcher, translation dictionaries
 - [ ] **Question Selector** — Smart selection from bank (spaced repetition due → unseen → AI-generated fallback)
 - [ ] **Additional AI providers** — Anthropic, OpenAI, Gemini implementations + smart routing
