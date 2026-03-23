@@ -33,3 +33,33 @@ export interface SendMessageResponse {
   isComplete: boolean;
   finalScore?: number;
 }
+
+export interface QuestionResult {
+  questionIndex: number;
+  questionText: string;
+  candidateAnswer: string;
+  candidateCode: string | null;
+  score: number | null;
+  criteria: Record<string, number> | null;
+  feedback: string | null;
+  modelAnswer: string | null;
+}
+
+export interface CriterionScore {
+  criterion: string;
+  avgScore: number;
+}
+
+export interface ResultsData {
+  id: string;
+  category: string;
+  difficulty: string;
+  totalQuestions: number;
+  completedAt: string;
+  overallScore: number;
+  duration: number | null;
+  questions: QuestionResult[];
+  strengths: CriterionScore[];
+  weaknesses: CriterionScore[];
+  criteriaAverages: Record<string, number>;
+}

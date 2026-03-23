@@ -129,7 +129,17 @@ export default async function DashboardPage() {
 
         {/* Recent Sessions */}
         <div className="mt-8">
-          <h2 className="text-lg font-semibold">Recent Sessions</h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Recent Sessions</h2>
+            {sessions.length > 0 && (
+              <Link
+                href="/history"
+                className="text-sm text-blue-400 hover:text-blue-300"
+              >
+                View all →
+              </Link>
+            )}
+          </div>
           {sessions.length === 0 ? (
             <div className="mt-4 rounded-xl border border-dashed border-slate-700 p-8 text-center">
               <p className="text-slate-400">No sessions yet</p>
