@@ -3,6 +3,7 @@ export interface CreateSessionRequest {
   difficulty: string;
   totalQuestions: number;
   language: string;
+  feedbackMode?: string;
 }
 
 export interface CreateSessionResponse {
@@ -12,6 +13,7 @@ export interface CreateSessionResponse {
 export interface SendMessageRequest {
   content: string;
   codeContent?: string;
+  isClarification?: boolean;
 }
 
 export interface SessionMessageDTO {
