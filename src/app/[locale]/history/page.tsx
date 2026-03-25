@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { History } from "lucide-react";
 import { HistoryFilters } from "@/components/history/HistoryFilters";
 import { SessionList } from "@/components/history/SessionList";
 import { getTranslations } from "next-intl/server";
@@ -72,6 +71,12 @@ export default async function HistoryPage({ searchParams }: Props) {
         completedAt: true,
         createdAt: true,
         duration: true,
+        messages: {
+          where: { messageType: "question" },
+          take: 1,
+          orderBy: { createdAt: "asc" },
+          select: { content: true },
+        },
       },
     }),
     prisma.session.count({ where }),
@@ -88,23 +93,23 @@ export default async function HistoryPage({ searchParams }: Props) {
     completedAt: s.completedAt?.toISOString() ?? null,
     createdAt: s.createdAt.toISOString(),
     duration: s.duration,
+    snippet: s.messages[0]?.content ?? null,
   }));
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white">
-      <div className="mx-auto max-w-4xl px-4 py-8">
-        {/* Header */}
-        <div>
-          <div className="flex items-center gap-2">
-            <History className="h-5 w-5 text-slate-400" />
-            <h1 className="text-2xl font-bold">{t("title")}</h1>
-          </div>
-          <p className="text-sm text-slate-400">
-            {t("total", { count: totalCount })}
+    <main className="min-h-screen bg-background text-on-background">
+      <div className="mx-auto max-w-5xl px-8 py-12 space-y-8">
+        {/* Header Section */}
+        <section className="w-full">
+          <h1 className="text-3xl font-bold tracking-tight text-on-surface">
+            {t("title")}
+          </h1>
+          <p className="text-on-surface/60 mt-2 font-medium">
+            {t("subtitle")}
           </p>
-        </div>
+        </section>
 
-        {/* Filters */}
+        {/* Filters Section */}
         <HistoryFilters
           category={category}
           difficulty={difficulty}
@@ -112,7 +117,7 @@ export default async function HistoryPage({ searchParams }: Props) {
           sort={sort}
         />
 
-        {/* Session list */}
+        {/* List Section */}
         <SessionList
           sessions={serialized}
           page={page}
@@ -122,6 +127,14 @@ export default async function HistoryPage({ searchParams }: Props) {
           status={status}
           sort={sort}
         />
+      </div>
+
+      {/* Floating Sync Badge */}
+      <div className="fixed bottom-8 right-8 bg-[#0e0e0e]/80 backdrop-blur-md ghost-border rounded-full py-2 px-4 hidden lg:flex items-center gap-3">
+        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+        <span className="text-[0.6875rem] font-mono text-white/60 tracking-widest uppercase">
+          Syncing with Mainframe
+        </span>
       </div>
     </main>
   );

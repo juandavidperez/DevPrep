@@ -33,6 +33,7 @@ export default async function SessionPage({
     totalQuestions: interviewSession.totalQuestions,
     completedAt: interviewSession.completedAt?.toISOString() ?? null,
     score: interviewSession.score,
+    feedbackMode: interviewSession.feedbackMode,
   };
 
   const messages = interviewSession.messages.map((m) => ({

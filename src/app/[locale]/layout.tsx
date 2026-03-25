@@ -1,6 +1,6 @@
 
 import { AuthProvider } from "@/components/providers/AuthProvider";
-import { Navbar } from "@/components/Navbar";
+import { Sidebar } from "@/components/Sidebar";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -37,8 +37,12 @@ export default async function RootLayout({
       <body className="antialiased">
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>
-            <Navbar />
-            {children}
+            <div className="flex min-h-screen">
+              <Sidebar />
+              <div className="flex-1 min-w-0 pt-14 md:pt-0">
+                {children}
+              </div>
+            </div>
           </AuthProvider>
         </NextIntlClientProvider>
       </body>
