@@ -12,6 +12,7 @@
     "@auth/prisma-adapter": "^2.11.1",
     "@prisma/client": "~6.2.1",
     "clsx": "latest",
+    "date-fns": "^4.1.0",
     "jose": "^6.2.2",
     "lucide-react": "latest",
     "next": "15.1.0",
@@ -19,7 +20,8 @@
     "next-intl": "^4.8.3",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "tailwind-merge": "latest"
+    "tailwind-merge": "latest",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",

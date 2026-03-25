@@ -2,7 +2,11 @@
 
 import { Link } from "@/navigation";
 import { useTranslations } from "next-intl";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { clsx } from "clsx";
+import { Clock } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
+import { es, enUS } from "date-fns/locale";
+import { useParams } from "next/navigation";
 
 interface SessionItem {
   id: string;
@@ -13,19 +17,13 @@ interface SessionItem {
   completedAt: string | null;
   createdAt: string;
   duration: number | null;
-}
-
-function scoreColor(score: number) {
-  if (score >= 70) return "text-emerald-400";
-  if (score >= 40) return "text-yellow-400";
-  return "text-red-400";
+  snippet: string | null;
 }
 
 function formatDuration(seconds: number | null): string {
-  if (!seconds) return "";
+  if (!seconds) return "0 min";
   const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-  return m > 0 ? `${m}m ${s}s` : `${s}s`;
+  return `${m} min`;
 }
 
 interface Props {
@@ -62,15 +60,17 @@ export function SessionList({
   sort,
 }: Props) {
   const t = useTranslations("History");
+  const { locale } = useParams();
   const filters = { category, difficulty, status, sort };
+  const dateLocale = locale === "es" ? es : enUS;
 
   if (sessions.length === 0) {
     return (
-      <div className="mt-6 rounded-xl border border-dashed border-slate-700 p-8 text-center">
-        <p className="text-slate-400">{t("noMatches")}</p>
+      <div className="mt-6 rounded-xl border border-dashed border-white/10 p-12 text-center bg-surface-container-lowest">
+        <p className="text-white/40 font-medium">{t("noMatches")}</p>
         <Link
           href="/session/new"
-          className="mt-3 inline-block text-sm text-blue-400 hover:text-blue-300"
+          className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#d2bbff] hover:text-white transition-all"
         >
           {t("startNew")}
         </Link>
@@ -79,77 +79,122 @@ export function SessionList({
   }
 
   return (
-    <div className="mt-6">
-      <div className="space-y-3">
+    <div className="flex flex-col gap-4">
+      <div className="space-y-4">
         {sessions.map((s) => (
-          <Link
+          <div
             key={s.id}
-            href={
-              s.completedAt
-                ? `/session/${s.id}/results`
-                : `/session/${s.id}`
-            }
-            className="flex items-center justify-between rounded-xl border border-slate-700 bg-slate-800/50 px-4 py-3 transition hover:border-slate-500"
+            className="bg-surface-container-low ghost-border rounded-xl p-6 hover:bg-surface-container transition-all duration-300 flex flex-col gap-6 relative overflow-hidden group"
           >
-            <div>
-              <p className="text-sm font-medium capitalize">
-                {s.category.replace("_", " ")}
-              </p>
-              <p className="text-xs text-slate-400 capitalize">
-                {s.difficulty} · {s.totalQuestions} questions
-                {s.duration ? ` · ${formatDuration(s.duration)}` : ""}
-              </p>
+            {/* Ambient Background Glow */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl rounded-full -mr-16 -mt-16 pointer-events-none group-hover:bg-primary/10 transition-colors"></div>
+            
+            <div className="flex justify-between items-start z-10">
+              <span className="px-2 py-1 bg-surface-container-highest text-[0.6875rem] font-mono font-bold tracking-widest text-[#d2bbff] border border-white/5 uppercase rounded-sm">
+                {s.category.replace("_", " ")} — {s.difficulty}
+              </span>
+              <span className="text-[0.6875rem] text-white/40 font-bold uppercase tracking-tighter">
+                {formatDistanceToNow(new Date(s.createdAt), { addSuffix: true, locale: dateLocale })}
+              </span>
             </div>
-            <div className="flex items-center gap-4 text-right">
-              {s.completedAt ? (
-                <div>
-                  <p className="text-sm font-semibold">
-                    <span className={scoreColor(s.score ?? 0)}>
-                      {Math.round(s.score ?? 0)}
-                    </span>
-                    <span className="text-slate-500">/100</span>
-                  </p>
-                  <p className="text-xs text-slate-500">
-                    {new Date(s.completedAt).toLocaleDateString()}
-                  </p>
-                </div>
-              ) : (
-                <span className="rounded-full bg-yellow-500/10 px-3 py-1 text-xs font-medium text-yellow-400">
-                  {t("inProgress")}
+
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 z-10">
+              <div className="space-y-2">
+                <span className="text-white/30 text-[0.6875rem] font-mono block uppercase tracking-widest font-bold">
+                  Global Performance
                 </span>
-              )}
+                <div className="flex items-baseline gap-2">
+                  <span className="text-5xl font-mono font-bold text-[#7C3AED]">
+                    {s.score !== null ? Math.round(s.score) : "--"}
+                  </span>
+                  <span className="text-xl font-mono text-white/20">/100</span>
+                </div>
+              </div>
+
+              <div className="flex-1 max-w-md">
+                <div className="flex items-center gap-2 text-white/40 mb-3">
+                  <Clock className="h-3.5 w-3.5" />
+                  <span className="text-xs font-bold uppercase tracking-tight">
+                    {formatDuration(s.duration)} session
+                  </span>
+                </div>
+                {s.snippet && (
+                  <p className="text-sm text-white/60 line-clamp-2 italic border-l-2 border-white/10 pl-4 font-medium leading-relaxed">
+                    {s.snippet}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex items-center">
+                <Link
+                  href={s.completedAt ? `/session/${s.id}/results` : `/session/${s.id}`}
+                  className="ghost-border text-[0.875rem] font-bold px-6 py-2 rounded-lg text-white/90 hover:bg-[#d2bbff] hover:text-[#131313] transition-all duration-300 active:scale-95"
+                >
+                  Ver Feedback
+                </Link>
+              </div>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
 
-      {/* Pagination */}
+      {/* Pagination Section */}
       {totalPages > 1 && (
-        <div className="mt-6 flex items-center justify-center gap-2">
-          {page > 1 ? (
-            <Link
-              href={buildPageUrl(page - 1, filters)}
-              className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-700 text-slate-400 transition hover:border-slate-500 hover:text-white"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Link>
-          ) : (
-            <div className="h-8 w-8" />
-          )}
-          <span className="text-sm text-slate-400">
-            {t("page", { page, total: totalPages })}
-          </span>
-          {page < totalPages ? (
-            <Link
-              href={buildPageUrl(page + 1, filters)}
-              className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-700 text-slate-400 transition hover:border-slate-500 hover:text-white"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-          ) : (
-            <div className="h-8 w-8" />
-          )}
-        </div>
+        <section className="flex items-center justify-between pt-8 pb-4">
+          <div className="text-[0.6875rem] font-mono text-white/30 uppercase tracking-widest font-bold">
+            Page {page} of {totalPages}
+          </div>
+          <div className="flex items-center gap-1">
+            {page > 1 ? (
+              <Link
+                href={buildPageUrl(page - 1, filters)}
+                className="ghost-border px-4 py-2 text-xs font-bold text-white/80 hover:bg-surface-container-highest transition-colors uppercase tracking-tighter"
+              >
+                Anterior
+              </Link>
+            ) : (
+              <span className="ghost-border px-4 py-2 text-xs font-bold text-white/20 cursor-not-allowed uppercase tracking-tighter">
+                Anterior
+              </span>
+            )}
+            
+            <div className="flex items-center">
+              {[...Array(totalPages)].map((_, i) => {
+                const p = i + 1;
+                // Simple pagination logic, showing only a few pages or all if small
+                if (totalPages > 5 && Math.abs(p - page) > 2 && p !== 1 && p !== totalPages) return null;
+                
+                return (
+                  <Link
+                    key={p}
+                    href={buildPageUrl(p, filters)}
+                    className={clsx(
+                      "px-4 py-2 text-xs font-bold border transition-all",
+                      p === page
+                        ? "bg-[#201f1f] text-[#d2bbff] border-[#d2bbff]/30 shadow-inner"
+                        : "ghost-border text-white/50 hover:bg-surface-container-highest"
+                    )}
+                  >
+                    {p}
+                  </Link>
+                );
+              })}
+            </div>
+
+            {page < totalPages ? (
+              <Link
+                href={buildPageUrl(page + 1, filters)}
+                className="ghost-border px-4 py-2 text-xs font-bold text-white/80 hover:bg-surface-container-highest transition-colors uppercase tracking-tighter"
+              >
+                Siguiente
+              </Link>
+            ) : (
+              <span className="ghost-border px-4 py-2 text-xs font-bold text-white/20 cursor-not-allowed uppercase tracking-tighter">
+                Siguiente
+              </span>
+            )}
+          </div>
+        </section>
       )}
     </div>
   );

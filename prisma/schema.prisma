@@ -73,6 +73,7 @@ model Session {
   targetStack    String[]
   language       String            @default("en")
   inputModality  String            @default("text")   // "text" | "voice"
+  feedbackMode   String            @default("live")   // "live" | "silent"
   totalQuestions  Int
   completedAt    DateTime?
   score          Float?

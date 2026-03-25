@@ -62,70 +62,85 @@ export function HistoryFilters({ category, difficulty, status, sort }: Props) {
   );
 
   return (
-    <div className="mt-6 space-y-3">
-      {/* Category */}
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs font-medium text-slate-500 w-16">{t("categoryLabel")}</span>
-        {CATEGORIES.map((c) => (
-          <button
-            key={c.value}
-            onClick={() => updateParam("category", c.value)}
-            className={clsx(
-              "rounded-lg px-3 py-1.5 text-xs font-medium transition",
-              category === c.value
-                ? "bg-blue-600 text-white"
-                : "bg-slate-800 text-slate-400 hover:text-white"
-            )}
-          >
-            {t(c.tKey)}
-          </button>
-        ))}
-      </div>
-
-      {/* Difficulty */}
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs font-medium text-slate-500 w-16">{t("levelLabel")}</span>
-        {DIFFICULTIES.map((d) => (
-          <button
-            key={d.value}
-            onClick={() => updateParam("difficulty", d.value)}
-            className={clsx(
-              "rounded-lg px-3 py-1.5 text-xs font-medium transition",
-              difficulty === d.value
-                ? "bg-blue-600 text-white"
-                : "bg-slate-800 text-slate-400 hover:text-white"
-            )}
-          >
-            {t(d.tKey)}
-          </button>
-        ))}
-      </div>
-
-      {/* Status + Sort row */}
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-slate-500 w-16">{t("statusLabel")}</span>
-          {STATUSES.map((s) => (
+    <div className="space-y-4">
+      {/* Category Row */}
+      <div className="flex flex-wrap items-center gap-3">
+        <span className="text-[0.6875rem] font-mono font-medium text-white/40 uppercase tracking-widest w-20">
+          {t("categoryLabel")}
+        </span>
+        <div className="flex flex-wrap gap-2">
+          {CATEGORIES.map((c) => (
             <button
-              key={s.value}
-              onClick={() => updateParam("status", s.value)}
+              key={c.value}
+              onClick={() => updateParam("category", c.value)}
               className={clsx(
-                "rounded-lg px-3 py-1.5 text-xs font-medium transition",
-                status === s.value
-                  ? "bg-blue-600 text-white"
-                  : "bg-slate-800 text-slate-400 hover:text-white"
+                "rounded-lg px-3 py-1.5 text-xs font-bold transition-all duration-300",
+                category === c.value
+                  ? "bg-[#201f1f] text-[#d2bbff] border border-[#d2bbff]/30 shadow-[0_0_10px_rgba(210,187,255,0.1)]"
+                  : "ghost-border text-white/50 hover:text-white/80 hover:bg-surface-container"
               )}
             >
-              {t(s.tKey)}
+              {t(c.tKey)}
             </button>
           ))}
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-slate-500">{t("sortLabel")}</span>
+      </div>
+
+      {/* Level/Difficulty Row */}
+      <div className="flex flex-wrap items-center gap-3">
+        <span className="text-[0.6875rem] font-mono font-medium text-white/40 uppercase tracking-widest w-20">
+          {t("levelLabel")}
+        </span>
+        <div className="flex flex-wrap gap-2">
+          {DIFFICULTIES.map((d) => (
+            <button
+              key={d.value}
+              onClick={() => updateParam("difficulty", d.value)}
+              className={clsx(
+                "rounded-lg px-3 py-1.5 text-xs font-bold transition-all duration-300",
+                difficulty === d.value
+                  ? "bg-[#201f1f] text-[#d2bbff] border border-[#d2bbff]/30 shadow-[0_0_10px_rgba(210,187,255,0.1)]"
+                  : "ghost-border text-white/50 hover:text-white/80 hover:bg-surface-container"
+              )}
+            >
+              {t(d.tKey)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Status & Sort Row */}
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <span className="text-[0.6875rem] font-mono font-medium text-white/40 uppercase tracking-widest w-20">
+            {t("statusLabel")}
+          </span>
+          <div className="flex gap-2">
+            {STATUSES.map((s) => (
+              <button
+                key={s.value}
+                onClick={() => updateParam("status", s.value)}
+                className={clsx(
+                  "rounded-lg px-3 py-1.5 text-xs font-bold transition-all duration-300",
+                  status === s.value
+                    ? "bg-[#201f1f] text-[#d2bbff] border border-[#d2bbff]/30 shadow-[0_0_10px_rgba(210,187,255,0.1)]"
+                    : "ghost-border text-white/50 hover:text-white/80 hover:bg-surface-container"
+                )}
+              >
+                {t(s.tKey)}
+              </button>
+            ))}
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <span className="text-[0.6875rem] font-mono font-medium text-white/40 uppercase tracking-widest">
+            {t("sortLabel")}
+          </span>
           <select
             value={sort}
             onChange={(e) => updateParam("sort", e.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs text-slate-300 outline-none focus:border-blue-500"
+            className="rounded-lg border border-white/10 bg-[#0e0e0e] px-4 py-1.5 text-xs font-bold text-white/90 outline-none transition-all hover:border-white/20 focus:border-[#d2bbff]/50"
           >
             {SORTS.map((s) => (
               <option key={s.value} value={s.value}>

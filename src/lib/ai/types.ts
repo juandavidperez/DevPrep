@@ -31,4 +31,5 @@ export interface SessionConfig {
 export interface AIProvider {
   generateQuestions(config: SessionConfig): Promise<Question[]>;
   evaluateResponse(question: Question, response: string, code?: string): Promise<Evaluation>;
+  answerClarification(questionText: string, clarification: string): Promise<string>;
 }

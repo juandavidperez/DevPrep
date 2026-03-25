@@ -6,7 +6,8 @@ import type { CreateSessionRequest } from "@/types/session";
 
 const VALID_CATEGORIES = ["technical", "coding", "system_design", "behavioral", "mixed"];
 const VALID_DIFFICULTIES = ["junior", "mid", "senior"];
-const VALID_COUNTS = [5, 10, 15];
+const MIN_QUESTIONS = 1;
+const MAX_QUESTIONS = 15;
 
 export async function POST(request: Request) {
   const session = await auth();
@@ -15,7 +16,7 @@ export async function POST(request: Request) {
   }
 
   const body: CreateSessionRequest = await request.json();
-  const { category, difficulty, totalQuestions, language = "en" } = body;
+  const { category, difficulty, totalQuestions, language = "en", feedbackMode = "live" } = body;
 
   if (!VALID_CATEGORIES.includes(category)) {
     return NextResponse.json({ error: "Invalid category" }, { status: 400 });
@@ -23,7 +24,7 @@ export async function POST(request: Request) {
   if (!VALID_DIFFICULTIES.includes(difficulty)) {
     return NextResponse.json({ error: "Invalid difficulty" }, { status: 400 });
   }
-  if (!VALID_COUNTS.includes(totalQuestions)) {
+  if (!Number.isInteger(totalQuestions) || totalQuestions < MIN_QUESTIONS || totalQuestions > MAX_QUESTIONS) {
     return NextResponse.json({ error: "Invalid question count" }, { status: 400 });
   }
 
@@ -35,6 +36,7 @@ export async function POST(request: Request) {
         difficulty,
         totalQuestions,
         language,
+        feedbackMode: ["live", "silent"].includes(feedbackMode) ? feedbackMode : "live",
         targetStack: ["angular", "spring_boot", "postgresql", "typescript", "java"],
       },
     });
