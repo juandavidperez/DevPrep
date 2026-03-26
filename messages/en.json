@@ -10,7 +10,7 @@
     "feature1Module": "Module: Algo_Core_v2",
     "feature2Title": "Code Feedback",
     "feature2Desc": "Instant analysis of Big O, readability, and design patterns using advanced language models.",
-    "feature2Module": "Engine: GPT-4-Turbo",
+    "feature2Module": "Engine: Claude_Haiku",
     "feature3Title": "Realistic Simulation",
     "feature3Desc": "Real-time time pressure and anxiety tracking via voice analysis and typing patterns.",
     "feature3Module": "Status: Active_Sync",

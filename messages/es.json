@@ -10,7 +10,7 @@
     "feature1Module": "Módulo: Algo_Core_v2",
     "feature2Title": "Feedback de Código",
     "feature2Desc": "Análisis instantáneo de Big O, legibilidad y patrones de diseño utilizando modelos de lenguaje avanzados.",
-    "feature2Module": "Motor: GPT-4-Turbo",
+    "feature2Module": "Motor: Claude_Haiku",
     "feature3Title": "Simulación Realista",
     "feature3Desc": "Presión de tiempo real y seguimiento de nerviosismo a través de análisis de voz y patrones de tecleo.",
     "feature3Module": "Estado: Sincronización_Activa",

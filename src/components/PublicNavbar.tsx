@@ -14,15 +14,12 @@ export function PublicNavbar() {
         </Link>
         
         <div className="hidden items-center gap-8 text-sm font-medium md:flex">
-          <Link href="#features" className="text-[#d2bbff] transition-colors hover:text-white">
+          <a href="#features" className="text-[#d2bbff] transition-colors hover:text-white">
             Features
-          </Link>
-          <Link href="#simulators" className="text-white/50 transition-colors hover:text-white">
+          </a>
+          <a href="#simulators" className="text-white/50 transition-colors hover:text-white">
             Simulators
-          </Link>
-          <Link href="#pricing" className="text-white/50 transition-colors hover:text-white">
-            Pricing
-          </Link>
+          </a>
         </div>
 
         <div className="flex items-center gap-4">

@@ -23,9 +23,6 @@ export function Footer() {
           <a href="#simulators" className="text-white/40 transition-colors hover:text-[#d2bbff]">
             Simulators
           </a>
-          <a href="#pricing" className="text-white/40 transition-colors hover:text-[#d2bbff]">
-            Pricing
-          </a>
           <a href="#" className="text-white/40 transition-colors hover:text-[#d2bbff]">
             Privacy
           </a>
