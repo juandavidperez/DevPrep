@@ -2,7 +2,7 @@ import { SessionConfigForm } from "@/components/session/SessionConfigForm";
 
 export default function NewSessionPage() {
   return (
-    <main className="min-h-screen bg-background text-on-surface font-body selection:bg-primary/30 antialiased overflow-x-hidden relative">
+    <main className="min-h-screen bg-background  font-body selection:bg-primary/30 antialiased overflow-x-hidden relative">
       <SessionConfigForm />
       
       {/* Background Decorative Elements */}
