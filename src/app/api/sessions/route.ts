@@ -16,7 +16,7 @@ export async function POST(request: Request) {
   }
 
   const body: CreateSessionRequest = await request.json();
-  const { category, difficulty, totalQuestions, language = "en", feedbackMode = "live" } = body;
+  const { category, difficulty, totalQuestions, language = "en", feedbackMode = "live", targetStack } = body;
 
   if (!VALID_CATEGORIES.includes(category)) {
     return NextResponse.json({ error: "Invalid category" }, { status: 400 });
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
         totalQuestions,
         language,
         feedbackMode: ["live", "silent"].includes(feedbackMode) ? feedbackMode : "live",
-        targetStack: ["angular", "spring_boot", "postgresql", "typescript", "java"],
+        targetStack: targetStack?.length ? targetStack : ["angular", "spring_boot", "postgresql"],
       },
     });
 

@@ -2,7 +2,7 @@ import { prisma } from "@/lib/db";
 import { getAIProvider } from "@/lib/ai";
 import type { Question, QuestionCategory, Difficulty, SessionConfig } from "@/lib/ai/types";
 
-interface SelectQuestionOptions {
+export interface SelectQuestionOptions {
   category: QuestionCategory | "mixed";
   difficulty: Difficulty;
   stack: string[];
@@ -24,6 +24,8 @@ export async function selectNextQuestion(
 ): Promise<Question> {
   const { category, difficulty, language, userId, existingQuestions = [] } = options;
 
+  const { stack } = options;
+
   // 1. Try spaced repetition queue (bookmarked questions due for review)
   const fromRepetition = await selectFromSpacedRepetition(
     userId,
@@ -34,7 +36,17 @@ export async function selectNextQuestion(
   );
   if (fromRepetition) return fromRepetition;
 
-  // 2. Try question bank (unseen/least served)
+  // 2a. Try question bank — stack-matched first
+  const fromBankWithStack = await selectFromBank(
+    category,
+    difficulty,
+    language,
+    existingQuestions,
+    stack
+  );
+  if (fromBankWithStack) return fromBankWithStack;
+
+  // 2b. Try question bank — any question in the category (stack-agnostic fallback)
   const fromBank = await selectFromBank(
     category,
     difficulty,
@@ -96,7 +108,8 @@ async function selectFromBank(
   category: QuestionCategory | "mixed",
   difficulty: Difficulty,
   language: string,
-  existingQuestions: string[]
+  existingQuestions: string[],
+  stack?: string[]
 ): Promise<Question | null> {
   const where: Record<string, unknown> = {
     difficulty,
@@ -105,6 +118,9 @@ async function selectFromBank(
   };
   if (category !== "mixed") {
     where.category = category;
+  }
+  if (stack?.length) {
+    where.tags = { hasSome: stack };
   }
 
   // Get least-served questions, pick one not already used in this session
