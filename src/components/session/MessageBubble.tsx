@@ -58,9 +58,17 @@ export function MessageBubble({ message }: { message: SessionMessageDTO }) {
           <div className="rounded-2xl rounded-tr-sm bg-primary-container px-4 py-3 text-sm text-white">
             {message.content}
             {message.codeContent && (
-              <pre className="mt-2 overflow-x-auto rounded-lg bg-black/30 p-3 font-mono text-xs">
-                <code>{message.codeContent}</code>
-              </pre>
+              <div className="mt-3 overflow-hidden rounded-lg border border-white/10 bg-[#0e0e0e]">
+                <div className="flex items-center gap-1.5 border-b border-white/10 px-3 py-1.5">
+                  <span className="h-2 w-2 rounded-full bg-red-500/60" />
+                  <span className="h-2 w-2 rounded-full bg-yellow-500/60" />
+                  <span className="h-2 w-2 rounded-full bg-green-500/60" />
+                  <span className="ml-2 font-mono text-[10px] text-zinc-500">code</span>
+                </div>
+                <pre className="overflow-x-auto p-4 font-mono text-xs leading-relaxed text-zinc-200">
+                  <code>{message.codeContent}</code>
+                </pre>
+              </div>
             )}
           </div>
         </div>

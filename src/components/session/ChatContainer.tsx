@@ -220,6 +220,7 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
         disabled={isLoading || isComplete}
         isLoading={isLoading}
         isSilentMode={initialSession.feedbackMode === "silent"}
+        isCodeSession={initialSession.category === "coding"}
       />
     </div>
   );
