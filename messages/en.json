@@ -167,6 +167,13 @@
     "scoreLow": "Score ↓",
     "noMatches": "No sessions match your filters",
     "startNew": "Start a new interview →",
-    "page": "Page {page} of {total}"
+    "page": "Page {page} of {total}",
+    "previous": "Previous",
+    "next": "Next",
+    "viewFeedback": "View Feedback",
+    "globalPerformance": "Global Performance",
+    "sessionDuration": "{duration} min session",
+    "questionsCount": "{count} questions",
+    "scoreLabel": "/100"
   }
 }

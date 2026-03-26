@@ -167,6 +167,13 @@
     "scoreLow": "Puntaje ↓",
     "noMatches": "No hay sesiones que coincidan con los filtros",
     "startNew": "Iniciar una nueva entrevista →",
-    "page": "Página {page} de {total}"
+    "page": "Página {page} de {total}",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "viewFeedback": "Ver Feedback",
+    "globalPerformance": "Rendimiento Global",
+    "sessionDuration": "Sesión de {duration} min",
+    "questionsCount": "{count} preguntas",
+    "scoreLabel": "/100"
   }
 }

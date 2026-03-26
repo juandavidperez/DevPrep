@@ -97,14 +97,14 @@ export default async function HistoryPage({ searchParams }: Props) {
   }));
 
   return (
-    <main className="min-h-screen bg-background text-on-background">
+    <main className="min-h-screen bg-background">
       <div className="mx-auto max-w-5xl px-8 py-12 space-y-8">
         {/* Header Section */}
         <section className="w-full">
-          <h1 className="text-3xl font-bold tracking-tight text-on-surface">
+          <h1 className="text-3xl font-bold tracking-tight text-text-primary">
             {t("title")}
           </h1>
-          <p className="text-on-surface/60 mt-2 font-medium">
+          <p className="mt-2 font-medium text-text-secondary">
             {t("subtitle")}
           </p>
         </section>
