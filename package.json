@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.80.0",
     "@auth/prisma-adapter": "^2.11.1",
+    "@monaco-editor/react": "^4.7.0",
     "@prisma/client": "~6.2.1",
     "clsx": "latest",
     "date-fns": "^4.1.0",

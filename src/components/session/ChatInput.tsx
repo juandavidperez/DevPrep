@@ -1,31 +1,41 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { Send, HelpCircle, X } from "lucide-react";
+import { Send, HelpCircle, X, Code2 } from "lucide-react";
 import { clsx } from "clsx";
+import { CodeEditor } from "./CodeEditor";
 
 interface ChatInputProps {
   onSend: (content: string, isClarification?: boolean, code?: string) => void;
   disabled: boolean;
   isLoading: boolean;
   isSilentMode?: boolean;
+  isCodeSession?: boolean;
 }
 
-export function ChatInput({ onSend, disabled, isLoading, isSilentMode = false }: ChatInputProps) {
+export function ChatInput({
+  onSend,
+  disabled,
+  isLoading,
+  isSilentMode = false,
+  isCodeSession = false,
+}: ChatInputProps) {
   const [value, setValue] = useState("");
   const [isClarifying, setIsClarifying] = useState(false);
+  const [showEditor, setShowEditor] = useState(false);
+  const [codeValue, setCodeValue] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSubmit = useCallback(() => {
     const trimmed = value.trim();
     if (!trimmed || disabled) return;
-    onSend(trimmed, isClarifying);
+    onSend(trimmed, isClarifying, showEditor && codeValue.trim() ? codeValue : undefined);
     setValue("");
     setIsClarifying(false);
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
     }
-  }, [value, disabled, isClarifying, onSend]);
+  }, [value, disabled, isClarifying, onSend, showEditor, codeValue]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
@@ -48,17 +58,30 @@ export function ChatInput({ onSend, disabled, isLoading, isSilentMode = false }:
     setTimeout(() => textareaRef.current?.focus(), 0);
   };
 
+  const toggleEditor = () => {
+    setShowEditor((prev) => !prev);
+    if (showEditor) setCodeValue("");
+  };
+
   return (
     <div className="shrink-0 border-t border-border-subtle bg-surface-container/80 p-4 backdrop-blur-lg">
+      {/* Clarification banner */}
       {isClarifying && (
         <div className="mb-2 flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 px-3 py-2">
           <HelpCircle className="h-3.5 w-3.5 shrink-0 text-primary" />
           <p className="flex-1 text-xs text-primary">
             Clarification mode — your message will be answered without advancing the question.
           </p>
-          <button onClick={toggleClarify} className="text-primary/60 hover:text-primary transition">
+          <button onClick={toggleClarify} className="text-primary/60 transition hover:text-primary">
             <X className="h-3.5 w-3.5" />
           </button>
+        </div>
+      )}
+
+      {/* Monaco editor */}
+      {showEditor && (
+        <div className="mb-3">
+          <CodeEditor value={codeValue} onChange={setCodeValue} />
         </div>
       )}
 
@@ -79,6 +102,24 @@ export function ChatInput({ onSend, disabled, isLoading, isSilentMode = false }:
           <HelpCircle className="h-4 w-4" />
         </button>
 
+        {/* Code editor toggle — only for coding sessions */}
+        {isCodeSession && (
+          <button
+            type="button"
+            onClick={toggleEditor}
+            disabled={disabled}
+            title={showEditor ? "Hide code editor" : "Open code editor"}
+            className={clsx(
+              "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border transition disabled:opacity-40",
+              showEditor
+                ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400"
+                : "border-border-subtle bg-surface-highest text-text-secondary hover:text-text-primary"
+            )}
+          >
+            <Code2 className="h-4 w-4" />
+          </button>
+        )}
+
         <textarea
           ref={textareaRef}
           value={value}
@@ -93,6 +134,8 @@ export function ChatInput({ onSend, disabled, isLoading, isSilentMode = false }:
               ? "Ask your clarification question…"
               : isSilentMode
               ? "Type your answer… answers are evaluated at the end (Ctrl+Enter)"
+              : showEditor
+              ? "Explain your approach… (Ctrl+Enter to send with code)"
               : "Type your answer… (Ctrl+Enter to send)"
           }
           rows={1}

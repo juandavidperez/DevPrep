@@ -4,6 +4,7 @@ export interface CreateSessionRequest {
   totalQuestions: number;
   language: string;
   feedbackMode?: string;
+  targetStack?: string[];
 }
 
 export interface CreateSessionResponse {
