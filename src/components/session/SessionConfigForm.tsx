@@ -127,7 +127,7 @@ export function SessionConfigForm() {
           <h2 className="text-4xl font-bold text-white/90 tracking-tight font-headline mb-3">
             {t("title")}
           </h2>
-          <p className="text-on-surface-variant text-base max-w-2xl font-medium leading-relaxed">
+          <p className="text-text-secondary text-base max-w-2xl font-medium leading-relaxed">
             {t("subtitle")}
           </p>
         </div>
@@ -136,7 +136,7 @@ export function SessionConfigForm() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 pb-32">
           
           {/* Card 1: Technical Area */}
-          <div className="md:col-span-7 bg-surface-container p-7 rounded-xl ghost-border flex flex-col group hover:bg-surface-container-high transition-colors duration-300">
+          <div className="md:col-span-7 bg-surface-container p-7 rounded-xl ghost-border flex flex-col group hover:bg-surface-highest transition-colors duration-300">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center">
                 <Code className="h-5 w-5 text-primary" />
@@ -165,14 +165,14 @@ export function SessionConfigForm() {
               ))}
             </div>
             <div className="mt-auto">
-              <p className="text-xs text-on-surface-variant leading-relaxed opacity-60 font-medium italic">
+              <p className="text-xs text-text-secondary leading-relaxed opacity-60 font-medium italic">
                 {t("techAreaDesc")}
               </p>
             </div>
           </div>
 
           {/* Card 2: Difficulty Level */}
-          <div className="md:col-span-5 bg-surface-container p-7 rounded-xl ghost-border flex flex-col group hover:bg-surface-container-high transition-colors duration-300">
+          <div className="md:col-span-5 bg-surface-container p-7 rounded-xl ghost-border flex flex-col group hover:bg-surface-highest transition-colors duration-300">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center">
                 <BarChart3 className="h-5 w-5 text-primary" />
@@ -210,14 +210,14 @@ export function SessionConfigForm() {
               ))}
             </div>
             <div className="mt-auto">
-              <p className="text-xs text-on-surface-variant leading-relaxed opacity-60 font-medium italic">
+              <p className="text-xs text-text-secondary leading-relaxed opacity-60 font-medium italic">
                 {t("difficultyDesc")}
               </p>
             </div>
           </div>
 
           {/* Card 3: Language */}
-          <div className="md:col-span-5 bg-surface-container p-7 rounded-xl ghost-border flex flex-col group hover:bg-surface-container-high transition-colors duration-300">
+          <div className="md:col-span-5 bg-surface-container p-7 rounded-xl ghost-border flex flex-col group hover:bg-surface-highest transition-colors duration-300">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center">
                 <Globe className="h-5 w-5 text-primary" />
@@ -251,14 +251,14 @@ export function SessionConfigForm() {
               ))}
             </div>
             <div className="mt-auto">
-              <p className="text-xs text-on-surface-variant leading-relaxed opacity-60 font-medium italic">
+              <p className="text-xs text-text-secondary leading-relaxed opacity-60 font-medium italic">
                 {t("languageDesc")}
               </p>
             </div>
           </div>
 
           {/* Card 4: Session Duration */}
-          <div className="md:col-span-7 bg-surface-container p-7 rounded-xl ghost-border flex flex-col group hover:bg-surface-container-high transition-colors duration-300">
+          <div className="md:col-span-7 bg-surface-container p-7 rounded-xl ghost-border flex flex-col group hover:bg-surface-highest transition-colors duration-300">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center">
@@ -315,7 +315,7 @@ export function SessionConfigForm() {
           </div>
 
           {/* Card 5: Feedback Mode */}
-          <div className="md:col-span-12 bg-surface-container p-7 rounded-xl ghost-border flex flex-col group hover:bg-surface-container-high transition-colors duration-300">
+          <div className="md:col-span-12 bg-surface-container p-7 rounded-xl ghost-border flex flex-col group hover:bg-surface-highest transition-colors duration-300">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center">
                 <Eye className="h-5 w-5 text-primary" />

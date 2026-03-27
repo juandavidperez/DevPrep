@@ -163,9 +163,9 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
               </div>
               <div className="rounded-2xl rounded-tl-sm border border-border-subtle bg-surface-container px-4 py-3">
                 <div className="flex gap-1">
-                  <span className="h-2 w-2 animate-bounce rounded-full bg-text-secondary" style={{ animationDelay: "0ms" }} />
-                  <span className="h-2 w-2 animate-bounce rounded-full bg-text-secondary" style={{ animationDelay: "150ms" }} />
-                  <span className="h-2 w-2 animate-bounce rounded-full bg-text-secondary" style={{ animationDelay: "300ms" }} />
+                  <span className="h-2 w-2 animate-bounce rounded-full bg-zinc-500/60" style={{ animationDelay: "0ms" }} />
+                  <span className="h-2 w-2 animate-bounce rounded-full bg-zinc-500/60" style={{ animationDelay: "150ms" }} />
+                  <span className="h-2 w-2 animate-bounce rounded-full bg-zinc-500/60" style={{ animationDelay: "300ms" }} />
                 </div>
               </div>
             </div>

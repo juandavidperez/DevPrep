@@ -25,7 +25,7 @@ export function PublicNavbar() {
         <div className="flex items-center gap-4">
           <Link
             href="/auth/signin"
-            className="rounded-lg border border-white/10 px-4 py-1.5 text-sm font-medium text-white/90 transition-colors hover:bg-surface-container-highest active:scale-95"
+            className="rounded-lg border border-white/10 px-4 py-1.5 text-sm font-medium text-white/90 transition-colors hover:bg-surface-highest active:scale-95"
           >
             {t("signIn")}
           </Link>

@@ -136,7 +136,7 @@ export function SettingsForm({
       {/* 1. Profile Card */}
       <div className="md:col-span-4 bg-surface-container/70 rounded-xl border border-border-subtle p-6 flex flex-col items-center text-center group hover:bg-surface-highest/50 transition-all duration-300 shadow-xl">
         <div className="relative mb-4">
-          <div className="w-24 h-24 rounded-full bg-surface-container-highest border-2 border-primary/30 flex items-center justify-center p-1.5 shadow-[0_0_15px_rgba(210,187,255,0.1)]">
+          <div className="w-24 h-24 rounded-full bg-surface-highest border-2 border-primary/30 flex items-center justify-center p-1.5 shadow-[0_0_15px_rgba(210,187,255,0.1)]">
             <div className="w-full h-full rounded-full bg-zinc-800 flex items-center justify-center overflow-hidden">
                {userImage ? (
                  <Image
@@ -186,7 +186,7 @@ export function SettingsForm({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-8">
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-text-secondary">{t("uiLanguage")}</span>
+              <span className="text-sm font-medium text-text-text-secondary">{t("uiLanguage")}</span>
               <div className="flex bg-surface-lowest p-1 rounded-lg border border-border-subtle/50">
                 {LANGUAGES.map((l) => (
                   <button
@@ -206,7 +206,7 @@ export function SettingsForm({
             </div>
             
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-text-secondary">{t("animations")}</span>
+              <span className="text-sm font-medium text-text-text-secondary">{t("animations")}</span>
               <button 
                 onClick={() => setSettings(s => ({ ...s, animations: !s.animations }))}
                 className={clsx(
@@ -228,7 +228,7 @@ export function SettingsForm({
 
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-text-secondary">{t("questionLanguage")}</span>
+              <span className="text-sm font-medium text-text-text-secondary">{t("questionLanguage")}</span>
               <div className="flex bg-surface-lowest p-1 rounded-lg border border-border-subtle/50">
                 {LANGUAGES.map((l) => (
                   <button
@@ -248,7 +248,7 @@ export function SettingsForm({
             </div>
 
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-text-secondary">{t("theme")}</span>
+              <span className="text-sm font-medium text-text-text-secondary">{t("theme")}</span>
               <button 
                 onClick={() => setSettings(s => ({ ...s, darkMode: !s.darkMode }))}
                 className={clsx(
@@ -383,7 +383,7 @@ export function SettingsForm({
       <div className="md:col-span-12 bg-surface-container/70 rounded-xl border border-border-subtle p-6 flex flex-col group hover:bg-surface-highest/50 transition-all duration-300 shadow-lg">
         <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center border border-secondary/20">
-            <Layers className="w-5 h-5 text-secondary" />
+            <Layers className="w-5 h-5 text-text-secondary" />
           </div>
           <div>
             <h3 className="text-lg font-bold text-text-primary tracking-tight">{t("sectionStack")}</h3>
@@ -446,7 +446,7 @@ export function SettingsForm({
                   <span className="flex flex-col items-start gap-1">
                     <span className={clsx(
                       "text-[9px] font-mono uppercase tracking-widest",
-                      settings.defaultDifficulty === d.value ? "text-text-secondary" : "text-text-secondary/40"
+                      settings.defaultDifficulty === d.value ? "text-text-text-secondary" : "text-text-secondary/40"
                     )}>Level_Scale</span>
                     {d.label}
                   </span>
@@ -504,7 +504,7 @@ export function SettingsForm({
         <div className="bg-surface-lowest/90 backdrop-blur-2xl border border-white/20 rounded-2xl p-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center justify-between">
            <div className="flex flex-col">
               <span className="text-[10px] font-mono text-primary uppercase tracking-[0.3em] font-bold">Autosave_Active</span>
-              <span className="text-[10px] font-medium text-text-secondary">Modified {new Date().getHours()}:{new Date().getMinutes().toString().padStart(2, '0')}</span>
+              <span className="text-[10px] font-medium text-text-text-secondary">Modified {new Date().getHours()}:{new Date().getMinutes().toString().padStart(2, '0')}</span>
            </div>
            <button
             onClick={handleSave}

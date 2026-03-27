@@ -11,7 +11,7 @@ export function LandingPage() {
   const t = useTranslations("HomePage");
 
   return (
-    <div className="min-h-screen bg-background text-on-background selection:bg-primary selection:text-on-primary">
+    <div className="min-h-screen bg-background selection:bg-primary ">
       <PublicNavbar />
       
       <main className="relative">
