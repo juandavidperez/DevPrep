@@ -57,7 +57,7 @@ Data Layer: Prisma ORM → PostgreSQL (Supabase, "devprep" schema) + Auth.js
 
 - **Interaction Manager** (`src/lib/interaction/`): All user input and AI output flows through `InteractionManager` regardless of modality. `UserInput` always has `text` (typed or transcribed) + optional `code`/`audioBlob`. `AIOutput` always has `text` + optional `audioUrl`/`avatarDirective`.
 
-- **Auth** (`src/lib/auth.ts`): Auth.js v5 (NextAuth beta) with Google OAuth, JWT session strategy, PrismaAdapter. Middleware in `src/middleware.ts` chains Auth.js with next-intl middleware.
+- **Auth** (`src/lib/auth.ts`): Auth.js v5 (NextAuth beta) with Google OAuth, JWT session strategy, PrismaAdapter. Proxy (middleware) in `src/proxy.ts` chains Auth.js with next-intl middleware. (Next.js 16: `middleware.ts` was renamed to `proxy.ts`)
 
 - **Prisma singleton** (`src/lib/db.ts`): Shared PrismaClient instance, prevents multiple clients during hot reload.
 
@@ -95,7 +95,7 @@ The AI acts as a senior interviewer. Evaluation responses use structured JSON wi
 - **Config:** `src/i18n/config.ts` (locales), `src/i18n/request.ts` (server config)
 - **Navigation:** `src/navigation.ts` exports locale-aware `Link`, `useRouter`, `usePathname`, `redirect` via `createNavigation()`
 - **Translations:** `messages/en.json`, `messages/es.json` — namespaces: HomePage, Navbar, Metadata, Dashboard, Login, SessionConfig, Settings, History
-- **Middleware:** `src/middleware.ts` chains `next-intl` middleware with Auth.js v5. All routes under `src/app/[locale]/`.
+- **Middleware/Proxy:** `src/proxy.ts` chains `next-intl` middleware with Auth.js v5. All routes under `src/app/[locale]/`.
 - **IMPORTANT:** In client components, use `Link` and `useRouter` from `@/navigation` (NOT from `next/link` or `next/navigation`), so URLs get the locale prefix automatically. `useSearchParams` still comes from `next/navigation`. Server component `redirect()` uses `next/navigation` (the intl middleware handles the locale redirect).
 - **Language switcher:** `src/components/LanguageSwitcher.tsx`
 
