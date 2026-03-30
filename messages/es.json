@@ -25,12 +25,15 @@
   "Navbar": {
     "dashboard": "Panel",
     "history": "Historial",
+    "bookmarks": "Marcadores",
     "settings": "Configuración",
     "signIn": "Iniciar Sesión",
     "signOut": "Cerrar Sesión",
     "workspace": "Developer Workspace",
     "newSession": "Nueva Sesión",
-    "premiumAccount": "Cuenta Premium"
+    "premiumAccount": "Cuenta Premium",
+    "overview": "General",
+    "analytics": "Analíticas"
   },
   "Metadata": {
     "title": "DevPrep | Entrenador de Entrevistas con IA",
@@ -45,7 +48,18 @@
       "avgScore": "Puntaje Promedio",
       "scoreSubtext": "Top {percentile}% de desarrolladores",
       "practiceTime": "Tiempo de Práctica",
-      "timeSubtext": "{count} minutos este mes"
+      "timeSubtext": "{count} minutos este mes",
+      "deltaIncrease": "aumento",
+      "deltaDecrease": "disminución",
+      "streak": "Racha",
+      "streakActive": "¡Sigue así!",
+      "streakStart": "Empieza hoy"
+    },
+    "analytics": {
+      "scoreTrend": "Tendencia de Puntaje",
+      "last": "Últimas {count} sesiones",
+      "weakAreas": "Áreas de Mejora",
+      "noData": "Completa una sesión para ver analíticas"
     },
     "search": "Buscar sesiones...",
     "suggestedPractice": "Práctica Sugerida",
@@ -56,7 +70,19 @@
     "noResults": "No hay sesiones que coincidan",
     "startFirst": "Comienza tu primera entrevista",
     "inProgress": "En Progreso",
-    "questions": "{count} preguntas"
+    "questions": "{count} preguntas",
+    "course": {
+      "sql": {
+        "title": "Preparación SQL Avanzado",
+        "desc": "Domina consultas complejas, estrategias de indexación y patrones de diseño de esquemas.",
+        "tag": "Base de Datos"
+      },
+      "design": {
+        "title": "Patrones de Diseño de Sistemas",
+        "desc": "Escala tu conocimiento con trade-offs de arquitectura y sistemas distribuidos.",
+        "tag": "Arquitectura"
+      }
+    }
   },
   "Login": {
     "welcome": "Bienvenido a DevPrep",
@@ -106,7 +132,24 @@
     "questionsCount": "{count} Preguntas",
     "q5desc": "Rápido",
     "q10desc": "Estándar",
-    "q15desc": "Completo"
+    "q15desc": "Completo",
+    "sessionDuration": "Duración de Sesión",
+    "sessionDurationSub": "¿Cuánto tiempo tienes?",
+    "duration5": "Calentamiento rápido",
+    "duration15": "Sesión estándar",
+    "duration30": "Sesión profunda",
+    "durationEstimate": "Estimado según categoría y dificultad. El tiempo real puede variar.",
+    "questionsUnit": "preguntas",
+    "engineTitle": "Motor de Entrevista",
+    "engineSub": "Procesamiento y Salida de IA",
+    "modesTitle": "Modos de Entrevista",
+    "modesSub": "Especialización de IA",
+    "modeLabel": "Modo",
+    "modeTechnical": "Técnica",
+    "modeBehavioral": "Comportamental",
+    "modeSystemDesign": "Diseño de Sistemas",
+    "modeLiveCoding": "Live Coding",
+    "comingSoon": "Próximamente"
   },
   "Settings": {
     "title": "Configuración de la Cuenta",
@@ -141,7 +184,43 @@
     "modeSystemDesign": "Diseño de Sistemas",
     "modeLiveCoding": "Live Coding",
     "sectionModes": "Modos de Entrevista",
-    "sectionModesSub": "Especialización de IA"
+    "sectionModesSub": "Especialización de IA",
+    "feedbackMode": "Modo de Retroalimentación",
+    "feedbackModeSub": "Visibilidad del Puntaje",
+    "feedbackLive": "Retroalimentación en Vivo",
+    "feedbackLiveDesc": "Ve tu puntaje y evaluación después de cada respuesta. Ideal para aprender y practicar activamente.",
+    "feedbackSilent": "Examen Silencioso",
+    "feedbackSilentDesc": "Responde todas las preguntas primero, luego ve los resultados al final. Simula un entorno de examen real."
+  },
+  "Bookmarks": {
+    "title": "Marcadores",
+    "subtitle": "Tus preguntas guardadas y cola de revisión",
+    "tabDue": "Para Revisar",
+    "tabAll": "Todos los Marcadores",
+    "categoryLabel": "Categoría",
+    "difficultyLabel": "Dificultad",
+    "all": "Todos",
+    "clearFilters": "Limpiar filtros",
+    "dueNow": "Pendiente",
+    "noDue": "¡Todo al día!",
+    "noDueDesc": "No hay preguntas pendientes. Vuelve mañana.",
+    "noBookmarks": "Sin marcadores aún",
+    "noBookmarksDesc": "Guarda preguntas durante las sesiones para revisarlas luego.",
+    "noMatches": "Ningún marcador coincide con los filtros",
+    "fromSession": "Entrevista {category}",
+    "review": "Revisar",
+    "markReviewed": "Marcar como revisado",
+    "hideAnswer": "Ocultar respuesta modelo",
+    "showAnswer": "Ver respuesta modelo",
+    "unsave": "Eliminar",
+    "dueToday": "{count, plural, one {# pregunta} other {# preguntas}} para hoy",
+    "technical": "Técnico",
+    "coding": "Codificación",
+    "systemDesign": "Diseño de Sistemas",
+    "behavioral": "Comportamental",
+    "junior": "Junior",
+    "mid": "Medio",
+    "senior": "Senior"
   },
   "History": {
     "title": "Historial de Sesiones",
