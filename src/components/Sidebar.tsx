@@ -15,12 +15,14 @@ import {
   Menu,
   X,
   ChevronLeft,
+  Bookmark,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const NAV_ITEMS = [
   { href: "/dashboard", translationKey: "dashboard", icon: LayoutDashboard },
   { href: "/history", translationKey: "history", icon: History },
+  { href: "/bookmarks", translationKey: "bookmarks", icon: Bookmark },
   { href: "/settings", translationKey: "settings", icon: Settings },
 ];
 
