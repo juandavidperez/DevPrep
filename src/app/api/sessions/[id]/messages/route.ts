@@ -50,7 +50,7 @@ export async function POST(
     return NextResponse.json({ error: "No question found" }, { status: 400 });
   }
 
-  const ai = getAIProvider();
+  const ai = getAIProvider(interviewSession.category as Parameters<typeof getAIProvider>[0]);
 
   // ── Clarification path ─────────────────────────────────────────────────────
   if (isClarification) {

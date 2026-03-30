@@ -70,6 +70,7 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
       feedback: null,
       modelAnswer: null,
       createdAt: new Date().toISOString(),
+      bookmarkId: null,
     };
     setMessages((prev) => [...prev, optimisticMsg]);
 
