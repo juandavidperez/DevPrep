@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { Evaluation } from './types';
+import type { Evaluation, Question } from './types';
 
 // ── Schema ────────────────────────────────────────────────────────────────────
 
@@ -50,6 +50,29 @@ export function parseEvaluation(content: string): Evaluation {
     modelAnswer: validated.modelAnswer,
   };
 }
+
+// ── Questions schema ──────────────────────────────────────────────────────────
+
+const QuestionSchema = z.object({
+  id: z.string().min(1),
+  text: z.string().min(10),
+  category: z.enum(['technical', 'coding', 'system_design', 'behavioral']),
+  difficulty: z.enum(['junior', 'mid', 'senior']),
+  hints: z.array(z.string()).optional(),
+  modelAnswer: z.string().optional(),
+  codeTemplate: z.string().optional(),
+  codeLanguage: z.string().optional(),
+});
+
+export function parseQuestions(content: string): Question[] {
+  const json = extractJson(content.includes('[') ? content : `[${content}]`);
+  // Prefer top-level array; some models wrap it in an object
+  const raw: unknown = JSON.parse(json);
+  const arr = Array.isArray(raw) ? raw : (raw as Record<string, unknown>).questions ?? [];
+  return z.array(QuestionSchema).parse(arr) as Question[];
+}
+
+// ── Evaluation ────────────────────────────────────────────────────────────────
 
 export const FALLBACK_EVALUATION: Evaluation = {
   score: 0,
