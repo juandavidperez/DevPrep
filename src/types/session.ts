@@ -29,6 +29,7 @@ export interface SessionMessageDTO {
   feedback: string | null;
   modelAnswer: string | null;
   createdAt: string;
+  bookmarkId?: string | null;
 }
 
 export interface SendMessageResponse {

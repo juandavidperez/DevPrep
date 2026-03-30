@@ -1,7 +1,7 @@
 "use client";
 
 import { clsx } from "clsx";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Bookmark, BookmarkCheck } from "lucide-react";
 import { useState } from "react";
 import type { SessionMessageDTO } from "@/types/session";
 
@@ -20,17 +20,63 @@ function ScoreBadge({ score }: { score: number }) {
   );
 }
 
+function BookmarkButton({ messageId, initialBookmarkId }: { messageId: string; initialBookmarkId?: string | null }) {
+  const [bookmarkId, setBookmarkId] = useState<string | null>(initialBookmarkId ?? null);
+  const [loading, setLoading] = useState(false);
+
+  const toggle = async () => {
+    if (loading) return;
+    setLoading(true);
+    try {
+      if (bookmarkId) {
+        await fetch(`/api/bookmarks/${bookmarkId}`, { method: "DELETE" });
+        setBookmarkId(null);
+      } else {
+        const res = await fetch("/api/bookmarks", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messageId }),
+        });
+        const data = await res.json();
+        setBookmarkId(data.id);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <button
+      onClick={toggle}
+      disabled={loading}
+      title={bookmarkId ? "Remove bookmark" : "Bookmark this question"}
+      className={clsx(
+        "flex h-6 w-6 items-center justify-center rounded transition-all",
+        bookmarkId
+          ? "text-primary opacity-100"
+          : "text-text-secondary opacity-0 group-hover:opacity-100 hover:text-primary"
+      )}
+    >
+      {bookmarkId ? (
+        <BookmarkCheck className="h-3.5 w-3.5" />
+      ) : (
+        <Bookmark className="h-3.5 w-3.5" />
+      )}
+    </button>
+  );
+}
+
 export function MessageBubble({ message }: { message: SessionMessageDTO }) {
   const [showModelAnswer, setShowModelAnswer] = useState(false);
 
   // Interviewer question
   if (message.role === "interviewer" && message.messageType === "question") {
     return (
-      <div className="flex max-w-[85%] gap-3">
+      <div className="group flex max-w-[85%] gap-3">
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-container">
           <span className="font-mono text-[10px] font-bold text-white">AI</span>
         </div>
-        <div>
+        <div className="min-w-0">
           <div className="mb-1 flex items-center gap-2">
             <span className="text-xs font-medium text-text-secondary">Interviewer</span>
             {message.questionIndex != null && (
@@ -38,6 +84,7 @@ export function MessageBubble({ message }: { message: SessionMessageDTO }) {
                 Q{message.questionIndex}
               </span>
             )}
+            <BookmarkButton messageId={message.id} initialBookmarkId={message.bookmarkId} />
           </div>
           <div className="rounded-2xl rounded-tl-sm border border-border-subtle bg-surface-container px-4 py-3 text-sm text-text-primary">
             {message.content}
