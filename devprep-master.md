@@ -1,7 +1,7 @@
 # DevPrep — AI-Powered Interview Preparation Platform
 
 > **Master Document v5.0** | March 2026
-> **Status:** Week 5–6 of MVP — auth, i18n, core pages, sidebar, API routes, AI engine (Ollama), and question bank (200 questions) are done. Pending: chat UI polish, Monaco editor, bookmarks, additional AI providers, CI/CD, Vercel deploy.
+> **Status:** Week 6–7 of MVP — auth, i18n, core pages, sidebar, API routes, AI engine (all 4 providers), question bank (200 questions), smart question selector, Monaco editor, chat UI, session results, design polish (Obsidian Terminal on all pages) are done. Pending: Zod validation, smart provider routing, bookmarks UI, dashboard charts, CI/CD, Vercel deploy.
 
 ---
 
@@ -42,10 +42,11 @@ DevPrep is a **Next.js fullstack application** — frontend and backend API rout
 | Database | Supabase PostgreSQL | Free tier, `devprep` schema isolated from `public` |
 | Auth | NextAuth.js v5 | Google OAuth, JWT sessions, PrismaAdapter |
 | AI (dev) | Ollama + Llama 3.1 8B | Local, $0 cost during development |
-| AI (prod) | Claude Haiku 4.5 | Best code evaluation, prompt caching |
-| AI (alt) | Gemini 2.5 Flash | Free tier fallback |
+| AI (prod) | Claude Haiku 4.5 | Best code evaluation, prompt caching ✅ |
+| AI (alt) | Gemini 2.0 Flash | Free tier fallback ✅ |
+| AI (alt) | OpenAI GPT-4o Mini | Cheapest option ✅ |
 | Validation | Zod | Runtime validation of AI responses (planned) |
-| Code Editor | Monaco Editor | Embedded in chat for coding questions (planned) |
+| Code Editor | Monaco Editor | Embedded in chat for coding questions ✅ |
 | i18n | next-intl ^4.8.3 | EN/ES, `localePrefix: 'always'` |
 | Deploy | Vercel | Frontend + API Routes |
 | Storage | Supabase Storage | Audio files (Phase 2+) |
@@ -83,8 +84,9 @@ DevPrep is a **Next.js fullstack application** — frontend and backend API rout
    │   (abstracted)   │   │  PostgreSQL + Prisma│  │  (Auth)        │
    │                  │   │                    │  │                │
    │ Ollama (dev) ✅  │   │  devprep schema    │  │ Google OAuth   │
-   │ Claude Haiku ⬜  │   │  - questions       │  │ JWT sessions   │
-   │ Gemini Flash ⬜  │   │  - sessions        │  │                │
+   │ Claude Haiku ✅  │   │  - questions       │  │ JWT sessions   │
+   │ Gemini Flash ✅  │   │  - sessions        │  │                │
+   │ OpenAI 4o-m ✅  │   │                    │  │                │
    └──────────────────┘   │  - messages        │  └────────────────┘
                           │  - bookmarks       │
                           └────────────────────┘
@@ -711,11 +713,13 @@ Design source: **Google Stitch** (project ID: `15023765856949113622`).
 |--------|--------|-------|
 | Login | ✅ Done | Aligned with Stitch |
 | Sidebar | ✅ Done | Collapsible, localStorage persistence |
-| Dashboard | ⬜ Pending | Needs major rework: glassmorphism panels, stat deltas, font-mono numbers |
-| Landing Page | ⬜ Pending | Not compared yet |
-| History | ⬜ Pending | Not compared yet |
-| New Session | ⬜ Pending | Not compared yet |
-| Chat (Session) | ⬜ Pending | Not built yet |
+| Dashboard | ✅ Done | Glassmorphism panels, stat deltas, font-mono numbers, backdrop-blur |
+| Landing Page | ✅ Done | Hero with radial glow, terminal visualization, feature cards |
+| History | ✅ Done | Filtered session list, category/difficulty badges, score color coding |
+| New Session | ✅ Done | Background decorative blurs, SessionConfigForm |
+| Settings | ✅ Done | Ambient background, grid overlay, animated pulse indicator |
+| Chat (Session) | ✅ Done | Message bubbles, evaluation cards, code editor, session header |
+| Session Results | ✅ Done | Per-question breakdown with Obsidian styling |
 
 ---
 
@@ -799,8 +803,9 @@ devprep/
 │   │   │   ├── parser.ts                     (Zod validation + retry logic) ⬜
 │   │   │   └── providers/
 │   │   │       ├── ollama.ts                 ✅
-│   │   │       ├── anthropic.ts              ⬜
-│   │   │       └── gemini.ts                 ⬜
+│   │   │       ├── anthropic.ts              ✅
+│   │   │       ├── openai.ts                 ✅
+│   │   │       └── gemini.ts                 ✅
 │   │   ├── interaction/
 │   │   │   ├── types.ts
 │   │   │   └── InteractionManager.ts
@@ -839,9 +844,10 @@ devprep/
 | 2 | AI engine (Ollama), evaluation prompt v1, API routes | ✅ |
 | 3 | Auth (NextAuth + Google OAuth), user settings, i18n EN/ES | ✅ |
 | 4 | Core pages (landing, dashboard, history, sidebar, layout) + design tokens | ✅ |
-| 5 | Chat UI (session/[id]), Monaco code editor, session results page | ⬜ |
-| 6 | Zod validation on AI responses, Anthropic + Gemini providers | ⬜ |
-| 7 | Dashboard charts (score trends, weak areas), bookmarks + spaced repetition UI | ⬜ |
+| 5 | Chat UI (session/[id]), Monaco code editor, session results page | ✅ |
+| 6 | Anthropic + OpenAI + Gemini providers, smart question selector | ✅ |
+| 6 | Design polish — Obsidian Terminal on all pages | ✅ |
+| 7 | Zod validation on AI responses, bookmarks UI, dashboard charts | ⬜ |
 | 8 | CI/CD (GitHub Actions), deploy to Vercel, README with screenshots | ⬜ |
 
 ### Phase 2 — Voice Interaction (~4 weeks)
@@ -904,35 +910,36 @@ These run in parallel with feature work — not blockers, but scheduled checkpoi
 | ESLint + pre-commit hooks | S | ⬜ |
 | GitHub Actions CI (lint → type-check → build) | M | ⬜ |
 
-### Epic 1: AI Response Quality ⬜
+### Epic 1: AI Response Quality 🟡
 
 | Task | Effort | Status |
 |------|--------|--------|
 | `lib/ai/prompts.ts` — versioned prompt templates per category | L | ⬜ |
 | `lib/ai/parser.ts` — Zod schema + retry logic + graceful fallback | M | ⬜ |
 | Unit tests: mocked AI responses, validation failure paths | M | ⬜ |
-| `lib/ai/providers/anthropic.ts` — Claude Haiku adapter | L | ⬜ |
-| `lib/ai/providers/gemini.ts` — Gemini Flash adapter | L | ⬜ |
+| `lib/ai/providers/anthropic.ts` — Claude Haiku adapter | L | ✅ |
+| `lib/ai/providers/openai.ts` — GPT-4o Mini adapter | L | ✅ |
+| `lib/ai/providers/gemini.ts` — Gemini Flash adapter | L | ✅ |
 | Swap Test: run same evaluation against all providers, assert identical output schema | M | ⬜ |
 | Verify smart routing with all providers | M | ⬜ |
 
-### Epic 2: Chat UI ⬜
+### Epic 2: Chat UI ✅
 
 | Task | Effort | Status |
 |------|--------|--------|
-| `ChatContainer.tsx` — message list, auto-scroll | L | ⬜ |
-| `MessageBubble.tsx` — interviewer vs candidate styles | M | ⬜ |
-| `EvaluationCard.tsx` — score, criteria breakdown, expandable model answer | L | ⬜ |
-| `ChatInput.tsx` — textarea + submit + loading state ("Evaluating...") | M | ⬜ |
-| `SessionHeader.tsx` — progress indicator (3/10), timer | M | ⬜ |
-| `CodeEditorInline.tsx` — Monaco editor for coding questions | L | ⬜ |
+| `ChatContainer.tsx` — message list, auto-scroll | L | ✅ |
+| `MessageBubble.tsx` — interviewer vs candidate styles | M | ✅ |
+| `EvaluationCard.tsx` — score, criteria breakdown, expandable model answer | L | ✅ |
+| `ChatInput.tsx` — textarea + submit + loading state ("Evaluating...") | M | ✅ |
+| `SessionHeader.tsx` — progress indicator (3/10), timer | M | ✅ |
+| `CodeEditorInline.tsx` — Monaco editor for coding questions | L | ✅ |
 | Loading skeletons + error boundary | S | ⬜ |
 
-### Epic 3: Session Results & Dashboard ⬜
+### Epic 3: Session Results & Dashboard 🟡
 
 | Task | Effort | Status |
 |------|--------|--------|
-| Session results page — per-question breakdown + expandable detail | L | ⬜ |
+| Session results page — per-question breakdown + expandable detail | L | ✅ |
 | Score visualization (bar chart or radar per category) | M | ⬜ |
 | Dashboard charts — score trends over time | M | ⬜ |
 | Dashboard weak areas card — categories with lowest avg scores | M | ⬜ |
@@ -947,14 +954,16 @@ These run in parallel with feature work — not blockers, but scheduled checkpoi
 | Spaced repetition queue — due questions surfaced first | L | ⬜ |
 | `updateNextReviewAt()` — SM-2 algorithm or simple interval | M | ⬜ |
 
-### Epic 5: Design Polish ⬜
+### Epic 5: Design Polish ✅
 
 | Task | Effort | Status |
 |------|--------|--------|
-| Dashboard — sidebar nav, glassmorphism panels, stat delta indicators | XL | ⬜ |
-| Landing Page — compare with Stitch, implement | L | ⬜ |
-| History — compare with Stitch, implement | M | ⬜ |
-| New Session — compare with Stitch, implement | M | ⬜ |
+| Dashboard — sidebar nav, glassmorphism panels, stat delta indicators | XL | ✅ |
+| Landing Page — compare with Stitch, implement | L | ✅ |
+| History — compare with Stitch, implement | M | ✅ |
+| New Session — compare with Stitch, implement | M | ✅ |
+| Settings — Obsidian Terminal styling | M | ✅ |
+| Session Results — Obsidian Terminal styling | M | ✅ |
 
 ### Epic 6: Production & Deploy ⬜
 

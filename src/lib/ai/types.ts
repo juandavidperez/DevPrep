@@ -1,7 +1,7 @@
 export interface Evaluation {
   score: number;
   feedback: string;
-  criteria: Record<string, number | string>;
+  criteria: Record<string, number>;
   modelAnswer?: string;
 }
 

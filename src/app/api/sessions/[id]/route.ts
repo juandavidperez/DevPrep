@@ -16,7 +16,10 @@ export async function GET(
   const interviewSession = await prisma.session.findUnique({
     where: { id },
     include: {
-      messages: { orderBy: { createdAt: "asc" } },
+      messages: {
+        orderBy: { createdAt: "asc" },
+        include: { bookmark: { select: { id: true } } },
+      },
     },
   });
 
@@ -28,5 +31,13 @@ export async function GET(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  return NextResponse.json(interviewSession);
+  const response = {
+    ...interviewSession,
+    messages: interviewSession.messages.map(({ bookmark, ...msg }) => ({
+      ...msg,
+      bookmarkId: bookmark?.id ?? null,
+    })),
+  };
+
+  return NextResponse.json(response);
 }

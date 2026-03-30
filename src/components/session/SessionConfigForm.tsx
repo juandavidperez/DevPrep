@@ -10,23 +10,28 @@ import {
   Timer,
   CheckCircle2,
   ArrowLeft,
-  HelpCircle,
-  Bell,
-  Eye,
-  EyeOff,
+  Cpu,
   Terminal,
+  Atom,
+  Coffee,
+  Layers,
+  Cloud,
+  GitBranch,
+  Server,
+  Network,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { clsx } from "clsx";
 
-const TECHNOLOGIES = [
-  { id: "React", category: "technical" },
-  { id: "Java", category: "technical" },
-  { id: "Angular", category: "technical" },
-  { id: "Python", category: "technical" },
-  { id: "AWS", category: "technical" },
-  { id: "CI/CD", category: "technical" },
-  { id: "Node.js", category: "technical" },
-  { id: "System Design", category: "system_design" },
+const TECHNOLOGIES: { id: string; category: string; icon: LucideIcon }[] = [
+  { id: "React", category: "technical", icon: Atom },
+  { id: "Java", category: "technical", icon: Coffee },
+  { id: "Angular", category: "technical", icon: Layers },
+  { id: "Python", category: "technical", icon: Code },
+  { id: "AWS", category: "technical", icon: Cloud },
+  { id: "CI/CD", category: "technical", icon: GitBranch },
+  { id: "Node.js", category: "technical", icon: Server },
+  { id: "System Design", category: "system_design", icon: Network },
 ];
 
 const DIFFICULTIES = [
@@ -42,9 +47,9 @@ const LANGUAGES = [
 ];
 
 const DURATIONS = [
-  { minutes: 5, label: "5 min", sub: "Quick warm-up" },
-  { minutes: 15, label: "15 min", sub: "Standard session" },
-  { minutes: 30, label: "30 min", sub: "Deep dive" },
+  { minutes: 5, label: "5 min", subKey: "duration5" },
+  { minutes: 15, label: "15 min", subKey: "duration15" },
+  { minutes: 30, label: "30 min", subKey: "duration30" },
 ];
 
 // Estimated minutes to answer one question per category + difficulty
@@ -55,6 +60,19 @@ const MINUTES_PER_QUESTION: Record<string, Record<string, number>> = {
   behavioral:    { junior: 2, mid: 3, senior: 3 },
   mixed:         { junior: 4, mid: 5, senior: 6 },
 };
+
+const MODALITIES = [
+  { value: "text", label: "Text Only", enabled: true },
+  { value: "voice", label: "Voice Only", enabled: false },
+  { value: "avatar", label: "AI Avatar", enabled: false },
+];
+
+const INTERVIEW_MODES = [
+  { value: "technical", labelKey: "modeTechnical" },
+  { value: "behavioral", labelKey: "modeBehavioral" },
+  { value: "system_design", labelKey: "modeSystemDesign" },
+  { value: "live_coding", labelKey: "modeLiveCoding" },
+];
 
 function calcQuestions(category: string, difficulty: string, minutes: number): number {
   const minsPerQ = MINUTES_PER_QUESTION[category]?.[difficulty] ?? 5;
@@ -68,7 +86,8 @@ export function SessionConfigForm() {
   const [difficulty, setDifficulty] = useState("senior");
   const [language, setLanguage] = useState("es");
   const [durationMinutes, setDurationMinutes] = useState(15);
-  const [feedbackMode, setFeedbackMode] = useState("live");
+  const [outputModality, setOutputModality] = useState("text");
+  const [interviewMode, setInterviewMode] = useState("technical");
 
   const estimatedQuestions = calcQuestions(selectedTech.category, difficulty, durationMinutes);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -87,7 +106,8 @@ export function SessionConfigForm() {
           difficulty,
           totalQuestions: estimatedQuestions,
           language,
-          feedbackMode,
+          outputModality,
+          interviewMode,
           targetStack: [selectedTech.id.toLowerCase().replace(".", "")]
         }),
       });
@@ -106,27 +126,29 @@ export function SessionConfigForm() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Top Header */}
-      <header className="flex justify-between items-center px-8 h-16 w-full border-b border-white/10 backdrop-blur-xl sticky top-0 z-50 bg-[#131313]/80">
+    <div className="flex flex-col min-h-full">
+      {/* Top Bar — consistent with DashboardTopbar */}
+      <div className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border-subtle bg-surface-container/60 px-6 backdrop-blur-lg">
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => router.push("/dashboard")}
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-text-secondary transition hover:bg-surface-highest hover:text-text-primary"
+            title={t("cancel")}
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </button>
+          <h2 className="text-base font-bold text-text-primary">{t("title")}</h2>
+        </div>
         <div className="flex items-center gap-2">
-          <Terminal className="h-4 w-4 text-primary" />
-          <span className="font-['Inter'] text-sm font-medium tracking-tight text-white/50">
-            Sesión &gt; Configuración
-          </span>
+          <span className="font-mono text-lg font-bold text-primary">{estimatedQuestions}</span>
+          <span className="text-[10px] uppercase tracking-wider text-text-secondary">{t("questionsUnit")}</span>
         </div>
-        <div className="flex items-center gap-4 text-white/50">
-          <HelpCircle className="h-5 w-5 hover:text-white cursor-pointer transition-colors" />
-          <Bell className="h-5 w-5 hover:text-white cursor-pointer transition-colors" />
-        </div>
-      </header>
+      </div>
 
       <div className="p-8 md:p-12 max-w-6xl w-full mx-auto flex-1 h-full">
-        {/* Content Title */}
-        <div className="mb-12">
-          <h2 className="text-4xl font-bold text-white/90 tracking-tight font-headline mb-3">
-            {t("title")}
-          </h2>
+        {/* Subtitle */}
+        <div className="mb-10">
           <p className="text-text-secondary text-base max-w-2xl font-medium leading-relaxed">
             {t("subtitle")}
           </p>
@@ -148,21 +170,25 @@ export function SessionConfigForm() {
             </div>
             
             <div className="flex flex-wrap gap-2 mb-8">
-              {TECHNOLOGIES.map((tech) => (
-                <button
-                  key={tech.id}
-                  type="button"
-                  onClick={() => setSelectedTech(tech)}
-                  className={clsx(
-                    "px-4 py-2 rounded-full ghost-border font-mono text-sm transition-all",
-                    selectedTech.id === tech.id 
-                      ? "bg-primary/20 text-primary border-primary/30" 
-                      : "bg-white/5 text-white/70 hover:bg-white/10"
-                  )}
-                >
-                  {tech.id}
-                </button>
-              ))}
+              {TECHNOLOGIES.map((tech) => {
+                const Icon = tech.icon;
+                return (
+                  <button
+                    key={tech.id}
+                    type="button"
+                    onClick={() => setSelectedTech(tech)}
+                    className={clsx(
+                      "flex items-center gap-2 px-4 py-2 rounded-full ghost-border font-mono text-sm transition-all",
+                      selectedTech.id === tech.id
+                        ? "bg-primary/20 text-primary border-primary/30"
+                        : "bg-white/5 text-white/70 hover:bg-white/10"
+                    )}
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                    {tech.id}
+                  </button>
+                );
+              })}
             </div>
             <div className="mt-auto">
               <p className="text-xs text-text-secondary leading-relaxed opacity-60 font-medium italic">
@@ -259,25 +285,18 @@ export function SessionConfigForm() {
 
           {/* Card 4: Session Duration */}
           <div className="md:col-span-7 bg-surface-container p-7 rounded-xl ghost-border flex flex-col group hover:bg-surface-highest transition-colors duration-300">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center">
-                  <Timer className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white tracking-tight">Session Duration</h3>
-                  <p className="text-xs text-white/40 font-mono uppercase tracking-tighter font-bold">How long do you have?</p>
-                </div>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center">
+                <Timer className="h-5 w-5 text-primary" />
               </div>
-              {/* Live estimate badge */}
-              <div className="flex flex-col items-end">
-                <span className="font-mono text-2xl font-bold text-primary">{estimatedQuestions}</span>
-                <span className="text-[10px] text-white/40 uppercase tracking-wider">questions</span>
+              <div>
+                <h3 className="text-lg font-bold text-white tracking-tight">{t("sessionDuration")}</h3>
+                <p className="text-xs text-white/40 font-mono uppercase tracking-tighter font-bold">{t("sessionDurationSub")}</p>
               </div>
             </div>
 
             <div className="flex flex-col gap-3 mb-6">
-              {DURATIONS.map(({ minutes, label, sub }) => (
+              {DURATIONS.map(({ minutes, label, subKey }) => (
                 <div
                   key={minutes}
                   onClick={() => setDurationMinutes(minutes)}
@@ -295,7 +314,7 @@ export function SessionConfigForm() {
                     )}>
                       {label}
                     </span>
-                    <span className="text-xs text-white/30">{sub}</span>
+                    <span className="text-xs text-white/30">{t(subKey)}</span>
                   </div>
                   {durationMinutes === minutes ? (
                     <CheckCircle2 className="h-4 w-4 text-primary" />
@@ -308,68 +327,108 @@ export function SessionConfigForm() {
               ))}
             </div>
             <div className="mt-auto">
-              <p className="text-xs text-white/30 leading-relaxed italic">
-                Estimated based on category and difficulty. Actual time may vary.
+              <p className="text-xs text-text-secondary leading-relaxed opacity-60 font-medium italic">
+                {t("durationEstimate")}
               </p>
             </div>
           </div>
 
-          {/* Card 5: Feedback Mode */}
-          <div className="md:col-span-12 bg-surface-container p-7 rounded-xl ghost-border flex flex-col group hover:bg-surface-highest transition-colors duration-300">
+          {/* Card 5: Interview Engine */}
+          <div className="md:col-span-5 bg-surface-container p-7 rounded-xl ghost-border flex flex-col group hover:bg-surface-highest transition-colors duration-300">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center">
-                <Eye className="h-5 w-5 text-primary" />
+                <Cpu className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-white tracking-tight">Feedback Mode</h3>
-                <p className="text-xs text-white/40 font-mono uppercase tracking-tighter font-bold">When do you see your score?</p>
+                <h3 className="text-lg font-bold text-white tracking-tight">{t("engineTitle")}</h3>
+                <p className="text-xs text-white/40 font-mono uppercase tracking-tighter font-bold">{t("engineSub")}</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-              <div
-                onClick={() => setFeedbackMode("live")}
-                className={clsx(
-                  "flex items-start gap-4 p-4 rounded-xl border transition-all cursor-pointer",
-                  feedbackMode === "live"
-                    ? "bg-primary-container/20 border-primary/50 shadow-[0_10px_30px_rgba(124,58,237,0.15)]"
-                    : "bg-white/5 border-white/10 hover:border-primary/40"
-                )}
-              >
-                <div className={clsx(
-                  "w-10 h-10 rounded-full flex items-center justify-center shrink-0",
-                  feedbackMode === "live" ? "bg-primary/20" : "bg-white/5"
-                )}>
-                  <Eye className={clsx("h-5 w-5", feedbackMode === "live" ? "text-primary" : "text-white/40")} />
-                </div>
-                <div>
-                  <span className="block text-sm font-bold text-white mb-1">Live Feedback</span>
-                  <span className="block text-[11px] text-white/50 leading-relaxed">See your score and evaluation after each answer. Best for learning and active practice.</span>
-                </div>
-                {feedbackMode === "live" && <CheckCircle2 className="h-4 w-4 text-primary ml-auto shrink-0 mt-0.5" />}
-              </div>
+            <div className="flex flex-col gap-2 mb-6">
+              {MODALITIES.map((m) => (
+                <button
+                  key={m.value}
+                  type="button"
+                  disabled={!m.enabled}
+                  onClick={() => m.enabled && setOutputModality(m.value)}
+                  className={clsx(
+                    "flex items-center justify-between p-3 rounded-lg border transition-all text-left",
+                    !m.enabled
+                      ? "bg-white/[0.02] border-white/5 cursor-not-allowed opacity-40"
+                      : outputModality === m.value
+                        ? "bg-primary/10 border-primary/50 shadow-[0_0_15px_rgba(210,187,255,0.1)]"
+                        : "bg-white/5 border-white/5 hover:bg-white/10"
+                  )}
+                >
+                  <span className={clsx(
+                    "text-sm font-medium",
+                    !m.enabled
+                      ? "text-white/40"
+                      : outputModality === m.value ? "text-primary font-bold" : "text-white/70"
+                  )}>
+                    {m.label}
+                  </span>
+                  {!m.enabled ? (
+                    <span className="text-[9px] font-mono uppercase tracking-wider text-white/30">{t("comingSoon")}</span>
+                  ) : outputModality === m.value ? (
+                    <CheckCircle2 className="h-4 w-4 text-primary" />
+                  ) : null}
+                </button>
+              ))}
+            </div>
+            <div className="mt-auto">
+              <p className="text-xs text-text-secondary leading-relaxed opacity-60 font-medium italic">
+                {t("engineSub")}
+              </p>
+            </div>
+          </div>
 
-              <div
-                onClick={() => setFeedbackMode("silent")}
-                className={clsx(
-                  "flex items-start gap-4 p-4 rounded-xl border transition-all cursor-pointer",
-                  feedbackMode === "silent"
-                    ? "bg-primary-container/20 border-primary/50 shadow-[0_10px_30px_rgba(124,58,237,0.15)]"
-                    : "bg-white/5 border-white/10 hover:border-primary/40"
-                )}
-              >
-                <div className={clsx(
-                  "w-10 h-10 rounded-full flex items-center justify-center shrink-0",
-                  feedbackMode === "silent" ? "bg-primary/20" : "bg-white/5"
-                )}>
-                  <EyeOff className={clsx("h-5 w-5", feedbackMode === "silent" ? "text-primary" : "text-white/40")} />
-                </div>
-                <div>
-                  <span className="block text-sm font-bold text-white mb-1">Silent Exam</span>
-                  <span className={clsx("block text-[11px] leading-relaxed", feedbackMode === "silent" ? "text-primary/70" : "text-white/50")}>Answer all questions first, then see results at the end. Simulates a real exam environment.</span>
-                </div>
-                {feedbackMode === "silent" && <CheckCircle2 className="h-4 w-4 text-primary ml-auto shrink-0 mt-0.5" />}
+          {/* Card 6: Interview Mode */}
+          <div className="md:col-span-7 bg-surface-container p-7 rounded-xl ghost-border flex flex-col group hover:bg-surface-highest transition-colors duration-300">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center">
+                <Terminal className="h-5 w-5 text-primary" />
               </div>
+              <div>
+                <h3 className="text-lg font-bold text-white tracking-tight">{t("modesTitle")}</h3>
+                <p className="text-xs text-white/40 font-mono uppercase tracking-tighter font-bold">{t("modesSub")}</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 mb-6">
+              {INTERVIEW_MODES.map((mode) => (
+                <button
+                  key={mode.value}
+                  type="button"
+                  onClick={() => setInterviewMode(mode.value)}
+                  className={clsx(
+                    "p-4 rounded-xl border transition-all flex flex-col items-start gap-2 text-left relative overflow-hidden",
+                    interviewMode === mode.value
+                      ? "bg-primary/15 border-primary/50 shadow-[0_0_20px_rgba(210,187,255,0.1)]"
+                      : "bg-white/5 border-white/5 hover:bg-white/10"
+                  )}
+                >
+                  <span className={clsx(
+                    "text-[10px] font-mono uppercase tracking-widest",
+                    interviewMode === mode.value ? "text-primary/60" : "text-white/30"
+                  )}>{t("modeLabel")}</span>
+                  <span className={clsx(
+                    "text-sm font-bold",
+                    interviewMode === mode.value ? "text-primary" : "text-white/70"
+                  )}>
+                    {t(mode.labelKey)}
+                  </span>
+                  {interviewMode === mode.value && (
+                    <CheckCircle2 className="absolute top-3 right-3 h-4 w-4 text-primary" />
+                  )}
+                </button>
+              ))}
+            </div>
+            <div className="mt-auto">
+              <p className="text-xs text-text-secondary leading-relaxed opacity-60 font-medium italic">
+                {t("modeDesc")}
+              </p>
             </div>
           </div>
 
@@ -382,21 +441,25 @@ export function SessionConfigForm() {
         )}
       </div>
 
-      {/* Action Bar (Bottom Footer) */}
-      <footer className="fixed bottom-0 right-0 left-0 h-24 bg-[#131313]/90 backdrop-blur-2xl border-t border-white/5 px-8 md:px-12 flex items-center justify-between z-50">
-        <button 
-          type="button"
-          onClick={() => router.push("/dashboard")}
-          className="flex items-center gap-2 text-white/40 hover:text-white transition-all group font-bold text-xs uppercase tracking-widest"
-        >
-          <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-          {t("cancel")}
-        </button>
-        
+      {/* Action Bar (Bottom Footer) — sticky instead of fixed to respect sidebar width */}
+      <footer className="sticky bottom-0 h-20 bg-surface-container/90 backdrop-blur-2xl border-t border-border-subtle px-8 md:px-12 flex items-center justify-between z-30">
+        {/* Config summary */}
+        <div className="hidden sm:flex items-center gap-3 text-[11px] text-text-secondary">
+          <span className="rounded-md bg-white/5 px-2.5 py-1 font-mono font-semibold text-text-primary">{selectedTech.id}</span>
+          <span className="text-white/20">/</span>
+          <span className="rounded-md bg-white/5 px-2.5 py-1 capitalize">{difficulty}</span>
+          <span className="text-white/20">/</span>
+          <span className="rounded-md bg-white/5 px-2.5 py-1">{LANGUAGES.find(l => l.id === language)?.flag} {language.toUpperCase()}</span>
+          <span className="text-white/20">/</span>
+          <span className="rounded-md bg-white/5 px-2.5 py-1 font-mono">{durationMinutes}m</span>
+          <span className="text-white/20">/</span>
+          <span className="rounded-md bg-white/5 px-2.5 py-1 capitalize">{interviewMode.replace("_", " ")}</span>
+        </div>
+
         <button
           onClick={handleSubmit}
           disabled={isSubmitting}
-          className="bg-primary-container text-white px-10 py-4 rounded-lg font-bold text-sm tracking-tight flex items-center gap-3 hover:shadow-[0_0_25px_rgba(124,58,237,0.4)] hover:scale-[1.02] active:scale-95 transition-all relative overflow-hidden group disabled:opacity-50"
+          className="bg-primary-container text-white px-10 py-3.5 rounded-lg font-bold text-sm tracking-tight flex items-center gap-3 hover:shadow-[0_0_25px_rgba(124,58,237,0.4)] hover:scale-[1.02] active:scale-95 transition-all relative overflow-hidden group disabled:opacity-50"
         >
           <span className="relative z-10">
             {isSubmitting ? t("startingButton") : t("startInterview")}

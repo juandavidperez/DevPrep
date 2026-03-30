@@ -25,12 +25,15 @@
   "Navbar": {
     "dashboard": "Dashboard",
     "history": "History",
+    "bookmarks": "Bookmarks",
     "settings": "Settings",
     "signIn": "Sign In",
     "signOut": "Sign Out",
     "workspace": "Developer Workspace",
     "newSession": "New Session",
-    "premiumAccount": "Premium Account"
+    "premiumAccount": "Premium Account",
+    "overview": "Overview",
+    "analytics": "Analytics"
   },
   "Metadata": {
     "title": "DevPrep | AI Interview Coach",
@@ -45,7 +48,18 @@
       "avgScore": "Avg. Score",
       "scoreSubtext": "Top {percentile}% of developers",
       "practiceTime": "Practice Time",
-      "timeSubtext": "{count} minutes this month"
+      "timeSubtext": "{count} minutes this month",
+      "deltaIncrease": "increase",
+      "deltaDecrease": "decrease",
+      "streak": "Streak",
+      "streakActive": "Keep it up!",
+      "streakStart": "Start today"
+    },
+    "analytics": {
+      "scoreTrend": "Score Trend",
+      "last": "Last {count} sessions",
+      "weakAreas": "Focus Areas",
+      "noData": "Complete a session to see analytics"
     },
     "search": "Search sessions...",
     "suggestedPractice": "Suggested Practice",
@@ -56,7 +70,19 @@
     "noResults": "No sessions match your search",
     "startFirst": "Start your first interview",
     "inProgress": "In Progress",
-    "questions": "{count} questions"
+    "questions": "{count} questions",
+    "course": {
+      "sql": {
+        "title": "Advanced SQL Prep",
+        "desc": "Master complex queries, indexing strategies, and schema design patterns.",
+        "tag": "Database"
+      },
+      "design": {
+        "title": "System Design Patterns",
+        "desc": "Scale your knowledge with architecture trade-offs and distributed systems.",
+        "tag": "Architecture"
+      }
+    }
   },
   "Login": {
     "welcome": "Welcome to DevPrep",
@@ -106,7 +132,24 @@
     "questionsCount": "{count} Questions",
     "q5desc": "Quick",
     "q10desc": "Standard",
-    "q15desc": "Thorough"
+    "q15desc": "Thorough",
+    "sessionDuration": "Session Duration",
+    "sessionDurationSub": "How long do you have?",
+    "duration5": "Quick warm-up",
+    "duration15": "Standard session",
+    "duration30": "Deep dive",
+    "durationEstimate": "Estimated based on category and difficulty. Actual time may vary.",
+    "questionsUnit": "questions",
+    "engineTitle": "Interview Engine",
+    "engineSub": "AI Processing & Output",
+    "modesTitle": "Interview Modes",
+    "modesSub": "AI Specialization",
+    "modeLabel": "Mode",
+    "modeTechnical": "Technical",
+    "modeBehavioral": "Behavioral",
+    "modeSystemDesign": "System Design",
+    "modeLiveCoding": "Live Coding",
+    "comingSoon": "Coming soon"
   },
   "Settings": {
     "title": "Account Configuration",
@@ -141,7 +184,43 @@
     "modeSystemDesign": "System Design",
     "modeLiveCoding": "Live Coding",
     "sectionModes": "Interview Modes",
-    "sectionModesSub": "AI Specialization"
+    "sectionModesSub": "AI Specialization",
+    "feedbackMode": "Feedback Mode",
+    "feedbackModeSub": "Score Visibility",
+    "feedbackLive": "Live Feedback",
+    "feedbackLiveDesc": "See your score and evaluation after each answer. Best for learning and active practice.",
+    "feedbackSilent": "Silent Exam",
+    "feedbackSilentDesc": "Answer all questions first, then see results at the end. Simulates a real exam environment."
+  },
+  "Bookmarks": {
+    "title": "Bookmarks",
+    "subtitle": "Your saved questions and review queue",
+    "tabDue": "Due for Review",
+    "tabAll": "All Bookmarks",
+    "categoryLabel": "Category",
+    "difficultyLabel": "Difficulty",
+    "all": "All",
+    "clearFilters": "Clear filters",
+    "dueNow": "Due now",
+    "noDue": "You're all caught up",
+    "noDueDesc": "No questions due for review. Check back tomorrow.",
+    "noBookmarks": "No bookmarks yet",
+    "noBookmarksDesc": "Bookmark questions during sessions to review them later.",
+    "noMatches": "No bookmarks match your filters",
+    "fromSession": "{category} Interview",
+    "review": "Review",
+    "markReviewed": "Mark as Reviewed",
+    "hideAnswer": "Hide model answer",
+    "showAnswer": "Show model answer",
+    "unsave": "Unsave",
+    "dueToday": "{count, plural, one {# question} other {# questions}} due today",
+    "technical": "Technical",
+    "coding": "Coding",
+    "systemDesign": "System Design",
+    "behavioral": "Behavioral",
+    "junior": "Junior",
+    "mid": "Mid",
+    "senior": "Senior"
   },
   "History": {
     "title": "Session History",

@@ -169,10 +169,12 @@ Design source: **Google Stitch** (project ID: `15023765856949113622`). The Stitc
 ### Design implementation status
 
 - [x] **Login** — Aligned with Stitch (radial glow 0.08, ghost borders, terms footer, version tag, rounded-xl card, font-mono status)
-- [ ] **Dashboard** — Needs major rework: sidebar nav, glassmorphism panels, search bar, stat delta indicators, font-mono numbers, course/prep cards. Comparison done (see memory).
-- [ ] **Landing Page** — Not compared yet
-- [ ] **History** — Not compared yet
-- [ ] **New Session** — Not compared yet
+- [x] **Dashboard** — Redesigned with glassmorphism panels, stat deltas, font-mono numbers, backdrop-blur, Obsidian tokens
+- [x] **Landing Page** — Hero with radial glow, terminal visualization, feature cards, Obsidian aesthetics
+- [x] **History** — Filtered session list, category/difficulty badges, score color coding, pagination
+- [x] **New Session** — Background decorative blurs, SessionConfigForm, focused layout
+- [x] **Settings** — Ambient background with grid overlay, animated pulse indicator, Obsidian tokens
+- [x] **Session Results** — Per-question breakdown with Obsidian styling
 
 ## Path alias
 
@@ -196,8 +198,9 @@ Copy `.env.example` to `.env`. Key variables:
 
 ## TODO — Remaining MVP features
 
-- [ ] **Design implementation** — Apply Stitch designs to all pages (dashboard, landing, history, new session)
-- [ ] **Bookmarks** — `/bookmarks` with save questions, spaced repetition queue, review UI
-- [ ] **Monaco Editor** — Code editor integration in chat for coding questions
-- [ ] **Question Selector** — Smart selection from bank (spaced repetition due → unseen → AI-generated fallback)
-- [ ] **Additional AI providers** — Anthropic, OpenAI, Gemini implementations + smart routing
+- [x] **Design implementation** — Obsidian Terminal applied to all pages (login, dashboard, landing, history, new session, settings, results)
+- [x] **Monaco Editor** — Code editor integration in chat with language selector, dark theme, JetBrains Mono
+- [x] **Question Selector** — Smart selection wired end-to-end (spaced repetition due → unseen from bank → AI-generated fallback)
+- [x] **Additional AI providers** — Anthropic (Haiku 4.5), OpenAI (GPT-4o Mini), Gemini (2.0 Flash) + Ollama fallback
+- [ ] **Smart provider routing** — Dynamic AI provider selection based on question category/difficulty (currently static via env var)
+- [ ] **Bookmarks UI** — `/bookmarks` page, bookmark management API (CRUD), review UI. Data model and spaced repetition logic exist but no user-facing UI

@@ -9,8 +9,8 @@ import {
   Check,
   User,
   Monitor,
-  Cpu,
-  Terminal,
+  Eye,
+  EyeOff,
   Layers,
   Sparkles,
   Zap
@@ -26,7 +26,7 @@ interface SettingsData {
   voiceSpeed: number;
   animations: boolean;
   darkMode: boolean;
-  interviewMode: string;
+  feedbackMode: string;
 }
 
 const CATEGORIES = [
@@ -66,18 +66,6 @@ const LANGUAGES = [
   { value: "es", label: "ES", flag: "🇪🇸" },
 ];
 
-const MODALITIES = [
-  { value: "text", label: "Text Only" },
-  { value: "voice", label: "Voice Only" },
-  { value: "avatar", label: "AI Avatar" },
-];
-
-const INTERVIEW_MODES = [
-  { value: "technical", label: "modeTechnical" },
-  { value: "behavioral", label: "modeBehavioral" },
-  { value: "system_design", label: "modeSystemDesign" },
-  { value: "live_coding", label: "modeLiveCoding" },
-];
 
 export function SettingsForm({
   initialSettings,
@@ -94,7 +82,7 @@ export function SettingsForm({
     ...initialSettings,
     animations: initialSettings.animations ?? true,
     darkMode: initialSettings.darkMode ?? true,
-    interviewMode: initialSettings.interviewMode ?? "technical",
+    feedbackMode: initialSettings.feedbackMode ?? "live",
   });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -270,112 +258,68 @@ export function SettingsForm({
         </div>
       </div>
 
-      {/* 3. Interview Engine & Modes */}
-      <div className="md:col-span-12 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Module A: Engine Basics */}
-        <div className="bg-surface-container/70 rounded-xl border border-border-subtle p-6 group hover:bg-surface-highest/50 transition-all duration-300 h-full">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 rounded-lg bg-surface-highest/30 flex items-center justify-center">
-              <Cpu className="w-5 h-5 text-primary" />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-text-primary">{t("sectionEngine")}</h3>
-              <p className="text-[10px] text-text-secondary/70 font-mono uppercase tracking-widest">{t("sectionEngineSub")}</p>
-            </div>
+      {/* 3. Feedback Mode */}
+      <div className="md:col-span-12 bg-surface-container/70 rounded-xl border border-border-subtle p-6 group hover:bg-surface-highest/50 transition-all duration-300 shadow-lg">
+        <div className="flex items-center gap-3 mb-8">
+          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <Eye className="w-5 h-5 text-primary" />
           </div>
-
-          <div className="space-y-8">
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-medium text-white/70">{t("outputModality")}</span>
-                <div className="flex items-center gap-2">
-                   <Terminal className="w-3 h-3 text-primary animate-pulse" />
-                   <span className="text-[10px] font-mono text-primary uppercase tracking-[0.2em]">Active_Engine</span>
-                </div>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                {MODALITIES.map((m) => (
-                  <button
-                    key={m.value}
-                    onClick={() => setSettings(s => ({ ...s, outputModality: m.value }))}
-                    className={clsx(
-                      "px-3 py-2.5 rounded-lg text-[10px] font-bold transition-all border",
-                      settings.outputModality === m.value 
-                        ? "bg-primary/10 border-primary text-primary shadow-[inset_0_0_10px_rgba(210,187,255,0.1)]" 
-                        : "bg-surface-lowest/60 border-border-subtle/50 text-text-secondary/70 hover:bg-surface-highest/30"
-                    )}
-                  >
-                    {m.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <label className="text-sm font-medium text-white/70">{t("voiceSpeed")}</label>
-                <span className="text-[10px] font-mono text-primary bg-primary/10 px-2.5 py-1 rounded border border-primary/20 font-bold">
-                  {settings.voiceSpeed.toFixed(1)}x
-                </span>
-              </div>
-              <input 
-                type="range" 
-                min="0.5" 
-                max="2.0" 
-                step="0.1"
-                value={settings.voiceSpeed}
-                onChange={(e) => setSettings(s => ({ ...s, voiceSpeed: parseFloat(e.target.value) }))}
-                className="w-full h-1.5 bg-surface-lowest rounded-lg appearance-none cursor-pointer accent-primary border border-border-subtle/50"
-              />
-              <div className="flex justify-between mt-3 font-mono text-[9px] text-text-secondary/40 uppercase tracking-[0.2em]">
-                <span>Slow</span>
-                <span>Normal</span>
-                <span>Fast</span>
-              </div>
-            </div>
+          <div>
+            <h3 className="text-lg font-bold text-text-primary">{t("feedbackMode")}</h3>
+            <p className="text-[10px] text-text-secondary/70 font-mono uppercase tracking-widest">{t("feedbackModeSub")}</p>
           </div>
         </div>
 
-        {/* Module B: Interview Modes */}
-        <div className="bg-surface-container/70 rounded-xl border border-border-subtle p-6 group hover:bg-surface-highest/50 transition-all duration-300 h-full">
-           <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
-              <Terminal className="w-5 h-5 text-primary" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <button
+            onClick={() => setSettings(s => ({ ...s, feedbackMode: "live" }))}
+            className={clsx(
+              "flex items-start gap-4 p-5 rounded-xl border transition-all text-left",
+              settings.feedbackMode === "live"
+                ? "bg-primary/10 border-primary/50 shadow-[0_0_20px_rgba(210,187,255,0.1)]"
+                : "bg-surface-highest/30 border-border-subtle/50 hover:border-white/20 hover:bg-white/10"
+            )}
+          >
+            <div className={clsx(
+              "w-10 h-10 rounded-full flex items-center justify-center shrink-0",
+              settings.feedbackMode === "live" ? "bg-primary/20" : "bg-white/5"
+            )}>
+              <Eye className={clsx("h-5 w-5", settings.feedbackMode === "live" ? "text-primary" : "text-text-secondary/40")} />
             </div>
-            <div>
-              <h3 className="text-lg font-bold text-text-primary">{t("sectionModes")}</h3>
-              <p className="text-[10px] text-text-secondary/70 font-mono uppercase tracking-widest">{t("sectionModesSub")}</p>
+            <div className="flex-1">
+              <span className={clsx(
+                "block text-sm font-bold mb-1",
+                settings.feedbackMode === "live" ? "text-text-primary" : "text-text-secondary/70"
+              )}>{t("feedbackLive")}</span>
+              <span className="block text-[11px] text-text-secondary/50 leading-relaxed">{t("feedbackLiveDesc")}</span>
             </div>
-          </div>
+            {settings.feedbackMode === "live" && <Check className="h-4 w-4 text-primary shrink-0 mt-0.5 stroke-[3]" />}
+          </button>
 
-          <div className="grid grid-cols-2 gap-3">
-             {INTERVIEW_MODES.map((mode) => (
-                <button
-                  key={mode.value}
-                  onClick={() => setSettings(s => ({ ...s, interviewMode: mode.value }))}
-                  className={clsx(
-                    "p-4 rounded-xl border transition-all flex flex-col items-start gap-2 group/mode text-left relative overflow-hidden",
-                    settings.interviewMode === mode.value
-                      ? "bg-primary border-primary text-[#25005a] shadow-[0_0_25px_rgba(210,187,255,0.2)]"
-                      : "bg-surface-highest/30 border-border-subtle/50 text-text-secondary/70 hover:border-white/20 hover:bg-white/10"
-                  )}
-                >
-                  <span className={clsx(
-                    "text-[10px] font-mono uppercase tracking-widest font-bold",
-                    settings.interviewMode === mode.value ? "text-[#25005a]/60" : "text-text-secondary/40"
-                  )}>Mode_v1.0</span>
-                  <span className="text-sm font-black">{t(mode.label)}</span>
-                  {settings.interviewMode === mode.value && (
-                    <div className="absolute top-2 right-2">
-                       <div className="w-2 h-2 rounded-full bg-[#25005a] animate-ping" />
-                    </div>
-                  )}
-                </button>
-             ))}
-          </div>
-          <p className="mt-6 text-[11px] text-text-secondary/50 italic leading-relaxed">
-            * El modo seleccionado optimiza las respuestas de la IA para enfocarse en objetivos específicos de aprendizaje y evaluación.
-          </p>
+          <button
+            onClick={() => setSettings(s => ({ ...s, feedbackMode: "silent" }))}
+            className={clsx(
+              "flex items-start gap-4 p-5 rounded-xl border transition-all text-left",
+              settings.feedbackMode === "silent"
+                ? "bg-primary/10 border-primary/50 shadow-[0_0_20px_rgba(210,187,255,0.1)]"
+                : "bg-surface-highest/30 border-border-subtle/50 hover:border-white/20 hover:bg-white/10"
+            )}
+          >
+            <div className={clsx(
+              "w-10 h-10 rounded-full flex items-center justify-center shrink-0",
+              settings.feedbackMode === "silent" ? "bg-primary/20" : "bg-white/5"
+            )}>
+              <EyeOff className={clsx("h-5 w-5", settings.feedbackMode === "silent" ? "text-primary" : "text-text-secondary/40")} />
+            </div>
+            <div className="flex-1">
+              <span className={clsx(
+                "block text-sm font-bold mb-1",
+                settings.feedbackMode === "silent" ? "text-text-primary" : "text-text-secondary/70"
+              )}>{t("feedbackSilent")}</span>
+              <span className="block text-[11px] text-text-secondary/50 leading-relaxed">{t("feedbackSilentDesc")}</span>
+            </div>
+            {settings.feedbackMode === "silent" && <Check className="h-4 w-4 text-primary shrink-0 mt-0.5 stroke-[3]" />}
+          </button>
         </div>
       </div>
 

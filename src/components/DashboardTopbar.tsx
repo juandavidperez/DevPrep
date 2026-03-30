@@ -12,13 +12,13 @@ export function DashboardTopbar({ searchPlaceholder }: { searchPlaceholder: stri
     <div className="flex h-14 items-center justify-between border-b border-border-subtle bg-surface-container/60 px-6 backdrop-blur-lg">
       {/* Left: page title + tabs */}
       <div className="flex items-center gap-6">
-        <h2 className="text-base font-bold text-text-primary">Dashboard</h2>
+        <h2 className="text-base font-bold text-text-primary">{t("dashboard")}</h2>
         <nav className="flex items-center gap-1">
           <button className="relative px-3 py-1 text-sm text-text-primary after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-primary">
-            Overview
+            {t("overview")}
           </button>
           <button className="px-3 py-1 text-sm text-text-secondary hover:text-text-primary transition">
-            Analytics
+            {t("analytics")}
           </button>
         </nav>
       </div>

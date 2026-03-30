@@ -18,7 +18,10 @@ export default async function SessionPage({
   const interviewSession = await prisma.session.findUnique({
     where: { id },
     include: {
-      messages: { orderBy: { createdAt: "asc" } },
+      messages: {
+        orderBy: { createdAt: "asc" },
+        include: { bookmark: { select: { id: true } } },
+      },
     },
   });
 
@@ -36,7 +39,7 @@ export default async function SessionPage({
     feedbackMode: interviewSession.feedbackMode,
   };
 
-  const messages = interviewSession.messages.map((m) => ({
+  const messages = interviewSession.messages.map(({ bookmark, ...m }) => ({
     id: m.id,
     role: m.role,
     content: m.content,
@@ -48,6 +51,7 @@ export default async function SessionPage({
     feedback: m.feedback,
     modelAnswer: m.modelAnswer,
     createdAt: m.createdAt.toISOString(),
+    bookmarkId: bookmark?.id ?? null,
   }));
 
   return <ChatContainer initialSession={sessionData} initialMessages={messages} />;

@@ -4,7 +4,7 @@ import {
   buildStrictEvaluationPrompt,
   buildGenerateQuestionsPrompt,
 } from '../prompts';
-import { parseEvaluation, FALLBACK_EVALUATION } from '../parser';
+import { parseEvaluation, parseQuestions, FALLBACK_EVALUATION } from '../parser';
 
 export class OllamaProvider implements AIProvider {
   private baseUrl: string;
@@ -53,8 +53,7 @@ Answer the clarification briefly (1-2 sentences). Be helpful but don't give away
     const content = await this.chat(prompt);
 
     try {
-      const raw = JSON.parse(content);
-      return Array.isArray(raw) ? raw : [];
+      return parseQuestions(content);
     } catch {
       console.error('[OllamaProvider] Failed to parse questions:', content.slice(0, 200));
       return [];
