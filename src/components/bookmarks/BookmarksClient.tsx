@@ -12,6 +12,7 @@ type BookmarkItem = {
   reviewCount: number;
   nextReviewAt: Date | null;
   score: number | null;
+  modelAnswer: string | null;
   message: {
     id: string;
     content: string;
@@ -166,8 +167,12 @@ function BookmarkCard({
 
       {/* Model answer (expanded) */}
       {expanded && (
-        <div className="mb-4 rounded-lg border border-border-subtle bg-surface-lowest p-3 font-mono text-xs leading-relaxed text-text-secondary">
-          Expand your answer here — model answer shown after marking reviewed.
+        <div className="mb-4 rounded-lg border border-border-subtle bg-surface-lowest p-3 text-xs leading-relaxed text-text-secondary">
+          {bookmark.modelAnswer ? (
+            <p className="whitespace-pre-wrap font-mono">{bookmark.modelAnswer}</p>
+          ) : (
+            <p className="italic opacity-60">{t("noModelAnswer")}</p>
+          )}
         </div>
       )}
 

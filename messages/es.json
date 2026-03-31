@@ -212,6 +212,7 @@
     "markReviewed": "Marcar como revisado",
     "hideAnswer": "Ocultar respuesta modelo",
     "showAnswer": "Ver respuesta modelo",
+    "noModelAnswer": "No hay respuesta modelo disponible para esta pregunta.",
     "unsave": "Eliminar",
     "dueToday": "{count, plural, one {# pregunta} other {# preguntas}} para hoy",
     "technical": "Técnico",

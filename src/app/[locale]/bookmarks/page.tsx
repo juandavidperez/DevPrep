@@ -40,7 +40,7 @@ export default async function BookmarksPage() {
               questionIndex: p.questionIndex,
             })),
           },
-          select: { sessionId: true, questionIndex: true, score: true },
+          select: { sessionId: true, questionIndex: true, score: true, modelAnswer: true },
         })
       : [];
 
@@ -48,7 +48,7 @@ export default async function BookmarksPage() {
     const eval_ = evaluations.find(
       (e) => e.sessionId === b.message.sessionId && e.questionIndex === b.message.questionIndex
     );
-    return { ...b, score: eval_?.score ?? null };
+    return { ...b, score: eval_?.score ?? null, modelAnswer: eval_?.modelAnswer ?? null };
   });
 
   return <BookmarksClient bookmarks={data} />;
