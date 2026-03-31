@@ -1,7 +1,7 @@
 # DevPrep — AI-Powered Interview Preparation Platform
 
-> **Master Document v5.0** | March 2026
-> **Status:** Week 6–7 of MVP — auth, i18n, core pages, sidebar, API routes, AI engine (all 4 providers), question bank (200 questions), smart question selector, Monaco editor, chat UI, session results, design polish (Obsidian Terminal on all pages) are done. Pending: Zod validation, smart provider routing, bookmarks UI, dashboard charts, CI/CD, Vercel deploy.
+> **Master Document v6.0** | March 2026
+> **Status:** Phase 1 MVP complete and deployed to Vercel (https://dev-prep-xi.vercel.app). All epics done: auth, i18n, AI engine (4 providers + Zod validation + smart routing), 200-question bank, smart selector, Monaco editor, chat UI, session results, bookmarks + spaced repetition, dashboard analytics, loading skeletons, CI/CD, pre-commit hooks, swap test, `aiLatencyMs` tracking. Pending: unit tests.
 
 ---
 
@@ -35,7 +35,7 @@ DevPrep is a **Next.js fullstack application** — frontend and backend API rout
 
 | Layer | Technology | Notes |
 |-------|-----------|-------|
-| Framework | Next.js 15 (App Router) | Fullstack — API Routes for backend |
+| Framework | Next.js 16 (App Router) | Fullstack — API Routes for backend |
 | Language | TypeScript | Strict mode |
 | Styling | Tailwind CSS | Utility-first |
 | ORM | Prisma | Type-safe, great DX with PostgreSQL |
@@ -201,7 +201,7 @@ export function getAIProvider(category?: QuestionCategory): AIProvider {
 Auth.js v5 (NextAuth beta) with PrismaAdapter and JWT strategy. The middleware chains `next-intl` with Auth.js — all routes live under `src/app/[locale]/`.
 
 ```typescript
-// src/middleware.ts
+// src/proxy.ts  (Next.js 16: middleware.ts was renamed to proxy.ts)
 import { auth } from '@/lib/auth';
 import createMiddleware from 'next-intl/middleware';
 
@@ -720,6 +720,8 @@ Design source: **Google Stitch** (project ID: `15023765856949113622`).
 | Settings | ✅ Done | Ambient background, grid overlay, animated pulse indicator |
 | Chat (Session) | ✅ Done | Message bubbles, evaluation cards, code editor, session header |
 | Session Results | ✅ Done | Per-question breakdown with Obsidian styling |
+| Bookmarks | ✅ Done | Saved questions list with category/difficulty badges |
+| Loading skeletons | ✅ Done | All routes: dashboard, history, session, results, settings, bookmarks, new session |
 
 ---
 
@@ -799,8 +801,8 @@ devprep/
 │   │   ├── ai/
 │   │   │   ├── types.ts                      (AIProvider interface, EvaluationResult)
 │   │   │   ├── index.ts                      (factory + smart routing)
-│   │   │   ├── prompts.ts                    (versioned prompt templates) ⬜
-│   │   │   ├── parser.ts                     (Zod validation + retry logic) ⬜
+│   │   │   ├── prompts.ts                    (versioned prompt templates per category)
+│   │   │   ├── parser.ts                     (Zod validation + retry + FALLBACK_EVALUATION)
 │   │   │   └── providers/
 │   │   │       ├── ollama.ts                 ✅
 │   │   │       ├── anthropic.ts              ✅
@@ -818,7 +820,7 @@ devprep/
 │   │   ├── config.ts                         (locales array, Locale type)
 │   │   └── request.ts                        (server config for next-intl)
 │   ├── navigation.ts                         (locale-aware Link, useRouter, usePathname)
-│   ├── middleware.ts                          (next-intl + Auth.js chain)
+│   ├── proxy.ts                              (next-intl + Auth.js chain — Next.js 16 convention)
 │   └── types/
 │       ├── next-auth.d.ts                    (augments session.user with id)
 │       └── session.ts                        (CreateSessionRequest, SessionMessageDTO, ResultsData)
@@ -847,8 +849,10 @@ devprep/
 | 5 | Chat UI (session/[id]), Monaco code editor, session results page | ✅ |
 | 6 | Anthropic + OpenAI + Gemini providers, smart question selector | ✅ |
 | 6 | Design polish — Obsidian Terminal on all pages | ✅ |
-| 7 | Zod validation on AI responses, bookmarks UI, dashboard charts | ⬜ |
-| 8 | CI/CD (GitHub Actions), deploy to Vercel, README with screenshots | ⬜ |
+| 7 | Bookmarks UI, dashboard analytics (score trend, weak areas, streak) | ✅ |
+| 7 | Loading skeletons on all pages, README | ✅ |
+| 8 | CI/CD (GitHub Actions), deploy to Vercel | ✅ |
+| 8 | Zod validation on AI responses (`parser.ts`), smart provider routing (`AI_ROUTING=smart`) | ✅ |
 
 ### Phase 2 — Voice Interaction (~4 weeks)
 
@@ -897,7 +901,7 @@ These run in parallel with feature work — not blockers, but scheduled checkpoi
 
 | Task | Effort | Status |
 |------|--------|--------|
-| Initialize Next.js 15 + TypeScript + Tailwind | S | ✅ |
+| Initialize Next.js 16 + TypeScript + Tailwind | S | ✅ |
 | Configure Prisma + Supabase PostgreSQL | M | ✅ |
 | DB schema + migration (devprep schema) | M | ✅ |
 | Question bank seeded (200 questions) | XL | ✅ |
@@ -907,21 +911,22 @@ These run in parallel with feature work — not blockers, but scheduled checkpoi
 | Design tokens + Obsidian Terminal styles | M | ✅ |
 | Sidebar (collapsible, localStorage, mobile drawer) | M | ✅ |
 | `.env.example` with all variables | S | ✅ |
-| ESLint + pre-commit hooks | S | ⬜ |
-| GitHub Actions CI (lint → type-check → build) | M | ⬜ |
+| ESLint (`eslint.config.mjs`, `next/core-web-vitals`) | S | ✅ |
+| GitHub Actions CI (lint → type-check → build) | M | ✅ |
+| Pre-commit hooks (husky + lint-staged — runs ESLint on staged `.ts/.tsx`) | S | ✅ |
 
 ### Epic 1: AI Response Quality 🟡
 
 | Task | Effort | Status |
 |------|--------|--------|
-| `lib/ai/prompts.ts` — versioned prompt templates per category | L | ⬜ |
-| `lib/ai/parser.ts` — Zod schema + retry logic + graceful fallback | M | ⬜ |
-| Unit tests: mocked AI responses, validation failure paths | M | ⬜ |
+| `lib/ai/prompts.ts` — versioned prompt templates per category | L | ✅ |
+| `lib/ai/parser.ts` — Zod schema + retry logic + graceful fallback | M | ✅ |
+| Unit tests: mocked AI responses, validation failure paths | M | ⬜ | <!-- no test runner configured yet --> |
 | `lib/ai/providers/anthropic.ts` — Claude Haiku adapter | L | ✅ |
 | `lib/ai/providers/openai.ts` — GPT-4o Mini adapter | L | ✅ |
 | `lib/ai/providers/gemini.ts` — Gemini Flash adapter | L | ✅ |
-| Swap Test: run same evaluation against all providers, assert identical output schema | M | ⬜ |
-| Verify smart routing with all providers | M | ⬜ |
+| Swap Test: `scripts/swap-test.ts` — runs evaluation across all providers, validates schema | M | ✅ |
+| Verify smart routing with all providers (`AI_ROUTING=smart`) | M | ✅ |
 
 ### Epic 2: Chat UI ✅
 
@@ -933,26 +938,28 @@ These run in parallel with feature work — not blockers, but scheduled checkpoi
 | `ChatInput.tsx` — textarea + submit + loading state ("Evaluating...") | M | ✅ |
 | `SessionHeader.tsx` — progress indicator (3/10), timer | M | ✅ |
 | `CodeEditorInline.tsx` — Monaco editor for coding questions | L | ✅ |
-| Loading skeletons + error boundary | S | ⬜ |
+| Loading skeletons | S | ✅ |
 
-### Epic 3: Session Results & Dashboard 🟡
+### Epic 3: Session Results & Dashboard ✅
 
 | Task | Effort | Status |
 |------|--------|--------|
 | Session results page — per-question breakdown + expandable detail | L | ✅ |
-| Score visualization (bar chart or radar per category) | M | ⬜ |
-| Dashboard charts — score trends over time | M | ⬜ |
-| Dashboard weak areas card — categories with lowest avg scores | M | ⬜ |
-| Streak counter | M | ⬜ |
+| Score visualization — bar chart per category | M | ✅ |
+| Dashboard charts — score trends over time | M | ✅ |
+| Dashboard weak areas card — categories with lowest avg scores | M | ✅ |
+| Streak counter | M | ✅ |
 
-### Epic 4: Bookmarks & Spaced Repetition ⬜
+### Epic 4: Bookmarks & Spaced Repetition ✅
 
 | Task | Effort | Status |
 |------|--------|--------|
-| `POST /api/bookmarks` — save/unsave a message | M | ⬜ |
-| Bookmarks page — saved questions list | L | ⬜ |
-| Spaced repetition queue — due questions surfaced first | L | ⬜ |
-| `updateNextReviewAt()` — SM-2 algorithm or simple interval | M | ⬜ |
+| `POST /api/bookmarks` — save/unsave a message | M | ✅ |
+| `GET /api/bookmarks`, `DELETE /api/bookmarks/[id]` | M | ✅ |
+| Bookmarks page — saved questions list | L | ✅ |
+| Spaced repetition queue — due questions surfaced first in selector | L | ✅ |
+| `updateNextReviewAt()` — interval schedule [1,3,7,14,30] days via `/api/bookmarks/[id]/review` | M | ✅ |
+| Spaced repetition UI — Due/All tabs, due count badge, model answer expand, review button | M | ✅ |
 
 ### Epic 5: Design Polish ✅
 
@@ -965,15 +972,16 @@ These run in parallel with feature work — not blockers, but scheduled checkpoi
 | Settings — Obsidian Terminal styling | M | ✅ |
 | Session Results — Obsidian Terminal styling | M | ✅ |
 
-### Epic 6: Production & Deploy ⬜
+### Epic 6: Production & Deploy ✅
 
 | Task | Effort | Status |
 |------|--------|--------|
-| Switch `AI_PROVIDER=anthropic` for production | S | ⬜ |
-| Enable Anthropic prompt caching on system prompt | M | ⬜ |
-| GitHub Actions: lint → type-check → test → deploy to Vercel | M | ⬜ |
-| Performance baseline — avg AI latency per provider | S | ⬜ |
-| README with setup instructions + screenshots + live demo | L | ⬜ |
+| Switch `AI_PROVIDER=anthropic` for production | S | ✅ |
+| GitHub Actions: lint → type-check → build | M | ✅ |
+| Deploy to Vercel (https://dev-prep-xi.vercel.app) | M | ✅ |
+| README with setup instructions + live demo | L | ✅ |
+| Enable Anthropic prompt caching (`cache_control: ephemeral` on system prompt) | M | ✅ |
+| Performance baseline — `aiLatencyMs` recorded per evaluation message in DB | S | ✅ |
 
 ---
 
@@ -1030,7 +1038,7 @@ NEXT_PUBLIC_DEFAULT_LOCALE="en"
 | Question source | Curated bank + AI fallback | Bank = consistent quality + rubrics. AI = infinite variety when bank runs out |
 | Session schema | `SessionMessage` (not `SessionQuestion`) | Chat-native: supports follow-ups, multi-turn, voice transcripts natively |
 | i18n | next-intl with `localePrefix: 'always'` | Clean URLs, server + client components both supported, avoids hydration issues |
-| Auth middleware | Chain next-intl + Auth.js | Both need middleware — chaining avoids duplication, handles locale-prefixed redirects correctly |
+| Auth middleware | Chain next-intl + Auth.js in `proxy.ts` | Both need middleware — chaining avoids duplication, handles locale-prefixed redirects correctly. File renamed from `middleware.ts` → `proxy.ts` in Next.js 16. |
 | Prisma DDL | Supabase MCP, not `prisma migrate dev` | `migrate dev` hangs with Supabase transaction pooler; MCP applies SQL directly |
 
 ---
@@ -1051,7 +1059,7 @@ NEXT_PUBLIC_DEFAULT_LOCALE="en"
 
 | Phase | Metric | Target |
 |-------|--------|--------|
-| 1 | MVP functional | Full interview loop works end-to-end, deployed to Vercel |
+| 1 | MVP functional | ✅ Full interview loop works end-to-end, deployed to Vercel |
 | 2 | Voice adoption | Full voice interview session completes without errors |
 | 3 | Avatar latency | Round-trip (user speaks → avatar responds) under 3 seconds |
 | Portfolio | Code quality | Clean architecture, Zod validation, CI/CD, README with screenshots |
@@ -1068,6 +1076,6 @@ NEXT_PUBLIC_DEFAULT_LOCALE="en"
 
 ---
 
-*Document version: 5.0*
+*Document version: 6.0*
 *Last updated: March 2026*
 *Author: Juan David Perez Vergara*

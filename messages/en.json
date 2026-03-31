@@ -212,6 +212,7 @@
     "markReviewed": "Mark as Reviewed",
     "hideAnswer": "Hide model answer",
     "showAnswer": "Show model answer",
+    "noModelAnswer": "No model answer available for this question.",
     "unsave": "Unsave",
     "dueToday": "{count, plural, one {# question} other {# questions}} due today",
     "technical": "Technical",

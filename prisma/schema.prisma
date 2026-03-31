@@ -98,6 +98,7 @@ model SessionMessage {
   feedback      String?   @db.Text
   modelAnswer   String?   @db.Text
   audioUrl      String?                        // Phase 2: stored audio
+  aiLatencyMs   Int?                           // ms from AI call start to response
   createdAt     DateTime  @default(now())
 
   bookmark      Bookmark?

@@ -6,12 +6,15 @@
 
 <p align="center">
   AI-powered mock interview simulator for software developers.<br/>
-  Practice technical, coding, system design, and behavioral questions — get scored and receive detailed feedback in real time.
+  Practice technical, coding, system design, and behavioral questions — get scored with detailed feedback in real time.
+</p>
+
+<p align="center">
+  <a href="https://dev-prep-xi.vercel.app"><strong>Live Demo →</strong></a>
 </p>
 
 <p align="center">
   <a href="#features">Features</a> •
-  <a href="#demo">Demo</a> •
   <a href="#tech-stack">Tech Stack</a> •
   <a href="#getting-started">Getting Started</a> •
   <a href="#architecture">Architecture</a> •
@@ -22,9 +25,9 @@
 
 ## What is DevPrep?
 
-DevPrep simulates real software development interviews through a chat-based interface. An AI interviewer asks you questions from a curated bank (or generates new ones dynamically), evaluates your free-text and code responses, and gives you a detailed score breakdown with actionable feedback.
+DevPrep simulates real software development interviews through a chat-based interface. An AI interviewer asks questions from a curated bank of 200 questions (or generates new ones dynamically), evaluates your free-text and code responses, and gives you a detailed score breakdown with actionable feedback.
 
-Unlike flashcard apps, DevPrep evaluates *how* you explain concepts, not just whether you picked the right answer.
+Unlike flashcard apps, DevPrep evaluates *how* you explain concepts — not just whether you picked the right answer.
 
 ```
 You: "NgOnInit runs after Angular finishes setting up the component's
@@ -38,205 +41,256 @@ AI:  Score: 82/100
      📝 Model answer: [expandable]
 ```
 
+---
+
 ## Features
 
 **Interview Simulation**
 - Chat-style UI — feels like a real conversation, not a quiz
-- Four question categories: technical concepts, live coding, system design, behavioral
-- Configurable sessions: difficulty (junior/mid/senior), target stack, question count, language
+- 4 question categories: Technical, Coding (with Monaco editor), System Design, Behavioral
+- Configurable sessions: difficulty (junior / mid / senior), stack, question count, language (EN/ES)
+- Timer and progress indicator per session
 
 **AI Evaluation**
 - Per-question scoring (0–100) with criteria breakdown
-- Detailed feedback: strengths, areas for improvement, model answer
-- Evaluation criteria varies by category (correctness vs. STAR structure vs. scalability trade-offs)
+- Criteria vary by category: correctness/depth for technical, scalability/trade-offs for system design, STAR structure for behavioral
+- Detailed feedback + model answer after each response
 
-**Hybrid Question System**
-- Curated question bank (~40 questions, growing) organized by category, difficulty, and technology
-- AI generates additional questions when the bank runs out for a specific combination
+**Question System**
+- 200 curated questions tailored to Angular, Java/Spring Boot, PostgreSQL, Docker, AWS
+- Smart selection: spaced repetition queue → unseen from bank → AI-generated fallback
+- Distribution: 65 junior · 115 mid · 20 senior
 
 **Multi-Provider AI**
-- Swappable AI providers: Ollama (local/free), Claude Haiku, GPT-4o Mini, Gemini Flash
-- Develop offline with Ollama, deploy with cloud APIs
+- Swappable providers via env var: Ollama (local/free), Claude Haiku, Gemini Flash, GPT-4o Mini
+- Smart routing: auto-selects the best provider per question category
+- Develop fully offline with Ollama — zero API cost
 
-**Planned**
-- Monaco code editor embedded in chat for coding questions
-- Spaced repetition for previously failed questions
-- Progress dashboard with score trends and weak areas detection
-- Bilingual support (EN/ES) for UI and questions
-- Smart routing: different AI providers for different question categories
+**App**
+- Google OAuth authentication (Auth.js v5)
+- Session history with filters, pagination, and score breakdown
+- Bookmarks — save questions to review later
+- Dashboard with score trends, weak areas chart, and practice streak
+- Bilingual UI and questions: English and Spanish
+- Obsidian Terminal design system — dark glassmorphism + loading skeletons on every page
 
-## Demo
-
-> 🚧 Coming soon — currently in active development.
-
-<!-- Replace with actual screenshots when available:
-![Session configuration](docs/screenshots/session-config.png)
-![Chat session](docs/screenshots/chat-session.png)
-![Evaluation](docs/screenshots/evaluation.png)
-![Dashboard](docs/screenshots/dashboard.png)
--->
+---
 
 ## Tech Stack
 
 | Layer | Technology |
 |-------|------------|
-| Framework | Next.js 15 (App Router) + React 19 |
+| Framework | Next.js 16 (App Router) + React 19 |
 | Language | TypeScript |
 | Styling | Tailwind CSS |
-| Database | PostgreSQL (Supabase) |
-| ORM | Prisma |
-| AI (dev) | Ollama + Llama 3.1 8B (local, free) |
-| AI (prod) | Claude Haiku 4.5 (recommended) |
+| Database | Supabase PostgreSQL (`devprep` schema) |
+| ORM | Prisma 6 |
+| Auth | Auth.js v5 (NextAuth beta) — Google OAuth |
+| AI (dev) | Ollama + Llama 3.1 8B — free, local |
+| AI (prod) | Claude Haiku 4.5 — best code evaluation |
+| Code editor | Monaco Editor |
+| i18n | next-intl 4 — EN / ES |
 | Deploy | Vercel |
+
+---
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+
-- PostgreSQL database (or [Supabase](https://supabase.com) free tier)
-- [Ollama](https://ollama.com) installed (for local AI — optional if using cloud API)
+- A [Supabase](https://supabase.com) project
+- Google OAuth credentials ([console.cloud.google.com](https://console.cloud.google.com))
+- [Ollama](https://ollama.com) for local AI (optional — can use cloud APIs instead)
 
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/juandavidperez/devprep.git
-cd devprep
+git clone https://github.com/juandavidperez/DevPrep.git
+cd DevPrep
 npm install
 ```
 
-### 2. Set up environment variables
+### 2. Configure environment
 
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` with your credentials:
-
-```env
-# Database
-DATABASE_URL="postgresql://..."
-
-# AI Provider — choose one:
-AI_PROVIDER="ollama"                        # "ollama" | "anthropic" | "openai" | "gemini"
-
-# Ollama (local, free — default for development)
-OLLAMA_BASE_URL="http://localhost:11434"
-OLLAMA_MODEL="llama3.1:8b"
-```
+Fill in `.env` (see [Environment Variables](#environment-variables) below).
 
 ### 3. Set up the database
 
 ```bash
-npx prisma migrate dev
-npx prisma db seed          # Seeds the question bank (~40 questions)
+npx prisma generate
+npx prisma db seed        # Seeds 200 curated questions
 ```
 
-### 4. Set up local AI (optional)
+> **Note:** `prisma migrate dev` hangs with Supabase's transaction pooler. Apply DDL via the Supabase dashboard or MCP, then run `npx prisma generate`.
+
+### 4. (Optional) Set up Ollama for local AI
 
 ```bash
-# Install Ollama (macOS/Linux)
-curl -fsSL https://ollama.com/install.sh | sh
-
-# Pull a model (~5GB download)
-ollama pull llama3.1:8b
-
-# Start the API server
+# Install Ollama — https://ollama.com
+ollama pull llama3.1:8b   # ~5 GB download
 ollama serve
 ```
 
-### 5. Run the development server
+### 5. Run the dev server
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000/en](http://localhost:3000/en).
+
+---
+
+## Environment Variables
+
+```env
+# Supabase — transaction pooler (port 6543)
+DATABASE_URL="postgresql://...@pooler.supabase.com:6543/postgres?pgbouncer=true"
+DIRECT_URL="postgresql://...@pooler.supabase.com:6543/postgres"
+
+# Auth.js
+AUTH_SECRET=""              # openssl rand -base64 32
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
+
+# AI provider
+AI_PROVIDER="ollama"        # "ollama" | "anthropic" | "gemini" | "openai"
+AI_ROUTING="single"         # "single" | "smart" (category-based routing)
+
+# Ollama (local dev — free)
+OLLAMA_BASE_URL="http://localhost:11434"
+OLLAMA_MODEL="llama3.1:8b"
+
+# Anthropic (production — recommended)
+ANTHROPIC_API_KEY=""
+ANTHROPIC_MODEL="claude-haiku-4-5-20251001"
+
+# Gemini (production — free tier available)
+GEMINI_API_KEY=""
+GEMINI_MODEL="gemini-2.0-flash"
+
+# OpenAI (optional)
+OPENAI_API_KEY=""
+
+# App
+NEXT_PUBLIC_DEFAULT_LOCALE="en"
+```
+
+For production on Vercel, also add `NEXTAUTH_URL` with your deployment URL.
+
+---
 
 ## Architecture
 
 DevPrep is designed in layers that evolve across three phases without requiring rewrites:
 
 ```
-┌──────────────────────────────────────────┐
-│           PRESENTATION LAYER             │
-│  Chat UI  →  Voice Controls  →  Avatar   │
-│          (Phase 1)  (Phase 2)  (Phase 3) │
-├──────────────────────────────────────────┤
-│         INTERACTION MANAGER              │
-│  Unified interface for all modalities    │
-├──────────────────────────────────────────┤
-│           PROCESSING LAYER               │
-│  AI Engine  |  Speech Engine  |  Avatar  │
-│  (Phase 1)    (Phase 2)       (Phase 3)  │
-├──────────────────────────────────────────┤
-│             DATA LAYER                   │
-│  Prisma + PostgreSQL  |  NextAuth        │
-└──────────────────────────────────────────┘
+┌──────────────────────────────────────────────┐
+│             PRESENTATION LAYER               │
+│  Chat UI  →  + Voice Controls  →  + Avatar   │
+│  (Phase 1)      (Phase 2)          (Phase 3) │
+├──────────────────────────────────────────────┤
+│           INTERACTION MANAGER                │
+│  Unified interface — text, voice, or avatar  │
+├──────────────────────────────────────────────┤
+│             PROCESSING LAYER                 │
+│  AI Engine  |  Speech Engine  |  Avatar Eng  │
+├──────────────────────────────────────────────┤
+│               DATA LAYER                     │
+│  Prisma + PostgreSQL  |  Auth.js             │
+└──────────────────────────────────────────────┘
 ```
 
-**Key design decisions:**
-- **InteractionManager** abstracts all input/output so adding voice or avatar doesn't touch the AI engine
-- **AI Provider abstraction** allows swapping Ollama ↔ Anthropic ↔ OpenAI ↔ Gemini via env var
-- **Hybrid question system** combines curated bank + AI generation for quality + variety
-- **Chat-native schema** (SessionMessage) supports multi-turn conversation, follow-ups, and future voice transcripts
+**Key decisions:**
+- `InteractionManager` abstracts all input/output — adding voice or avatar doesn't touch the AI layer
+- AI provider abstraction allows swapping Ollama ↔ Claude ↔ Gemini ↔ OpenAI via a single env var
+- Curated bank + AI fallback: consistent quality when questions are available, infinite variety when they run out
+- Chat-native schema (`SessionMessage`) natively supports follow-ups, multi-turn, and future voice transcripts
+- Auth.js chains with next-intl middleware via `src/proxy.ts` so locale-prefixed redirects work correctly
+
+### AI Provider Switching
+
+```env
+AI_PROVIDER=ollama      # Free, offline (development)
+AI_PROVIDER=anthropic   # Claude Haiku — best for code evaluation
+AI_PROVIDER=gemini      # Gemini Flash — free tier
+AI_PROVIDER=openai      # GPT-4o Mini — cheapest paid
+
+AI_ROUTING=smart        # Auto-routes by question category
+```
+
+### AI Cost (10-question session)
+
+| Provider | Cost/session | Notes |
+|----------|-------------|-------|
+| Ollama (local) | $0.00 | Development |
+| Gemini Flash | ~$0.04 | Free tier available |
+| Claude Haiku 4.5 | ~$0.11 | Best code/design eval (recommended) |
+
+Personal use at 1 session/day ≈ $1–3/month with Claude Haiku.
+
+---
 
 ## Project Structure
 
 ```
 devprep/
 ├── prisma/
-│   ├── schema.prisma              # Database schema
-│   ├── seed.ts                    # Question bank seeder
-│   └── seeds/                     # Curated question JSON files
-├── src/
-│   ├── app/                       # Next.js App Router pages + API routes
-│   │   └── api/chat/              # Ollama proxy endpoint
-│   └── lib/
-│       ├── ai/                    # Provider abstraction (factory + Ollama impl)
-│       │   └── providers/
-│       └── interaction/           # InteractionManager (modality abstraction)
-└── public/                        # Static assets (logos)
+│   ├── schema.prisma           # DB schema (devprep schema, Supabase)
+│   ├── seed.ts                 # Question bank seeder
+│   └── seeds/                  # technical.json, coding.json, system-design.json, behavioral.json
+├── messages/
+│   ├── en.json                 # English translations
+│   └── es.json                 # Spanish translations
+└── src/
+    ├── app/
+    │   ├── [locale]/           # All pages — dashboard, history, session/[id], settings, bookmarks
+    │   │   └── */loading.tsx   # Skeleton loading states for every route
+    │   └── api/                # API routes — sessions, messages, settings, bookmarks
+    ├── components/
+    │   ├── session/            # ChatContainer, MessageBubble, CodeEditor, ResultsView
+    │   ├── history/            # HistoryFilters, SessionList
+    │   ├── bookmarks/          # BookmarksClient
+    │   ├── settings/           # SettingsForm
+    │   └── ui/                 # Skeleton, shared primitives
+    └── lib/
+        ├── ai/                 # AIProvider interface + Ollama/Anthropic/Gemini/OpenAI adapters
+        ├── questions/          # Smart selector (spaced repetition → bank → AI fallback)
+        ├── interaction/        # InteractionManager (input/output abstraction)
+        ├── auth.ts             # Auth.js config + PrismaAdapter
+        └── db.ts               # Prisma singleton
 ```
+
+---
 
 ## Roadmap
 
-- [x] Project structure and architecture design
-- [x] Next.js + Tailwind + TypeScript + Prisma setup
-- [x] AI provider abstraction with Ollama implementation
-- [x] Question bank schema + seed system (~40 questions)
-- [ ] **Phase 1 — Text Chat (MVP)** ← current
-  - [ ] Database migration + Prisma client singleton
-  - [ ] Chat UI: ChatContainer, MessageBubble, ChatInput
-  - [ ] Session flow: configure → chat → evaluate → results
-  - [ ] API routes for sessions and chat
-  - [ ] Auth (NextAuth + Google OAuth)
-  - [ ] Code editor: Monaco integration for coding questions
-  - [ ] Progress: Dashboard, streak, weak areas, bookmarks
-  - [ ] Bilingual support (next-intl)
+- [x] **Phase 1 — Text Chat MVP** ← done, deployed to Vercel
+  - [x] Auth (NextAuth v5 + Google OAuth)
+  - [x] 200 curated questions seeded
+  - [x] Chat UI with Monaco code editor
+  - [x] AI evaluation — 4 providers
+  - [x] Session history, bookmarks, dashboard analytics
+  - [x] Bilingual EN/ES
+  - [x] Obsidian Terminal design system
+  - [x] Loading skeletons on every page
+  - [ ] Zod validation on AI responses
+  - [ ] Smart AI provider routing
 - [ ] **Phase 2 — Voice Interaction**
   - [ ] Speech-to-text (Web Speech API → Whisper)
   - [ ] Text-to-speech (Web Speech API → ElevenLabs)
-  - [ ] Modality switching (text ↔ voice mid-session)
+  - [ ] Modality switching mid-session
 - [ ] **Phase 3 — Avatar Interviewer**
-  - [ ] 2D animated character (Rive)
+  - [ ] Animated 2D character (Rive/Lottie)
   - [ ] Lip sync from TTS audio
-  - [ ] Emotion/gesture system driven by AI evaluation
+  - [ ] Emotion/gesture system from AI output
 
-## AI Provider Costs
-
-| Provider | Cost/session (10 questions) | Use case |
-|----------|----------------------------|----------|
-| Ollama (local) | $0.00 | Development |
-| GPT-4o Mini | $0.01 | Cheapest API |
-| Gemini 2.5 Flash | $0.04 | Free tier available |
-| Claude Haiku 4.5 | $0.11 | Best code evaluation (recommended) |
-
-For personal use at 1 session/day, expect $1–3/month with Claude Haiku.
-
-## License
-
-MIT
+---
 
 ## Author
 

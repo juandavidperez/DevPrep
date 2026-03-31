@@ -65,7 +65,9 @@ export async function POST(
         },
       });
 
+      const clarificationStart = Date.now();
       const answer = await ai.answerClarification(lastQuestion.content, content);
+      const clarificationLatencyMs = Date.now() - clarificationStart;
 
       const clarificationAnswer = await prisma.sessionMessage.create({
         data: {
@@ -74,6 +76,7 @@ export async function POST(
           content: answer,
           messageType: "clarification_answer",
           questionIndex: currentQuestionIndex,
+          aiLatencyMs: clarificationLatencyMs,
         },
       });
 
@@ -159,9 +162,9 @@ export async function POST(
       const allAnswers = [...previousAnswers, userMessage];
 
       const evaluations = await Promise.all(
-        allAnswers.map((ans, i) => {
+        allAnswers.map(async (ans, i) => {
           const q = allQuestions[i];
-          if (!q) return Promise.resolve(null);
+          if (!q) return null;
           const qObj: Question = {
             id: q.id,
             text: q.content,
@@ -173,20 +176,18 @@ export async function POST(
             ans.content.trim().toLowerCase().includes(q.content.trim().toLowerCase());
 
           if (answerIsCopied) {
-            return Promise.resolve({
-              score: 0,
-              criteria: { correctness: 0, depth: 0, clarity: 0, practical_examples: 0 },
-              feedback: "Your response appears to be a copy of the question.",
-              modelAnswer: "",
-            });
+            return { evaluation: { score: 0, criteria: { correctness: 0, depth: 0, clarity: 0, practical_examples: 0 }, feedback: "Your response appears to be a copy of the question.", modelAnswer: "" }, latencyMs: 0 };
           }
-          return ai.evaluateResponse(qObj, ans.content, ans.codeContent ?? undefined);
+          const t = Date.now();
+          const evaluation = await ai.evaluateResponse(qObj, ans.content, ans.codeContent ?? undefined);
+          return { evaluation, latencyMs: Date.now() - t };
         })
       );
 
       const evalMessages = await Promise.all(
-        evaluations.map((ev, i) => {
-          if (!ev) return null;
+        evaluations.map((result, i) => {
+          if (!result) return null;
+          const { evaluation: ev, latencyMs } = result;
           return prisma.sessionMessage.create({
             data: {
               sessionId: id,
@@ -198,13 +199,14 @@ export async function POST(
               criteria: ev.criteria as Record<string, number>,
               feedback: ev.feedback,
               modelAnswer: ev.modelAnswer ?? null,
+              aiLatencyMs: latencyMs,
             },
           });
         })
       );
 
       const validEvals = evalMessages.filter(Boolean);
-      const scores = evaluations.filter(Boolean).map((e) => e!.score);
+      const scores = evaluations.filter(Boolean).map((r) => r!.evaluation.score);
       const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
 
       const firstMessage = interviewSession.messages[0];
@@ -217,10 +219,10 @@ export async function POST(
       });
 
       // Update question bank scores (fire and forget)
-      evaluations.forEach((ev, i) => {
-        if (!ev) return;
+      evaluations.forEach((result, i) => {
+        if (!result) return;
         const q = allQuestions[i];
-        if (q) updateQuestionBankScore(q.content, ev.score).catch(() => {});
+        if (q) updateQuestionBankScore(q.content, result.evaluation.score).catch(() => {});
       });
 
       return NextResponse.json({
@@ -231,6 +233,7 @@ export async function POST(
     }
 
     // Live mode: evaluate immediately
+    let aiLatencyMs: number | null = null;
     const evaluation = isCopied
       ? {
           score: 0,
@@ -241,7 +244,12 @@ export async function POST(
             "Your response appears to be a copy of the question. Please provide your own answer.",
           modelAnswer: "",
         }
-      : await ai.evaluateResponse(question, content, codeContent ?? undefined);
+      : await (async () => {
+          const t = Date.now();
+          const result = await ai.evaluateResponse(question, content, codeContent ?? undefined);
+          aiLatencyMs = Date.now() - t;
+          return result;
+        })();
 
     const evalMessage = await prisma.sessionMessage.create({
       data: {
@@ -254,6 +262,7 @@ export async function POST(
         criteria: evaluation.criteria as Record<string, number>,
         feedback: evaluation.feedback,
         modelAnswer: evaluation.modelAnswer ?? null,
+        aiLatencyMs,
       },
     });
 
