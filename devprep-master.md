@@ -232,33 +232,83 @@ import Link from 'next/link';
 
 When Phase 2 arrives, the Speech Engine sits between the Interaction Manager and the AI layer. The AI layer never changes — it still receives text and returns text.
 
+Same abstraction pattern as the AI engine — swap providers via env var, no code changes. Provider selection is **env-only**: not exposed in the UI, only configurable by the developer.
+
+#### Provider Matrix
+
+```
+               DEV ($0)                  PROD (default)          PROD (alternative)
+               ────────────────────────────────────────────────────────────────────
+STT            Whisper via Ollama    →   OpenAI Whisper API
+TTS            Kokoro (local)        →   OpenAI TTS          →   ElevenLabs
+AI Engine      Ollama + Llama 3.1   →   Claude Haiku         →   Gemini Flash
+```
+
+**Why OpenAI TTS as default (not ElevenLabs):**
+The same `OPENAI_API_KEY` already used for Whisper STT covers TTS — no extra key needed. ElevenLabs is available as an upgrade if higher voice quality is needed, switchable via a single env var.
+
+#### Interfaces
+
 ```typescript
 // src/lib/speech/types.ts
 
 interface STTProvider {
-  // Streaming: sends partial results as user speaks (live transcript)
-  transcribe(audioStream: ReadableStream): AsyncIterable<TranscriptChunk>;
-  // Single-shot: for recorded audio blobs
-  transcribeBlob(audio: Blob, language: string): Promise<string>;
+  // Batch transcription — user records, stops, then submits (push-to-talk flow)
+  transcribe(audio: Blob, language: 'en' | 'es'): Promise<string>;
+  healthCheck(): Promise<boolean>;
 }
 
 interface TTSProvider {
-  // Single audio buffer (short responses)
-  synthesize(text: string, voice: VoiceConfig): Promise<AudioBuffer>;
-  // Streaming TTS for real-time playback (lower latency)
-  synthesizeStream(text: string, voice: VoiceConfig): ReadableStream<Uint8Array>;
+  // Single audio buffer for the interviewer's response
+  synthesize(text: string, language: 'en' | 'es'): Promise<ArrayBuffer>;
+  // Streaming variant for lower latency (starts playing before fully generated)
+  synthesizeStream(text: string, language: 'en' | 'es'): ReadableStream<Uint8Array>;
+  healthCheck(): Promise<boolean>;
 }
-
-interface VoiceConfig {
-  language: 'en' | 'es';
-  speed: number;   // 0.5–2.0
-  voice: string;   // Provider-specific voice ID
-}
-
-// Provider options:
-// STT: Web Speech API (free, browser-native) → Whisper API (accurate, paid)
-// TTS: Web Speech API (free, browser-native) → ElevenLabs (natural, paid)
 ```
+
+#### STT Factory
+
+```typescript
+// src/lib/speech/stt/index.ts
+
+export function getSTTProvider(): STTProvider {
+  const provider = process.env.STT_PROVIDER || 'whisper-local';
+  switch (provider) {
+    case 'whisper-local': return new WhisperLocalProvider();  // Ollama — dev, $0
+    case 'whisper-api':   return new WhisperAPIProvider();    // OpenAI — prod
+    default:              return new WhisperLocalProvider();
+  }
+}
+```
+
+#### TTS Factory
+
+```typescript
+// src/lib/speech/tts/index.ts
+
+export function getTTSProvider(): TTSProvider {
+  const provider = process.env.TTS_PROVIDER || 'openai';
+  switch (provider) {
+    case 'kokoro':     return new KokoroProvider();     // Local — dev, $0
+    case 'openai':     return new OpenAITTSProvider();  // API — prod default
+    case 'elevenlabs': return new ElevenLabsProvider(); // API — higher quality alt
+    default:           return new OpenAITTSProvider();
+  }
+}
+```
+
+#### Provider Notes
+
+**STT — Whisper via Ollama (dev):** Ollama supports Whisper natively — same process already running for the AI engine, no extra setup. Supports EN/ES. Latency ~2–4s without GPU, acceptable for push-to-talk flow.
+
+**STT — OpenAI Whisper API (prod):** $0.006/min (~$0.012 per 2-min answer). High accuracy on technical terms (NgRx, JPA, PostgreSQL). Same API key as OpenAI TTS.
+
+**TTS — Kokoro (dev):** Open-source TTS model (~82M params, very lightweight). Requires a small local FastAPI server (~20 lines). Quality significantly better than browser TTS. EN/ES support.
+
+**TTS — OpenAI TTS (prod default):** Voices: `alloy`, `echo`, `fable`, `onyx`, `nova`, `shimmer`. ~$15/1M chars — effectively free for personal use. No extra API key beyond what Whisper already uses.
+
+**TTS — ElevenLabs (prod alternative):** Best voice quality available. Switch with `TTS_PROVIDER=elevenlabs`. Requires separate API key and voice IDs per language.
 
 **Phase 2 data flow:**
 ```
@@ -272,8 +322,9 @@ interface VoiceConfig {
 │   (browser) │     │   audio     │     │                    │
 └─────────────┘     └─────────────┘     └────────────────────┘
 
-Live transcript displayed in chat as user speaks (partial STT results).
-Fallback: if mic unavailable → text input mode, no STT/TTS.
+Push-to-talk flow: user holds mic button → records → releases → STT transcribes →
+AI evaluates → TTS synthesizes → audio plays back.
+Fallback: if mic unavailable or STT_PROVIDER not set → text input mode, no STT/TTS.
 ```
 
 **Phase 3 data flow (Avatar):**
@@ -856,12 +907,12 @@ devprep/
 
 ### Phase 2 — Voice Interaction (~4 weeks)
 
-**Definition of Done:** User can speak answers. AI transcribes, evaluates, and responds in audio. Graceful fallback to text if mic unavailable.
+**Definition of Done:** User can speak answers via push-to-talk. AI transcribes (STT), evaluates, and responds in audio (TTS). Graceful fallback to text if mic unavailable. Provider swap (STT/TTS) via env var only — not exposed in UI.
 
 | Week | Milestone |
 |------|-----------|
-| 9–10 | STT (Web Speech API), mic toggle, waveform visualizer, live transcript |
-| 11–12 | TTS (Web Speech API → ElevenLabs), playback controls, modality switching |
+| 9–10 | STT pipeline: Whisper via Ollama (dev) + OpenAI Whisper API (prod), push-to-talk mic button, waveform visualizer, transcript display |
+| 11–12 | TTS pipeline: Kokoro local (dev) + OpenAI TTS (prod default) + ElevenLabs (alt), audio playback controls, modality switching (voice ↔ text fallback) |
 
 ### Phase 3 — Avatar Interviewer (~4 weeks)
 
@@ -915,7 +966,7 @@ These run in parallel with feature work — not blockers, but scheduled checkpoi
 | GitHub Actions CI (lint → type-check → build) | M | ✅ |
 | Pre-commit hooks (husky + lint-staged — runs ESLint on staged `.ts/.tsx`) | S | ✅ |
 
-### Epic 1: AI Response Quality 🟡
+### Epic 1: AI Response Quality ✅
 
 | Task | Effort | Status |
 |------|--------|--------|
@@ -1013,9 +1064,18 @@ ANTHROPIC_MODEL="claude-haiku-4-5-20251001"
 GEMINI_API_KEY="..."
 GEMINI_MODEL="gemini-2.5-flash"
 
-# Phase 2 (optional)
-ELEVENLABS_API_KEY="..."
-ELEVENLABS_VOICE_ID="..."
+# STT — Phase 2
+STT_PROVIDER="whisper-local"        # "whisper-local" | "whisper-api"
+OPENAI_API_KEY="..."                # Used for both Whisper API (STT) and OpenAI TTS
+
+# TTS — Phase 2
+TTS_PROVIDER="openai"               # "kokoro" | "openai" | "elevenlabs"
+KOKORO_URL="http://localhost:8880"  # Local Kokoro server (dev only)
+OPENAI_TTS_VOICE_EN="alloy"         # OpenAI voice for English sessions
+OPENAI_TTS_VOICE_ES="alloy"         # OpenAI voice for Spanish sessions
+ELEVENLABS_API_KEY="..."            # Only needed if TTS_PROVIDER=elevenlabs
+ELEVENLABS_VOICE_ID_EN="..."
+ELEVENLABS_VOICE_ID_ES="..."
 
 # App
 NEXT_PUBLIC_APP_URL="http://localhost:3000"

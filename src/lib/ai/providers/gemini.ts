@@ -9,7 +9,7 @@ import { parseEvaluation, parseQuestions, FALLBACK_EVALUATION } from '../parser'
 
 // Default model — Gemini 2.0 Flash is fast and cheap for interview workloads.
 // Override with GEMINI_MODEL env var (e.g. "gemini-2.5-pro" for harder evals).
-const DEFAULT_MODEL = 'gemini-2.0-flash';
+const DEFAULT_MODEL = 'gemini-flash-latest';
 
 export class GeminiProvider implements AIProvider {
   private client: GoogleGenerativeAI;
