@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint src",
     "postinstall": "prisma generate",
     "prepare": "husky",
     "swap-test": "tsx --env-file=.env scripts/swap-test.ts",
