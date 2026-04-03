@@ -124,29 +124,26 @@ function SidebarContent({
       </nav>
 
       {/* Bottom: language + logout + profile */}
-      <div className="space-y-3 border-t border-border-subtle px-2 py-4">
-        <div
+      <div className="space-y-1 border-t border-border-subtle px-2 py-4">
+        {!collapsed && <LanguageSwitcher />}
+        <button
+          onClick={() => signOut({ callbackUrl: "/" })}
           className={clsx(
-            "flex items-center px-1",
-            collapsed ? "justify-center" : "justify-between"
+            "flex w-full items-center rounded-lg px-3 py-2.5 text-sm font-medium text-text-secondary transition hover:bg-surface-highest/40 hover:text-text-primary",
+            collapsed ? "justify-center" : "gap-3"
           )}
+          title={t("signOut")}
         >
-          <div
+          <LogOut className="h-4 w-4 shrink-0" />
+          <span
             className={clsx(
-              "overflow-hidden transition-all duration-300 ease-in-out",
-              collapsed ? "max-w-0 opacity-0" : "max-w-[120px] opacity-100"
+              "overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out",
+              collapsed ? "max-w-0 opacity-0" : "max-w-[160px] opacity-100"
             )}
           >
-            <LanguageSwitcher />
-          </div>
-          <button
-            onClick={() => signOut({ callbackUrl: "/" })}
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-text-secondary transition hover:bg-surface-highest hover:text-text-primary"
-            title={t("signOut")}
-          >
-            <LogOut className="h-4 w-4" />
-          </button>
-        </div>
+            {t("signOut")}
+          </span>
+        </button>
 
         <div
           className={clsx(
