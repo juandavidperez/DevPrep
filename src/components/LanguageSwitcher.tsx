@@ -14,8 +14,6 @@ export function LanguageSwitcher() {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const toggleOpen = () => setOpen(!open);
-
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -32,29 +30,30 @@ export function LanguageSwitcher() {
   };
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative w-full" ref={dropdownRef}>
       <button
-        onClick={toggleOpen}
-        className="flex h-8 items-center gap-2 rounded-lg px-2 text-sm text-slate-400 transition hover:bg-slate-800 hover:text-white"
+        onClick={() => setOpen(!open)}
+        className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-text-secondary transition hover:bg-surface-highest/40 hover:text-text-primary"
         aria-label="Switch Language"
       >
-        <Languages className="h-4 w-4" />
+        <Languages className="h-4 w-4 shrink-0" />
         <span className="uppercase">{locale}</span>
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-32 rounded-xl border border-slate-800 bg-slate-900 p-1 shadow-xl">
+        <div className="absolute bottom-full left-0 mb-1 w-36 rounded-xl border border-border-subtle bg-surface-container p-1 shadow-xl backdrop-blur-lg">
           {locales.map((loc) => (
             <button
               key={loc}
               onClick={() => switchLocale(loc)}
               className={clsx(
-                "flex w-full items-center px-3 py-2 text-sm transition rounded-lg",
-                locale === loc 
-                  ? "bg-blue-600/10 text-blue-400" 
-                  : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm transition",
+                locale === loc
+                  ? "bg-surface-highest text-text-primary"
+                  : "text-text-secondary hover:bg-surface-highest/40 hover:text-text-primary"
               )}
             >
+              <span className="font-mono text-xs uppercase text-primary">{loc}</span>
               {loc === 'en' ? 'English' : 'Español'}
             </button>
           ))}
