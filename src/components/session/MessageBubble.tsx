@@ -1,9 +1,10 @@
 "use client";
 
 import { clsx } from "clsx";
-import { ChevronDown, Bookmark, BookmarkCheck } from "lucide-react";
+import { ChevronDown, Bookmark, BookmarkCheck, Volume2 } from "lucide-react";
 import { useState } from "react";
 import type { SessionMessageDTO } from "@/types/session";
+import { AudioPlayback } from "./voice/AudioPlayback";
 
 function ScoreBadge({ score }: { score: number }) {
   const color =
@@ -66,7 +67,17 @@ function BookmarkButton({ messageId, initialBookmarkId }: { messageId: string; i
   );
 }
 
-export function MessageBubble({ message }: { message: SessionMessageDTO }) {
+interface MessageBubbleProps {
+  message: SessionMessageDTO;
+  onDemandAudioUrl?: string;
+  onRequestTTS?: (text: string) => void;
+  /** When true, audio plays immediately (chaining: after evaluation ends, next question plays). */
+  triggerPlay?: boolean;
+  /** Called when this message's audio finishes playing naturally. */
+  onAudioEnded?: () => void;
+}
+
+export function MessageBubble({ message, onDemandAudioUrl, onRequestTTS, triggerPlay, onAudioEnded }: MessageBubbleProps) {
   const [showModelAnswer, setShowModelAnswer] = useState(false);
 
   // Interviewer question
@@ -76,7 +87,7 @@ export function MessageBubble({ message }: { message: SessionMessageDTO }) {
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-container">
           <span className="font-mono text-[10px] font-bold text-white">AI</span>
         </div>
-        <div className="min-w-0">
+        <div className="min-w-0 w-full">
           <div className="mb-1 flex items-center gap-2">
             <span className="text-xs font-medium text-text-secondary">Interviewer</span>
             {message.questionIndex != null && (
@@ -85,10 +96,23 @@ export function MessageBubble({ message }: { message: SessionMessageDTO }) {
               </span>
             )}
             <BookmarkButton messageId={message.id} initialBookmarkId={message.bookmarkId} />
+            {/* TTS trigger button — only in voice mode */}
+            {onRequestTTS && !onDemandAudioUrl && (
+              <button
+                onClick={() => onRequestTTS(message.content)}
+                title="Escuchar pregunta"
+                className="ml-auto flex h-6 w-6 items-center justify-center rounded text-text-secondary opacity-0 transition group-hover:opacity-100 hover:text-primary"
+              >
+                <Volume2 className="h-3.5 w-3.5" />
+              </button>
+            )}
           </div>
           <div className="rounded-2xl rounded-tl-sm border border-border-subtle bg-surface-container px-4 py-3 text-sm text-text-primary">
             {message.content}
           </div>
+          {onDemandAudioUrl && (
+            <AudioPlayback src={onDemandAudioUrl} autoPlay={false} triggerPlay={triggerPlay} onEnded={onAudioEnded} />
+          )}
         </div>
       </div>
     );
@@ -174,6 +198,10 @@ export function MessageBubble({ message }: { message: SessionMessageDTO }) {
                   </div>
                 )}
               </div>
+            )}
+
+            {onDemandAudioUrl && (
+              <AudioPlayback src={onDemandAudioUrl} autoPlay onEnded={onAudioEnded} />
             )}
           </div>
         </div>

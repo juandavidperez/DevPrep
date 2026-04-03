@@ -5,6 +5,8 @@ import { Loader2, ArrowLeft, Clock } from "lucide-react";
 import { Link } from "@/navigation";
 import { MessageBubble } from "./MessageBubble";
 import { ChatInput } from "./ChatInput";
+import { VoiceToggle } from "./voice/VoiceToggle";
+import { transcribeAudio, synthesizeAudio } from "@/lib/interaction";
 import type { SessionMessageDTO, SendMessageResponse } from "@/types/session";
 
 interface SessionData {
@@ -15,6 +17,8 @@ interface SessionData {
   completedAt: string | null;
   score: number | null;
   feedbackMode: string;
+  inputModality: string;
+  language: string;
 }
 
 interface ChatContainerProps {
@@ -36,6 +40,20 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
   const [error, setError] = useState<string | null>(null);
   const [elapsed, setElapsed] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Phase 2: voice state
+  const [inputModality, setInputModality] = useState<"text" | "voice">(
+    initialSession.inputModality === "voice" ? "voice" : "text"
+  );
+  const [pendingTranscript, setPendingTranscript] = useState<string | null>(null);
+  const [voiceError, setVoiceError] = useState<string | null>(null);
+  // Map messageId → Blob URL for TTS audio (in-memory only, not stored in DB)
+  const [audioUrls, setAudioUrls] = useState<Map<string, string>>(new Map());
+  // TTS speed: 0.75 | 1 | 1.25 | 1.5
+  const [ttsSpeed, setTtsSpeed] = useState<number>(1);
+  // Audio chaining: evaluation ends → next question auto-plays
+  const [lastEvalId, setLastEvalId] = useState<string | null>(null);
+  const [chainPlayId, setChainPlayId] = useState<string | null>(null);
 
   const currentQuestion = messages.filter((m) => m.messageType === "question").length;
   const progress = Math.round((currentQuestion / initialSession.totalQuestions) * 100);
@@ -93,6 +111,24 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
         ...data.messages,
       ]);
 
+      // Phase 2: synthesize TTS for new AI messages in voice mode
+      if (inputModality === "voice") {
+        // Track the new evaluation and next question for chaining
+        const newEval = data.messages.find((m) => m.messageType === "evaluation");
+        const newQuestion = data.messages.find(
+          (m) => m.role === "interviewer" && m.messageType === "question"
+        );
+        if (newEval) setLastEvalId(newEval.id);
+        setChainPlayId(null); // reset chain until evaluation ends
+
+        for (const msg of data.messages) {
+          if (msg.role === "interviewer") {
+            const textToRead = msg.feedback || msg.content;
+            synthesizeTTS(msg.id, textToRead, newQuestion?.id ?? null);
+          }
+        }
+      }
+
       if (data.isComplete) {
         setIsComplete(true);
         setFinalScore(data.finalScore ?? null);
@@ -102,6 +138,34 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
       setMessages((prev) => prev.filter((m) => m.id !== optimisticMsg.id));
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Phase 2: handle recording complete → STT via InteractionManager
+  const handleVoiceRecordingComplete = async (blob: Blob) => {
+    setVoiceError(null);
+    setIsLoading(true);
+    const transcript = await transcribeAudio(blob, {
+      sessionId: initialSession.id,
+      language: (initialSession.language || "en") as "en" | "es",
+    });
+    setIsLoading(false);
+    if (transcript) {
+      setPendingTranscript(transcript);
+    } else {
+      setVoiceError("Voz no disponible, volviendo a modo texto");
+      setInputModality("text");
+    }
+  };
+
+  // Phase 2: TTS via InteractionManager — stores blob URL keyed by messageId
+  const synthesizeTTS = async (messageId: string, text: string, _nextQuestionId: string | null = null) => {
+    const url = await synthesizeAudio(text, {
+      language: (initialSession.language || "en") as "en" | "es",
+      speed: ttsSpeed,
+    });
+    if (url) {
+      setAudioUrls((prev) => new Map(prev).set(messageId, url));
     }
   };
 
@@ -126,7 +190,19 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          {/* Voice/Text toggle */}
+          <VoiceToggle
+            inputModality={inputModality}
+            onChange={setInputModality}
+            disabled={isComplete || initialSession.feedbackMode === "silent"}
+            disabledReason={
+              initialSession.feedbackMode === "silent"
+                ? "El modo voz no está disponible en sesiones silenciosas"
+                : undefined
+            }
+          />
+
           {/* Timer */}
           <div className="flex items-center gap-1.5 font-mono text-xs text-text-secondary">
             <Clock className="h-3.5 w-3.5" />
@@ -153,7 +229,29 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6">
         <div className="mx-auto flex max-w-3xl flex-col gap-4">
           {messages.map((msg) => (
-            <MessageBubble key={msg.id} message={msg} />
+            <MessageBubble
+              key={msg.id}
+              message={msg}
+              onDemandAudioUrl={audioUrls.get(msg.id)}
+              onRequestTTS={
+                inputModality === "voice"
+                  ? (text) => synthesizeTTS(msg.id, text)
+                  : undefined
+              }
+              triggerPlay={chainPlayId === msg.id}
+              onAudioEnded={
+                msg.id === lastEvalId
+                  ? () => {
+                      // Find the question that comes right after this evaluation
+                      const evalIdx = messages.findIndex((m) => m.id === lastEvalId);
+                      const nextQ = messages.slice(evalIdx + 1).find(
+                        (m) => m.role === "interviewer" && m.messageType === "question"
+                      );
+                      if (nextQ) setChainPlayId(nextQ.id);
+                    }
+                  : undefined
+              }
+            />
           ))}
 
           {/* AI thinking indicator */}
@@ -181,6 +279,19 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
                 className="ml-2 underline hover:text-red-300"
               >
                 Dismiss
+              </button>
+            </div>
+          )}
+
+          {/* Voice error toast */}
+          {voiceError && (
+            <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-400">
+              {voiceError}
+              <button
+                onClick={() => setVoiceError(null)}
+                className="ml-2 underline hover:text-amber-300"
+              >
+                OK
               </button>
             </div>
           )}
@@ -222,6 +333,17 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
         isLoading={isLoading}
         isSilentMode={initialSession.feedbackMode === "silent"}
         isCodeSession={initialSession.category === "coding"}
+        inputModality={inputModality}
+        onVoiceRecordingComplete={handleVoiceRecordingComplete}
+        onMicError={(msg) => {
+          setVoiceError(msg);
+          setInputModality("text");
+        }}
+        pendingTranscript={pendingTranscript}
+        onTranscriptChange={setPendingTranscript}
+        onTranscriptDismiss={() => setPendingTranscript(null)}
+        ttsSpeed={ttsSpeed}
+        onTtsSpeedChange={setTtsSpeed}
       />
     </div>
   );
