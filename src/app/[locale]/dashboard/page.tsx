@@ -117,7 +117,7 @@ function ScoreTrendChart({
   }
 
   return (
-    <div className="flex h-24 items-end gap-1.5 px-1">
+    <div className="flex h-24 items-stretch gap-1.5 px-1">
       {data.map((s, i) => {
         const score = Math.round(s.score!);
         const barColor =
@@ -127,7 +127,7 @@ function ScoreTrendChart({
               ? "bg-yellow-400/60 group-hover:bg-yellow-400"
               : "bg-red-400/60 group-hover:bg-red-400";
         return (
-          <div key={i} className="group relative flex flex-1 flex-col items-center justify-end gap-1">
+          <div key={i} className="group relative flex h-full flex-1 flex-col items-center justify-end gap-1">
             <span className="pointer-events-none absolute -top-5 hidden rounded bg-surface-highest px-1.5 py-0.5 font-mono text-[10px] text-text-primary group-hover:block">
               {score}
             </span>
