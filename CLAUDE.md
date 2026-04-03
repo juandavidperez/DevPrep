@@ -71,14 +71,23 @@ Data Layer: Prisma ORM → PostgreSQL (Supabase, "devprep" schema) + Auth.js
 
 ### Question bank
 
-200 curated questions in `prisma/seeds/*.json`, loaded via `prisma/seed.ts`. Distribution: 65 junior, 115 mid, 20 senior. Seeded to Supabase.
+320 curated questions in `prisma/seeds/*.json`, loaded via `prisma/seed.ts`. Seeded to Supabase.
 
+**English (200):** 65 junior · 115 mid · 20 senior
 - `technical.json` (60): Angular, Spring Boot, PostgreSQL, Docker, Git, GitHub Actions, AWS
 - `coding.json` (50): Algorithms, Java, TypeScript, SQL, Testing
 - `system-design.json` (50): Architecture, CI/CD, AWS, DB design, monitoring
-- `behavioral.json` (40): STAR format, bilingual EN/ES
+- `behavioral.json` (40): STAR format, bilingual model answers
+
+**Spanish (120):** 42 junior · 56 mid · 22 senior
+- `technical-es.json` (40): mismo stack, todo en español
+- `coding-es.json` (25): algoritmos, TypeScript, Java, SQL con window functions
+- `system-design-es.json` (25): arquitectura, patrones distribuidos, AWS
+- `behavioral-es.json` (30): formato STAR completo en español
 
 Stack focus: Angular (Standalone, RxJS, Signals), Java 17, Spring Boot (Security JWT, JPA/Hibernate), PostgreSQL, Docker, GitHub Actions, AWS (S3, EC2, RDS, IAM).
+
+> **Selector:** filtra por `language` del campo de sesión. Si no hay match en el banco → AI genera en el idioma seleccionado (sin fallback a inglés).
 
 ### AI evaluation
 
@@ -117,10 +126,12 @@ All pages are under `src/app/[locale]/`:
 ### API routes
 
 ```
-POST /api/sessions              → Create session + generate first question
-GET  /api/sessions/[id]         → Get session with messages
-POST /api/sessions/[id]/messages → Send response, get AI evaluation + next question
-PUT  /api/settings              → Update user settings
+POST /api/sessions                  → Create session + generate first question
+GET  /api/sessions/[id]             → Get session with messages
+POST /api/sessions/[id]/messages    → Send response, get AI evaluation + next question
+PUT  /api/settings                  → Update user settings
+POST /api/speech/stt                → Transcribe audio blob → text (multipart/form-data)
+POST /api/speech/tts                → Synthesize text → audio stream (JSON body)
 ```
 
 ## Design System — "The Obsidian Terminal"
@@ -180,6 +191,41 @@ Design source: **Google Stitch** (project ID: `15023765856949113622`). The Stitc
 
 `@/*` maps to `src/*` (configured in tsconfig.json).
 
+## Phase 2 — Voice (Implemented)
+
+### Speech providers
+
+| | Dev ($0) | Prod |
+|---|---|---|
+| STT | `faster-whisper-server` (Docker, port 8000) | OpenAI Whisper API |
+| TTS | `Kokoro FastAPI` (Docker, port 8880) | OpenAI TTS / ElevenLabs |
+
+```bash
+# Run local speech services
+docker run --rm -p 8000:8000 fedirz/faster-whisper-server:latest-cpu   # STT
+docker run --rm -p 8880:8880 ghcr.io/remsky/kokoro-fastapi-cpu:latest  # TTS
+```
+
+### Voice components (`src/components/session/voice/`)
+- `MicButton.tsx` — hold to record + spacebar shortcut
+- `useMicrophone.ts` — MediaRecorder hook with stream + analyser
+- `WaveformVisualizer.tsx` — canvas frequency bars
+- `TranscriptDisplay.tsx` — editable STT result before sending
+- `AudioPlayback.tsx` — play/pause/progress + `triggerPlay` chain prop
+- `VoiceToggle.tsx` — text ↔ voice mode toggle in session header
+
+### InteractionManager (`src/lib/interaction/`)
+- `types.ts` — `UserInput`, `AIOutput`, `AvatarDirective` (Phase 3 ready)
+- `index.ts` — `transcribeAudio()`, `synthesizeAudio()` (used by ChatContainer)
+
+### Audio chaining
+Evaluation message auto-plays with `autoPlay`. When it ends (`onEnded`), the next question's audio triggers via `triggerPlay` prop. Handles async TTS (chains even if question audio isn't ready yet when eval ends).
+
+### TTS speed control
+Presets in voice mode UI: `0.75×` `1×` `1.25×` `1.5×`. State in `ChatContainer`, passed to `/api/speech/tts` as `speed` field.
+
+---
+
 ## Environment
 
 Copy `.env.example` to `.env`. Key variables:
@@ -189,6 +235,11 @@ Copy `.env.example` to `.env`. Key variables:
 - `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` — Google OAuth credentials
 - `AI_PROVIDER` — `"ollama"` | `"anthropic"` | `"openai"` | `"gemini"`
 - `OLLAMA_BASE_URL` / `OLLAMA_MODEL` — local AI config (dev default)
+- `STT_PROVIDER` — `"whisper-local"` (faster-whisper-server) | `"whisper-api"` (OpenAI)
+- `WHISPER_LOCAL_URL` — default `http://localhost:8000`
+- `WHISPER_LOCAL_MODEL` — default `Systran/faster-whisper-small`
+- `TTS_PROVIDER` — `"kokoro"` | `"openai"` | `"elevenlabs"`
+- `KOKORO_URL` — default `http://localhost:8880`
 
 ## AI cost strategy
 
