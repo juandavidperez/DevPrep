@@ -43,7 +43,6 @@ const DIFFICULTIES = [
 const LANGUAGES = [
   { id: "es", flag: "🇪🇸", label: "Español" },
   { id: "en", flag: "🇺🇸", label: "Inglés" },
-  { id: "pt", flag: "🇧🇷", label: "Portugués" },
 ];
 
 const DURATIONS = [
@@ -51,6 +50,14 @@ const DURATIONS = [
   { minutes: 15, label: "15 min", subKey: "duration15" },
   { minutes: 30, label: "30 min", subKey: "duration30" },
 ];
+
+// Maps interviewMode → the API category sent to the backend
+const MODE_TO_CATEGORY: Record<string, string> = {
+  technical:    "technical",
+  behavioral:   "behavioral",
+  system_design: "system_design",
+  live_coding:  "coding",
+};
 
 // Estimated minutes to answer one question per category + difficulty
 const MINUTES_PER_QUESTION: Record<string, Record<string, number>> = {
@@ -63,7 +70,7 @@ const MINUTES_PER_QUESTION: Record<string, Record<string, number>> = {
 
 const MODALITIES = [
   { value: "text", label: "Text Only", enabled: true },
-  { value: "voice", label: "Voice Only", enabled: false },
+  { value: "voice", label: "Voice Only", enabled: true },
   { value: "avatar", label: "AI Avatar", enabled: false },
 ];
 
@@ -74,7 +81,8 @@ const INTERVIEW_MODES = [
   { value: "live_coding", labelKey: "modeLiveCoding" },
 ];
 
-function calcQuestions(category: string, difficulty: string, minutes: number): number {
+function calcQuestions(interviewMode: string, difficulty: string, minutes: number): number {
+  const category = MODE_TO_CATEGORY[interviewMode] ?? interviewMode;
   const minsPerQ = MINUTES_PER_QUESTION[category]?.[difficulty] ?? 5;
   return Math.max(1, Math.min(15, Math.floor(minutes / minsPerQ)));
 }
@@ -89,7 +97,7 @@ export function SessionConfigForm() {
   const [outputModality, setOutputModality] = useState("text");
   const [interviewMode, setInterviewMode] = useState("technical");
 
-  const estimatedQuestions = calcQuestions(selectedTech.category, difficulty, durationMinutes);
+  const estimatedQuestions = calcQuestions(interviewMode, difficulty, durationMinutes);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -102,12 +110,11 @@ export function SessionConfigForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          category: selectedTech.category,
+          category: MODE_TO_CATEGORY[interviewMode] ?? interviewMode,
           difficulty,
           totalQuestions: estimatedQuestions,
           language,
           outputModality,
-          interviewMode,
           targetStack: [selectedTech.id.toLowerCase().replace(".", "")]
         }),
       });
@@ -254,7 +261,7 @@ export function SessionConfigForm() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-3 mb-8">
+            <div className="grid grid-cols-2 gap-3 mb-8">
               {LANGUAGES.map((lang) => (
                 <div
                   key={lang.id}

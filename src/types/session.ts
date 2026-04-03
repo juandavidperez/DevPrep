@@ -5,6 +5,7 @@ export interface CreateSessionRequest {
   language: string;
   feedbackMode?: string;
   targetStack?: string[];
+  outputModality?: string; // Phase 2: "text" | "voice"
 }
 
 export interface CreateSessionResponse {
@@ -15,6 +16,9 @@ export interface SendMessageRequest {
   content: string;
   codeContent?: string;
   isClarification?: boolean;
+  // Phase 2: voice input fields (optional — backward compatible)
+  inputModality?: 'text' | 'voice';
+  transcript?: string;
 }
 
 export interface SessionMessageDTO {

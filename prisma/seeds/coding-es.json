@@ -1,0 +1,694 @@
+[
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": ["strings", "algoritmos"],
+    "language": "es",
+    "questionText": "Escribe una función que invierta un string sin usar métodos built-in como `reverse()` o `split()`. La función debe recorrer el string manualmente y construir el resultado carácter a carácter.",
+    "hints": [
+      "Piensa en recorrer el string desde el último índice hasta el primero",
+      "Puedes acceder a cada carácter de un string con la notación de corchetes: str[i]",
+      "Concatena los caracteres en orden inverso para construir el resultado"
+    ],
+    "modelAnswer": "El enfoque más directo es iterar el string desde el índice final hasta el índice cero, acumulando cada carácter en una nueva variable. Esto evita usar cualquier método built-in y deja clara la lógica de inversión.\n\nfunction invertirString(str: string): string {\n  let resultado = '';\n  for (let i = str.length - 1; i >= 0; i--) {\n    resultado += str[i];\n  }\n  return resultado;\n}\n\nComplejidad temporal: O(n) — se recorre el string una sola vez.\nComplejidad espacial: O(n) — se crea un nuevo string del mismo tamaño.",
+    "evaluationCriteria": [
+      "No usa métodos built-in como reverse(), split() o Array.from()",
+      "Itera correctamente desde el último índice hasta el primero",
+      "Maneja correctamente el string vacío y strings de un solo carácter",
+      "Identifica correctamente la complejidad temporal y espacial",
+      "El código es limpio y legible"
+    ],
+    "timeEstimate": 240,
+    "codeTemplate": "function invertirString(str: string): string {\n  // tu código aquí\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      { "input": "\"hola\"", "expected": "\"aloh\"" },
+      { "input": "\"abcde\"", "expected": "\"edcba\"" },
+      { "input": "\"\"", "expected": "\"\"" },
+      { "input": "\"a\"", "expected": "\"a\"" }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": ["algoritmos", "matematica"],
+    "language": "es",
+    "questionText": "Escribe una función que determine si un número entero positivo es primo. Un número primo es aquel que solo es divisible por 1 y por sí mismo. La función debe retornar `true` si el número es primo y `false` en caso contrario.",
+    "hints": [
+      "Un número menor a 2 no es primo por definición",
+      "Solo necesitas verificar divisores hasta la raíz cuadrada del número, no hasta n-1",
+      "Si encuentras cualquier divisor entre 2 y √n, el número no es primo"
+    ],
+    "modelAnswer": "La optimización clave es iterar solo hasta la raíz cuadrada del número, porque si n tiene un divisor mayor a √n, necesariamente tiene uno menor. Esto reduce la complejidad de O(n) a O(√n).\n\nfunction esPrimo(n: number): boolean {\n  if (n < 2) return false;\n  for (let i = 2; i <= Math.sqrt(n); i++) {\n    if (n % i === 0) return false;\n  }\n  return true;\n}\n\nComplejidad temporal: O(√n) — se itera hasta la raíz cuadrada del número.\nComplejidad espacial: O(1) — no se usa memoria adicional.",
+    "evaluationCriteria": [
+      "Maneja correctamente los casos borde: n < 2, n = 2",
+      "Itera solo hasta la raíz cuadrada del número (optimización clave)",
+      "Retorna el tipo booleano correcto",
+      "Identifica correctamente la complejidad temporal y espacial",
+      "El código es limpio y legible"
+    ],
+    "timeEstimate": 240,
+    "codeTemplate": "function esPrimo(n: number): boolean {\n  // tu código aquí\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      { "input": "2", "expected": "true" },
+      { "input": "7", "expected": "true" },
+      { "input": "9", "expected": "false" },
+      { "input": "1", "expected": "false" },
+      { "input": "17", "expected": "true" }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": ["arrays", "hashmaps", "algoritmos"],
+    "language": "es",
+    "questionText": "Dada una lista de números enteros, encuentra el elemento que aparece con mayor frecuencia. Si hay un empate, retorna cualquiera de los elementos con mayor frecuencia. Por ejemplo, para `[1, 2, 2, 3, 3, 3]` la respuesta es `3`.",
+    "hints": [
+      "Usa un objeto o Map para contar cuántas veces aparece cada elemento",
+      "Después de contar, recorre el mapa para encontrar el conteo máximo",
+      "Puedes hacer esto en dos pasadas lineales sobre los datos"
+    ],
+    "modelAnswer": "Primero se construye un mapa de frecuencias recorriendo el array una vez. Luego se hace una segunda pasada sobre el mapa para encontrar la clave con el conteo más alto. El resultado es una solución lineal en tiempo y espacio.\n\nfunction elementoMasFrecuente(nums: number[]): number {\n  const frecuencia = new Map<number, number>();\n  for (const num of nums) {\n    frecuencia.set(num, (frecuencia.get(num) ?? 0) + 1);\n  }\n  let maxConteo = 0;\n  let resultado = nums[0];\n  for (const [num, conteo] of frecuencia) {\n    if (conteo > maxConteo) {\n      maxConteo = conteo;\n      resultado = num;\n    }\n  }\n  return resultado;\n}\n\nComplejidad temporal: O(n) — dos pasadas lineales sobre los datos.\nComplejidad espacial: O(n) — el mapa puede contener hasta n entradas distintas.",
+    "evaluationCriteria": [
+      "Usa correctamente un Map o un objeto para contar frecuencias",
+      "Maneja correctamente el caso de un array con un solo elemento",
+      "La solución es lineal, no cuadrática",
+      "Identifica correctamente la complejidad temporal y espacial",
+      "El código es limpio y legible"
+    ],
+    "timeEstimate": 240,
+    "codeTemplate": "function elementoMasFrecuente(nums: number[]): number {\n  // tu código aquí\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      { "input": "[1, 2, 2, 3, 3, 3]", "expected": "3" },
+      { "input": "[5, 5, 1, 1, 1]", "expected": "1" },
+      { "input": "[7]", "expected": "7" }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": ["strings", "hashmaps", "algoritmos"],
+    "language": "es",
+    "questionText": "Escribe una función que determine si dos strings son anagramas entre sí. Dos strings son anagramas si contienen exactamente los mismos caracteres con las mismas frecuencias, ignorando mayúsculas y espacios. Por ejemplo, `\"listen\"` y `\"silent\"` son anagramas.",
+    "hints": [
+      "Normaliza ambos strings: conviértelos a minúsculas y elimina espacios",
+      "Compara las frecuencias de cada carácter usando un mapa o contador",
+      "Si los strings tienen diferente longitud (tras normalizar), no pueden ser anagramas"
+    ],
+    "modelAnswer": "Tras normalizar los strings (minúsculas, sin espacios), se construye un mapa de frecuencias para el primero y se decrementa con el segundo. Si todas las frecuencias quedan en cero, son anagramas. Alternativamente se pueden ordenar los caracteres y comparar.\n\nfunction sonAnagramas(a: string, b: string): boolean {\n  const normalizar = (s: string) => s.toLowerCase().replace(/\\s/g, '');\n  const s1 = normalizar(a);\n  const s2 = normalizar(b);\n  if (s1.length !== s2.length) return false;\n\n  const conteo = new Map<string, number>();\n  for (const c of s1) {\n    conteo.set(c, (conteo.get(c) ?? 0) + 1);\n  }\n  for (const c of s2) {\n    const actual = conteo.get(c);\n    if (actual === undefined || actual === 0) return false;\n    conteo.set(c, actual - 1);\n  }\n  return true;\n}\n\nComplejidad temporal: O(n) — se recorre cada string una sola vez.\nComplejidad espacial: O(k) — donde k es el número de caracteres únicos (máximo 26 para letras del alfabeto).",
+    "evaluationCriteria": [
+      "Normaliza correctamente los strings antes de comparar",
+      "Verifica que los strings tengan la misma longitud como primera comprobación rápida",
+      "Usa una estructura de conteo eficiente (Map u objeto)",
+      "Identifica correctamente la complejidad temporal y espacial",
+      "El código es limpio y legible"
+    ],
+    "timeEstimate": 240,
+    "codeTemplate": "function sonAnagramas(a: string, b: string): boolean {\n  // tu código aquí\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      { "input": "\"listen\", \"silent\"", "expected": "true" },
+      { "input": "\"hello\", \"world\"", "expected": "false" },
+      { "input": "\"Astronomer\", \"Moon starer\"", "expected": "true" },
+      { "input": "\"abc\", \"abcd\"", "expected": "false" }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": ["algoritmos", "matematica"],
+    "language": "es",
+    "questionText": "Escribe una función que calcule la suma de los dígitos de un número entero no negativo. Por ejemplo, para el número `1234`, la suma de sus dígitos es `1 + 2 + 3 + 4 = 10`.",
+    "hints": [
+      "Puedes convertir el número a string y recorrer cada carácter",
+      "Otra opción es usar el operador módulo (%) para extraer el último dígito repetidamente",
+      "Asegúrate de manejar el caso del número 0"
+    ],
+    "modelAnswer": "El enfoque con módulo y división entera es el más eficiente, ya que no requiere crear un string intermedio. Se extrae el último dígito con `% 10`, se acumula y se divide entre 10 hasta que el número sea cero.\n\nfunction sumaDigitos(n: number): number {\n  if (n === 0) return 0;\n  let suma = 0;\n  while (n > 0) {\n    suma += n % 10;\n    n = Math.floor(n / 10);\n  }\n  return suma;\n}\n\nComplejidad temporal: O(log₁₀ n) — el número de iteraciones es igual al número de dígitos.\nComplejidad espacial: O(1) — solo se usan variables escalares.",
+    "evaluationCriteria": [
+      "Maneja correctamente el caso n = 0",
+      "Extrae los dígitos correctamente (módulo o conversión a string)",
+      "La suma es correcta para números de múltiples dígitos",
+      "Identifica correctamente la complejidad temporal y espacial",
+      "El código es limpio y legible"
+    ],
+    "timeEstimate": 240,
+    "codeTemplate": "function sumaDigitos(n: number): number {\n  // tu código aquí\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      { "input": "1234", "expected": "10" },
+      { "input": "0", "expected": "0" },
+      { "input": "999", "expected": "27" },
+      { "input": "5", "expected": "5" }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": ["recursion", "algoritmos"],
+    "language": "es",
+    "questionText": "Implementa dos versiones de la función Fibonacci: una versiva iterativa y una recursiva. Luego explica cuál prefieres y por qué. `fibonacci(n)` debe retornar el n-ésimo número de la secuencia (0-indexado), donde `fibonacci(0) = 0`, `fibonacci(1) = 1`.",
+    "hints": [
+      "La versión iterativa usa dos variables para rastrear los dos últimos valores",
+      "La versión recursiva ingenua tiene complejidad O(2^n) — ¿se te ocurre cómo mejorarla?",
+      "Considera qué pasa con n = 0 y n = 1 como casos base"
+    ],
+    "modelAnswer": "La versión iterativa es preferible en producción porque evita el overhead del call stack y es O(n) en tiempo y O(1) en espacio. La recursiva ingenua es O(2^n); se puede mejorar con memoización a O(n) en tiempo y espacio.\n\n// Versión iterativa — recomendada\nfunction fibonacciIterativo(n: number): number {\n  if (n <= 0) return 0;\n  if (n === 1) return 1;\n  let anterior = 0, actual = 1;\n  for (let i = 2; i <= n; i++) {\n    const siguiente = anterior + actual;\n    anterior = actual;\n    actual = siguiente;\n  }\n  return actual;\n}\n\n// Versión recursiva con memoización\nfunction fibonacciRecursivo(n: number, memo = new Map<number, number>()): number {\n  if (n <= 0) return 0;\n  if (n === 1) return 1;\n  if (memo.has(n)) return memo.get(n)!;\n  const resultado = fibonacciRecursivo(n - 1, memo) + fibonacciRecursivo(n - 2, memo);\n  memo.set(n, resultado);\n  return resultado;\n}\n\nComplejidad temporal: O(n) para ambas versiones (con memoización en la recursiva).\nComplejidad espacial: O(1) para la iterativa, O(n) para la recursiva (call stack + memo).",
+    "evaluationCriteria": [
+      "Implementa correctamente ambas versiones",
+      "Maneja los casos base n = 0 y n = 1",
+      "Menciona la diferencia de complejidad entre la recursiva ingenua y con memoización",
+      "Justifica por qué la versión iterativa es preferible en producción",
+      "Identifica correctamente la complejidad temporal y espacial",
+      "El código es limpio y legible"
+    ],
+    "timeEstimate": 240,
+    "codeTemplate": "// Versión iterativa\nfunction fibonacciIterativo(n: number): number {\n  // tu código aquí\n}\n\n// Versión recursiva\nfunction fibonacciRecursivo(n: number): number {\n  // tu código aquí\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      { "input": "0", "expected": "0" },
+      { "input": "1", "expected": "1" },
+      { "input": "6", "expected": "8" },
+      { "input": "10", "expected": "55" }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": ["arrays", "algoritmos"],
+    "language": "es",
+    "questionText": "Escribe una función que elimine los duplicados de un array de números enteros sin usar `Set`, `filter` con `indexOf`, ni ningún método de deduplicación built-in. Retorna un nuevo array con solo los elementos únicos, manteniendo el orden de primera aparición.",
+    "hints": [
+      "Usa un objeto o Map como tabla de visto/no visto para rastrear qué elementos ya procesaste",
+      "Recorre el array original una sola vez y agrega al resultado solo si el elemento no fue visto antes",
+      "No modifiques el array original"
+    ],
+    "modelAnswer": "Se utiliza un objeto booleano como conjunto auxiliar para rastrear los elementos ya vistos. Al recorrer el array, cada elemento se incluye en el resultado solo si no aparece en el conjunto, y luego se marca como visto.\n\nfunction eliminarDuplicados(nums: number[]): number[] {\n  const visto: Record<number, boolean> = {};\n  const resultado: number[] = [];\n  for (const num of nums) {\n    if (!visto[num]) {\n      resultado.push(num);\n      visto[num] = true;\n    }\n  }\n  return resultado;\n}\n\nComplejidad temporal: O(n) — se recorre el array una sola vez.\nComplejidad espacial: O(n) — el objeto auxiliar puede contener hasta n elementos únicos.",
+    "evaluationCriteria": [
+      "No usa Set, filter con indexOf, ni métodos de deduplicación built-in",
+      "Mantiene el orden de primera aparición de cada elemento",
+      "Usa correctamente un objeto o Map como conjunto auxiliar",
+      "Identifica correctamente la complejidad temporal y espacial",
+      "El código es limpio y legible"
+    ],
+    "timeEstimate": 240,
+    "codeTemplate": "function eliminarDuplicados(nums: number[]): number[] {\n  // tu código aquí\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      { "input": "[1, 2, 2, 3, 1, 4]", "expected": "[1, 2, 3, 4]" },
+      { "input": "[5, 5, 5]", "expected": "[5]" },
+      { "input": "[]", "expected": "[]" },
+      { "input": "[1, 2, 3]", "expected": "[1, 2, 3]" }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "junior",
+    "tags": ["strings", "algoritmos"],
+    "language": "es",
+    "questionText": "Escribe una función que cuente el número de vocales en un string, ignorando mayúsculas/minúsculas. Las vocales son: a, e, i, o, u. Por ejemplo, `contarVocales(\"Hola Mundo\")` debe retornar `4`.",
+    "hints": [
+      "Convierte el string a minúsculas antes de procesar para simplificar la comparación",
+      "Usa un conjunto o string de referencia para verificar si un carácter es vocal",
+      "Recorre el string carácter a carácter e incrementa el contador cuando encuentres una vocal"
+    ],
+    "modelAnswer": "Se normaliza el string a minúsculas y se itera carácter a carácter. Para cada carácter se verifica si pertenece al conjunto de vocales usando `includes` sobre un string de referencia o mediante un Set para búsqueda O(1).\n\nfunction contarVocales(str: string): number {\n  const vocales = new Set(['a', 'e', 'i', 'o', 'u']);\n  let contador = 0;\n  for (const c of str.toLowerCase()) {\n    if (vocales.has(c)) contador++;\n  }\n  return contador;\n}\n\nComplejidad temporal: O(n) — se recorre el string una sola vez.\nComplejidad espacial: O(1) — el conjunto de vocales tiene tamaño fijo de 5 elementos.",
+    "evaluationCriteria": [
+      "Ignora correctamente las mayúsculas",
+      "Cuenta correctamente todas las vocales (a, e, i, o, u)",
+      "Maneja correctamente el string vacío",
+      "Identifica correctamente la complejidad temporal y espacial",
+      "El código es limpio y legible"
+    ],
+    "timeEstimate": 240,
+    "codeTemplate": "function contarVocales(str: string): number {\n  // tu código aquí\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      { "input": "\"Hola Mundo\"", "expected": "4" },
+      { "input": "\"AEIOU\"", "expected": "5" },
+      { "input": "\"xyz\"", "expected": "0" },
+      { "input": "\"\"", "expected": "0" }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": ["arrays", "hashmaps", "algoritmos", "typescript"],
+    "language": "es",
+    "questionText": "Dado un array de números enteros y un valor objetivo `target`, encuentra los índices de los dos números que suman el objetivo. Puedes asumir que existe exactamente una solución y que no puedes usar el mismo elemento dos veces. Por ejemplo, para `nums = [2, 7, 11, 15]` y `target = 9`, la respuesta es `[0, 1]` porque `nums[0] + nums[1] = 2 + 7 = 9`.",
+    "hints": [
+      "La solución de fuerza bruta con dos bucles anidados es O(n²) — intenta hacerlo en O(n)",
+      "Para cada número, el complemento que necesitas es `target - nums[i]`",
+      "Un hashmap te permite verificar en O(1) si el complemento ya fue visto, guardando el número como clave y su índice como valor"
+    ],
+    "modelAnswer": "La solución óptima usa un hashmap para almacenar cada número y su índice mientras se recorre el array. Para cada elemento, se calcula su complemento (`target - num`) y se verifica si ya existe en el mapa. Si existe, se retornan los dos índices inmediatamente.\n\nfunction twoSum(nums: number[], target: number): [number, number] {\n  const visto = new Map<number, number>(); // valor -> índice\n  for (let i = 0; i < nums.length; i++) {\n    const complemento = target - nums[i];\n    if (visto.has(complemento)) {\n      return [visto.get(complemento)!, i];\n    }\n    visto.set(nums[i], i);\n  }\n  throw new Error('No se encontró solución');\n}\n\nComplejidad temporal: O(n) — se recorre el array una sola vez.\nComplejidad espacial: O(n) — el hashmap puede almacenar hasta n entradas.",
+    "evaluationCriteria": [
+      "Implementa la solución con hashmap en O(n), no la solución cuadrática de fuerza bruta",
+      "Guarda correctamente el índice (no solo el valor) en el hashmap",
+      "Retorna los índices en el orden correcto",
+      "Identifica correctamente la complejidad temporal y espacial",
+      "El código es limpio y legible"
+    ],
+    "timeEstimate": 360,
+    "codeTemplate": "function twoSum(nums: number[], target: number): [number, number] {\n  // tu código aquí\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      { "input": "[2, 7, 11, 15], target=9", "expected": "[0, 1]" },
+      { "input": "[3, 2, 4], target=6", "expected": "[1, 2]" },
+      { "input": "[3, 3], target=6", "expected": "[0, 1]" }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": ["pilas-colas", "strings", "algoritmos", "typescript"],
+    "language": "es",
+    "questionText": "Escribe una función que determine si una cadena de paréntesis, corchetes y llaves es válida. Una cadena es válida si: (1) cada paréntesis de apertura tiene su correspondiente de cierre del mismo tipo, (2) los pares están correctamente anidados. Por ejemplo, `\"({[]})\"` es válida, pero `\"([)]\"` no lo es.",
+    "hints": [
+      "Usa una pila (stack) — cuando encuentres un símbolo de apertura, empújalo a la pila",
+      "Cuando encuentres un símbolo de cierre, verifica que el tope de la pila sea el símbolo de apertura correspondiente",
+      "Al final, la pila debe estar vacía para que la cadena sea válida"
+    ],
+    "modelAnswer": "El algoritmo de pila es la solución clásica para este problema. Se itera el string: los caracteres de apertura se apilan; los de cierre se verifican contra el tope de la pila. Si el tope no coincide o la pila está vacía al cerrar, la cadena es inválida.\n\nfunction parentesisValidos(s: string): boolean {\n  const pila: string[] = [];\n  const parejas: Record<string, string> = { ')': '(', ']': '[', '}': '{' };\n  for (const c of s) {\n    if ('([{'.includes(c)) {\n      pila.push(c);\n    } else if (')]}'.includes(c)) {\n      if (pila.pop() !== parejas[c]) return false;\n    }\n  }\n  return pila.length === 0;\n}\n\nComplejidad temporal: O(n) — se recorre el string una sola vez.\nComplejidad espacial: O(n) — en el peor caso, la pila almacena todos los caracteres de apertura.",
+    "evaluationCriteria": [
+      "Usa correctamente una pila para rastrear los símbolos de apertura",
+      "Verifica que el símbolo de cierre corresponda al símbolo de apertura en el tope",
+      "Retorna false si la pila no está vacía al terminar",
+      "Identifica correctamente la complejidad temporal y espacial",
+      "El código es limpio y legible"
+    ],
+    "timeEstimate": 360,
+    "codeTemplate": "function parentesisValidos(s: string): boolean {\n  // tu código aquí\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      { "input": "\"({[]})\"", "expected": "true" },
+      { "input": "\"([)]\"", "expected": "false" },
+      { "input": "\"\"", "expected": "true" },
+      { "input": "\"{[}\"", "expected": "false" }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": ["arrays", "busqueda", "algoritmos", "java"],
+    "language": "es",
+    "questionText": "Se te da un array de enteros que originalmente estaba ordenado de forma ascendente, pero fue rotado en algún punto desconocido (por ejemplo, `[4, 5, 6, 7, 0, 1, 2]`). Dado un valor `target`, escribe en Java una función que encuentre su índice en O(log n). Si no existe, retorna -1.",
+    "hints": [
+      "Usa búsqueda binaria modificada — en cada iteración, uno de los dos mitades está ordenada de forma garantizada",
+      "Determina cuál mitad está ordenada comparando `nums[left]` con `nums[mid]`",
+      "Una vez que sabes cuál mitad está ordenada, verifica si el target cae en ese rango"
+    ],
+    "modelAnswer": "La clave es que en un array rotado, al menos una de las dos mitades siempre está ordenada. En cada paso de búsqueda binaria se identifica qué mitad está ordenada y si el target se encuentra en ese rango para decidir hacia dónde continuar.\n\npublic int buscarEnRotado(int[] nums, int target) {\n    int izq = 0, der = nums.length - 1;\n    while (izq <= der) {\n        int mid = izq + (der - izq) / 2;\n        if (nums[mid] == target) return mid;\n        // La mitad izquierda está ordenada\n        if (nums[izq] <= nums[mid]) {\n            if (target >= nums[izq] && target < nums[mid]) {\n                der = mid - 1;\n            } else {\n                izq = mid + 1;\n            }\n        } else { // La mitad derecha está ordenada\n            if (target > nums[mid] && target <= nums[der]) {\n                izq = mid + 1;\n            } else {\n                der = mid - 1;\n            }\n        }\n    }\n    return -1;\n}\n\nComplejidad temporal: O(log n) — búsqueda binaria sobre el array.\nComplejidad espacial: O(1) — solo se usan variables de índice.",
+    "evaluationCriteria": [
+      "Usa búsqueda binaria y no una búsqueda lineal",
+      "Identifica correctamente cuál mitad está ordenada en cada iteración",
+      "Verifica correctamente si el target cae en el rango de la mitad ordenada",
+      "Identifica correctamente la complejidad temporal O(log n) y espacial O(1)",
+      "El código es limpio y legible"
+    ],
+    "timeEstimate": 360,
+    "codeTemplate": "public int buscarEnRotado(int[] nums, int target) {\n    // tu código aquí\n}",
+    "codeLanguage": "java",
+    "testCases": [
+      { "input": "nums=[4,5,6,7,0,1,2], target=0", "expected": "4" },
+      { "input": "nums=[4,5,6,7,0,1,2], target=3", "expected": "-1" },
+      { "input": "nums=[1], target=0", "expected": "-1" },
+      { "input": "nums=[1,3], target=3", "expected": "1" }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": ["arrays", "ordenamiento", "algoritmos", "typescript"],
+    "language": "es",
+    "questionText": "Dados dos arrays de enteros ordenados de forma ascendente, escribe una función que los combine en un único array ordenado. No uses `Array.sort()` ni ningún método de ordenamiento built-in en la solución final; usa la técnica de dos punteros.",
+    "hints": [
+      "Usa dos punteros, uno por cada array, avanzando el que tenga el valor menor",
+      "Cuando uno de los arrays se agote, agrega todos los elementos restantes del otro",
+      "La técnica de dos punteros es O(n + m) donde n y m son las longitudes de cada array"
+    ],
+    "modelAnswer": "La técnica de dos punteros aprovecha que ambos arrays ya están ordenados. Se comparan los elementos apuntados por cada puntero, se agrega el menor al resultado y se avanza ese puntero. Al terminar uno, se concatenan los restantes del otro.\n\nfunction mergeSorted(a: number[], b: number[]): number[] {\n  const resultado: number[] = [];\n  let i = 0, j = 0;\n  while (i < a.length && j < b.length) {\n    if (a[i] <= b[j]) {\n      resultado.push(a[i++]);\n    } else {\n      resultado.push(b[j++]);\n    }\n  }\n  while (i < a.length) resultado.push(a[i++]);\n  while (j < b.length) resultado.push(b[j++]);\n  return resultado;\n}\n\nComplejidad temporal: O(n + m) — se recorre cada array una sola vez.\nComplejidad espacial: O(n + m) — el array resultado contiene todos los elementos.",
+    "evaluationCriteria": [
+      "Usa la técnica de dos punteros, no ordenamiento después de concatenar",
+      "Maneja correctamente el caso cuando uno de los arrays se agota primero",
+      "Maneja arrays vacíos como entrada",
+      "Identifica correctamente la complejidad temporal y espacial",
+      "El código es limpio y legible"
+    ],
+    "timeEstimate": 360,
+    "codeTemplate": "function mergeSorted(a: number[], b: number[]): number[] {\n  // tu código aquí\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      { "input": "[1, 3, 5], [2, 4, 6]", "expected": "[1, 2, 3, 4, 5, 6]" },
+      { "input": "[1, 2, 3], []", "expected": "[1, 2, 3]" },
+      { "input": "[], [4, 5]", "expected": "[4, 5]" },
+      { "input": "[1, 1], [1, 2]", "expected": "[1, 1, 1, 2]" }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": ["sql", "algoritmos"],
+    "language": "es",
+    "questionText": "Tienes una tabla `ventas` con columnas: `producto_id`, `categoria`, `cantidad`, `fecha`. Escribe una consulta SQL que retorne los **3 productos más vendidos** (por suma de cantidad) dentro de cada categoría. El resultado debe incluir: `categoria`, `producto_id`, `total_vendido` y `ranking`. Usa window functions.",
+    "hints": [
+      "Usa RANK() o ROW_NUMBER() con PARTITION BY categoría para asignar el ranking dentro de cada categoría",
+      "Primero agrupa por categoría y producto para obtener el total vendido, luego aplica el ranking",
+      "Envuelve la consulta con ranking en una subconsulta o CTE y filtra donde ranking <= 3"
+    ],
+    "modelAnswer": "Se usa una CTE que primero agrega las ventas por categoría y producto, y luego aplica RANK() con PARTITION BY categoría y ORDER BY total descendente. El SELECT externo filtra los tres primeros por categoría.\n\nWITH ventas_por_producto AS (\n  SELECT\n    categoria,\n    producto_id,\n    SUM(cantidad) AS total_vendido\n  FROM ventas\n  GROUP BY categoria, producto_id\n),\nrankeados AS (\n  SELECT\n    categoria,\n    producto_id,\n    total_vendido,\n    RANK() OVER (\n      PARTITION BY categoria\n      ORDER BY total_vendido DESC\n    ) AS ranking\n  FROM ventas_por_producto\n)\nSELECT categoria, producto_id, total_vendido, ranking\nFROM rankeados\nWHERE ranking <= 3\nORDER BY categoria, ranking;\n\nComplejidad temporal: O(n log n) por el ordenamiento implícito de la window function.\nComplejidad espacial: O(n) en memoria para el cálculo de la CTE.",
+    "evaluationCriteria": [
+      "Usa correctamente RANK() o DENSE_RANK() con PARTITION BY categoría",
+      "Agrega las ventas por categoría y producto antes de rankear",
+      "Filtra correctamente para obtener solo los 3 primeros por categoría",
+      "La consulta es correcta cuando hay empates en el ranking",
+      "El código SQL es limpio y legible"
+    ],
+    "timeEstimate": 360,
+    "codeLanguage": "sql"
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": ["sql", "algoritmos"],
+    "language": "es",
+    "questionText": "Tienes una tabla `pedidos` con columnas: `cliente_id`, `fecha_pedido` (DATE), `monto`. Escribe una consulta SQL que encuentre los clientes que realizaron al menos un pedido en **cada uno de los 12 meses del año 2024**. Retorna solo los `cliente_id` de dichos clientes.",
+    "hints": [
+      "Extrae el mes de la fecha con EXTRACT(MONTH FROM fecha_pedido) o DATE_TRUNC",
+      "Agrupa por cliente_id y cuenta los meses distintos en los que hizo pedidos",
+      "Un cliente que compró en todos los meses tendrá COUNT(DISTINCT mes) = 12"
+    ],
+    "modelAnswer": "Se filtran los pedidos del año 2024, se extrae el mes de cada fecha y se cuentan los meses distintos por cliente. Solo se retornan los clientes cuyo conteo de meses distintos sea exactamente 12.\n\nSELECT cliente_id\nFROM pedidos\nWHERE EXTRACT(YEAR FROM fecha_pedido) = 2024\nGROUP BY cliente_id\nHAVING COUNT(DISTINCT EXTRACT(MONTH FROM fecha_pedido)) = 12;\n\nComplejidad temporal: O(n) para escanear y agrupar los registros del año 2024.\nComplejidad espacial: O(k) donde k es el número de clientes distintos en 2024.",
+    "evaluationCriteria": [
+      "Filtra correctamente solo los pedidos del año 2024",
+      "Usa COUNT(DISTINCT ...) para contar meses únicos por cliente",
+      "Aplica la condición correctamente en la cláusula HAVING",
+      "La consulta maneja correctamente clientes con múltiples pedidos en el mismo mes",
+      "El código SQL es limpio y legible"
+    ],
+    "timeEstimate": 360,
+    "codeLanguage": "sql"
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": ["busqueda", "algoritmos", "java"],
+    "language": "es",
+    "questionText": "Implementa en Java el algoritmo de búsqueda binaria de forma iterativa sobre un array de enteros ordenado de forma ascendente. La función debe retornar el índice del elemento si existe, o -1 si no se encuentra.",
+    "hints": [
+      "Mantén dos punteros: `izq` (inicio) y `der` (fin), y calcula el punto medio en cada iteración",
+      "Para evitar overflow en el cálculo del medio, usa `mid = izq + (der - izq) / 2` en lugar de `(izq + der) / 2`",
+      "Ajusta los punteros según si el valor del medio es mayor o menor que el target"
+    ],
+    "modelAnswer": "La búsqueda binaria iterativa descarta la mitad del espacio de búsqueda en cada iteración. Es importante calcular el índice medio de forma segura para evitar desbordamiento de enteros en arrays muy grandes.\n\npublic int busquedaBinaria(int[] nums, int target) {\n    int izq = 0, der = nums.length - 1;\n    while (izq <= der) {\n        int mid = izq + (der - izq) / 2;\n        if (nums[mid] == target) {\n            return mid;\n        } else if (nums[mid] < target) {\n            izq = mid + 1;\n        } else {\n            der = mid - 1;\n        }\n    }\n    return -1;\n}\n\nComplejidad temporal: O(log n) — el espacio de búsqueda se divide a la mitad en cada iteración.\nComplejidad espacial: O(1) — solo se usan variables de índice, sin espacio adicional.",
+    "evaluationCriteria": [
+      "Usa la fórmula segura para calcular el índice medio: izq + (der - izq) / 2",
+      "La condición del bucle es izq <= der (no izq < der)",
+      "Ajusta correctamente izq y der en cada iteración",
+      "Retorna -1 cuando el elemento no se encuentra",
+      "Identifica correctamente la complejidad temporal O(log n) y espacial O(1)"
+    ],
+    "timeEstimate": 360,
+    "codeTemplate": "public int busquedaBinaria(int[] nums, int target) {\n    // tu código aquí\n}",
+    "codeLanguage": "java",
+    "testCases": [
+      { "input": "nums=[-1,0,3,5,9,12], target=9", "expected": "4" },
+      { "input": "nums=[-1,0,3,5,9,12], target=2", "expected": "-1" },
+      { "input": "nums=[5], target=5", "expected": "0" },
+      { "input": "nums=[1,2,3,4,5], target=1", "expected": "0" }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": ["punteros", "algoritmos", "java"],
+    "language": "es",
+    "questionText": "Dada una lista enlazada simple en Java, escribe una función que detecte si contiene un ciclo. Usa el algoritmo de Floyd (tortuga y liebre) para lograrlo en O(n) tiempo y O(1) espacio. La clase `Nodo` está definida con `int val` y `Nodo siguiente`.",
+    "hints": [
+      "Usa dos punteros: uno lento (avanza un nodo a la vez) y uno rápido (avanza dos nodos a la vez)",
+      "Si hay un ciclo, el puntero rápido eventualmente alcanzará al lento",
+      "Si el puntero rápido llega a null, no hay ciclo"
+    ],
+    "modelAnswer": "El algoritmo de Floyd usa dos punteros con velocidades distintas. Si la lista tiene un ciclo, el puntero rápido eventualmente alcanza al lento dentro del ciclo. Si no hay ciclo, el puntero rápido llegará al final de la lista.\n\nclass Nodo {\n    int val;\n    Nodo siguiente;\n    Nodo(int val) { this.val = val; }\n}\n\npublic boolean tieneCiclo(Nodo cabeza) {\n    if (cabeza == null || cabeza.siguiente == null) return false;\n    Nodo lento = cabeza;\n    Nodo rapido = cabeza.siguiente;\n    while (rapido != null && rapido.siguiente != null) {\n        if (lento == rapido) return true;\n        lento = lento.siguiente;\n        rapido = rapido.siguiente.siguiente;\n    }\n    return false;\n}\n\nComplejidad temporal: O(n) — el puntero rápido recorre la lista a lo sumo dos veces antes de detectar el ciclo o llegar al final.\nComplejidad espacial: O(1) — solo se usan dos punteros adicionales.",
+    "evaluationCriteria": [
+      "Implementa correctamente el algoritmo de Floyd con dos punteros de velocidades distintas",
+      "Maneja correctamente los casos borde: lista vacía, lista con un solo nodo",
+      "Verifica la igualdad de los punteros (misma referencia) correctamente",
+      "Identifica correctamente la complejidad temporal O(n) y espacial O(1)",
+      "El código es limpio y legible"
+    ],
+    "timeEstimate": 360,
+    "codeTemplate": "class Nodo {\n    int val;\n    Nodo siguiente;\n    Nodo(int val) { this.val = val; }\n}\n\npublic boolean tieneCiclo(Nodo cabeza) {\n    // tu código aquí\n}",
+    "codeLanguage": "java",
+    "testCases": [
+      { "input": "Lista: 3->2->0->-4, ciclo en nodo 1", "expected": "true" },
+      { "input": "Lista: 1->2, sin ciclo", "expected": "false" },
+      { "input": "Lista: vacía", "expected": "false" }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": ["arrays", "recursion", "algoritmos", "typescript"],
+    "language": "es",
+    "questionText": "Escribe una función en TypeScript que aplane un array anidado de cualquier profundidad sin usar el método built-in `flat()` ni `flatMap()`. Por ejemplo, `[[1, [2]], [3, [4, [5]]]]` debe retornar `[1, 2, 3, 4, 5]`.",
+    "hints": [
+      "Puedes resolverlo de forma recursiva: para cada elemento, si es un array, aplana recursivamente; si no lo es, agrégalo al resultado",
+      "También puedes usar una pila iterativa para evitar la recursión",
+      "Usa `Array.isArray()` para verificar si un elemento es un array"
+    ],
+    "modelAnswer": "La solución recursiva es la más expresiva: itera el array y, si un elemento es un array, lo aplana recursivamente acumulando los resultados. Si no es un array, lo agrega directamente al resultado.\n\nfunction aplanar<T>(arr: (T | (T | unknown[])[])[]): T[] {\n  const resultado: T[] = [];\n  for (const elemento of arr) {\n    if (Array.isArray(elemento)) {\n      resultado.push(...aplanar(elemento as (T | unknown[])[]));\n    } else {\n      resultado.push(elemento as T);\n    }\n  }\n  return resultado;\n}\n\nComplejidad temporal: O(n) — se visita cada elemento exactamente una vez.\nComplejidad espacial: O(d + n) — donde d es la profundidad máxima del anidamiento (call stack) y n es el número total de elementos.",
+    "evaluationCriteria": [
+      "No usa flat(), flatMap() ni métodos de aplanamiento built-in",
+      "Maneja anidamiento de profundidad arbitraria",
+      "Usa Array.isArray() para verificar elementos de tipo array",
+      "Identifica correctamente la complejidad temporal y espacial",
+      "El código es limpio y legible"
+    ],
+    "timeEstimate": 360,
+    "codeTemplate": "function aplanar(arr: unknown[]): unknown[] {\n  // tu código aquí\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      { "input": "[[1, [2]], [3, [4, [5]]]]", "expected": "[1, 2, 3, 4, 5]" },
+      { "input": "[1, 2, 3]", "expected": "[1, 2, 3]" },
+      { "input": "[]", "expected": "[]" },
+      { "input": "[[[[1]]]]", "expected": "[1]" }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": ["sql", "algoritmos"],
+    "language": "es",
+    "questionText": "Tienes una tabla `usuarios` con `usuario_id` y `fecha_registro`, y una tabla `sesiones` con `usuario_id` y `fecha_sesion` (DATE). Escribe una consulta SQL que calcule la **tasa de retención mensual**: para cada mes, el porcentaje de usuarios registrados ese mes que volvieron a tener al menos una sesión en el mes siguiente.",
+    "hints": [
+      "Determina el mes de registro de cada usuario y el mes de su siguiente sesión",
+      "Agrupa por mes de registro y cuenta cuántos usuarios se registraron vs cuántos volvieron el mes siguiente",
+      "Usa LEFT JOIN para incluir meses donde nadie regresó (tasa = 0%)"
+    ],
+    "modelAnswer": "Se usa una CTE para identificar el mes de registro de cada usuario. Luego se hace un LEFT JOIN con sesiones del mes siguiente. Finalmente se agrupa por mes de registro y se calcula el porcentaje de retención.\n\nWITH registros AS (\n  SELECT\n    usuario_id,\n    DATE_TRUNC('month', fecha_registro) AS mes_registro\n  FROM usuarios\n),\nretornaron AS (\n  SELECT DISTINCT\n    r.usuario_id,\n    r.mes_registro\n  FROM registros r\n  JOIN sesiones s ON s.usuario_id = r.usuario_id\n    AND DATE_TRUNC('month', s.fecha_sesion) = r.mes_registro + INTERVAL '1 month'\n)\nSELECT\n  r.mes_registro,\n  COUNT(DISTINCT r.usuario_id) AS total_registrados,\n  COUNT(DISTINCT ret.usuario_id) AS retornaron,\n  ROUND(\n    100.0 * COUNT(DISTINCT ret.usuario_id) / COUNT(DISTINCT r.usuario_id),\n    2\n  ) AS tasa_retencion_pct\nFROM registros r\nLEFT JOIN retornaron ret\n  ON ret.usuario_id = r.usuario_id AND ret.mes_registro = r.mes_registro\nGROUP BY r.mes_registro\nORDER BY r.mes_registro;\n\nComplejidad temporal: O(n log n) para los JOIN y agrupaciones sobre las tablas.\nComplejidad espacial: O(n) para las CTEs intermedias.",
+    "evaluationCriteria": [
+      "Usa DATE_TRUNC o equivalente para agrupar por mes",
+      "Compara correctamente el mes de registro con el mes siguiente de sesión",
+      "Usa LEFT JOIN para no perder meses con tasa de retención cero",
+      "Calcula correctamente el porcentaje usando COUNT DISTINCT",
+      "El código SQL es limpio y legible"
+    ],
+    "timeEstimate": 360,
+    "codeLanguage": "sql"
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": ["hashmaps", "pilas-colas", "algoritmos", "typescript"],
+    "language": "es",
+    "questionText": "Implementa una estructura de datos LRU Cache (Least Recently Used) en TypeScript. La caché tiene capacidad fija; cuando se alcanza la capacidad y se inserta un elemento nuevo, el elemento menos recientemente usado se elimina. Implementa los métodos `get(key)` y `put(key, value)`, ambos en O(1).",
+    "hints": [
+      "Combina un Map (para O(1) en búsqueda) con una lista doblemente enlazada (para O(1) en mover al frente y eliminar el último)",
+      "El Map guarda la clave mapeada al nodo de la lista; la lista mantiene el orden de uso (más reciente al frente, menos reciente al final)",
+      "Al hacer get o put sobre una clave existente, mueve ese nodo al frente de la lista"
+    ],
+    "modelAnswer": "La solución usa un Map para acceso O(1) y una lista doblemente enlazada para mantener el orden LRU. La cabeza de la lista es el más reciente, la cola el menos reciente. Se usan nodos centinela para simplificar las operaciones de la lista.\n\nclass LRUCache {\n  private capacidad: number;\n  private mapa: Map<number, ListNode>;\n  private cabeza: ListNode; // más reciente\n  private cola: ListNode;   // menos reciente\n\n  constructor(capacidad: number) {\n    this.capacidad = capacidad;\n    this.mapa = new Map();\n    this.cabeza = new ListNode(0, 0);\n    this.cola = new ListNode(0, 0);\n    this.cabeza.siguiente = this.cola;\n    this.cola.anterior = this.cabeza;\n  }\n\n  get(key: number): number {\n    const nodo = this.mapa.get(key);\n    if (!nodo) return -1;\n    this.moverAlFrente(nodo);\n    return nodo.val;\n  }\n\n  put(key: number, value: number): void {\n    if (this.mapa.has(key)) {\n      const nodo = this.mapa.get(key)!;\n      nodo.val = value;\n      this.moverAlFrente(nodo);\n    } else {\n      const nuevo = new ListNode(key, value);\n      this.mapa.set(key, nuevo);\n      this.agregarAlFrente(nuevo);\n      if (this.mapa.size > this.capacidad) {\n        const eliminado = this.eliminarCola();\n        this.mapa.delete(eliminado.key);\n      }\n    }\n  }\n\n  private agregarAlFrente(nodo: ListNode): void {\n    nodo.siguiente = this.cabeza.siguiente;\n    nodo.anterior = this.cabeza;\n    this.cabeza.siguiente!.anterior = nodo;\n    this.cabeza.siguiente = nodo;\n  }\n\n  private eliminarNodo(nodo: ListNode): void {\n    nodo.anterior!.siguiente = nodo.siguiente;\n    nodo.siguiente!.anterior = nodo.anterior;\n  }\n\n  private moverAlFrente(nodo: ListNode): void {\n    this.eliminarNodo(nodo);\n    this.agregarAlFrente(nodo);\n  }\n\n  private eliminarCola(): ListNode {\n    const nodo = this.cola.anterior!;\n    this.eliminarNodo(nodo);\n    return nodo;\n  }\n}\n\nclass ListNode {\n  key: number; val: number;\n  anterior: ListNode | null = null;\n  siguiente: ListNode | null = null;\n  constructor(key: number, val: number) {\n    this.key = key; this.val = val;\n  }\n}\n\nComplejidad temporal: O(1) para get y put.\nComplejidad espacial: O(capacidad) — el Map y la lista almacenan como máximo `capacidad` elementos.",
+    "evaluationCriteria": [
+      "Implementa correctamente get y put en O(1)",
+      "Usa una lista doblemente enlazada combinada con un Map",
+      "Elimina correctamente el elemento menos recientemente usado cuando se supera la capacidad",
+      "Actualiza correctamente el orden de uso en get y put",
+      "Identifica correctamente la complejidad temporal O(1) y espacial O(capacidad)"
+    ],
+    "timeEstimate": 360,
+    "codeTemplate": "class LRUCache {\n  constructor(capacidad: number) {\n    // inicializar\n  }\n\n  get(key: number): number {\n    // tu código aquí\n  }\n\n  put(key: number, value: number): void {\n    // tu código aquí\n  }\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      { "input": "capacidad=2; put(1,1); put(2,2); get(1) → 1; put(3,3); get(2)", "expected": "-1 (clave 2 fue eviccionada)" },
+      { "input": "capacidad=2; put(1,1); put(2,2); put(1,10); get(1)", "expected": "10" }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": ["strings", "hashmaps", "algoritmos", "java"],
+    "language": "es",
+    "questionText": "Dado un array de strings, agrupa los strings que son anagramas entre sí. Cada grupo debe estar en un sub-array. El orden de los grupos y el orden dentro de cada grupo no importa. Por ejemplo, `[\"eat\",\"tea\",\"tan\",\"ate\",\"nat\",\"bat\"]` → `[[\"eat\",\"tea\",\"ate\"],[\"tan\",\"nat\"],[\"bat\"]]`.",
+    "hints": [
+      "Para identificar si dos strings son anagramas, ordena sus caracteres — strings anagramas tienen la misma representación ordenada",
+      "Usa un HashMap donde la clave es el string ordenado y el valor es la lista de strings de ese grupo",
+      "Itera el array, ordena cada string y agrégalo al grupo correspondiente en el mapa"
+    ],
+    "modelAnswer": "La clave del hashmap es el string con sus caracteres ordenados alfabéticamente (su 'firma'). Todos los anagramas comparten la misma firma. Se itera el array, se calcula la firma de cada string y se agrupa en el mapa.\n\nimport java.util.*;\n\npublic List<List<String>> agruparAnagramas(String[] palabras) {\n    Map<String, List<String>> grupos = new HashMap<>();\n    for (String palabra : palabras) {\n        char[] chars = palabra.toCharArray();\n        Arrays.sort(chars);\n        String firma = new String(chars);\n        grupos.computeIfAbsent(firma, k -> new ArrayList<>()).add(palabra);\n    }\n    return new ArrayList<>(grupos.values());\n}\n\nComplejidad temporal: O(n * k log k) — donde n es el número de strings y k es la longitud máxima de un string (el sort de cada string cuesta O(k log k)).\nComplejidad espacial: O(n * k) — para almacenar todos los strings en el mapa.",
+    "evaluationCriteria": [
+      "Usa el string ordenado como clave del hashmap (firma del anagrama)",
+      "Agrupa correctamente todos los anagramas bajo la misma clave",
+      "Maneja correctamente strings vacíos y arrays con un solo elemento",
+      "Identifica correctamente la complejidad temporal O(n * k log k) y espacial",
+      "El código es limpio y legible"
+    ],
+    "timeEstimate": 360,
+    "codeTemplate": "public List<List<String>> agruparAnagramas(String[] palabras) {\n    // tu código aquí\n}",
+    "codeLanguage": "java",
+    "testCases": [
+      { "input": "[\"eat\",\"tea\",\"tan\",\"ate\",\"nat\",\"bat\"]", "expected": "[[\"eat\",\"tea\",\"ate\"],[\"tan\",\"nat\"],[\"bat\"]]" },
+      { "input": "[\"\"]", "expected": "[[\"\"]]" },
+      { "input": "[\"a\"]", "expected": "[[\"a\"]]" }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "mid",
+    "tags": ["dinamica", "strings", "algoritmos", "typescript"],
+    "language": "es",
+    "questionText": "Dadas dos cadenas de caracteres `s` y `t`, encuentra la longitud de su subsecuencia común más larga (LCS — Longest Common Subsequence). Una subsecuencia no tiene que ser contigua. Por ejemplo, para `\"abcde\"` y `\"ace\"`, la LCS es `\"ace\"` con longitud 3.",
+    "hints": [
+      "Usa programación dinámica: define dp[i][j] como la longitud de la LCS de los primeros i caracteres de s y los primeros j caracteres de t",
+      "Si s[i-1] == t[j-1], entonces dp[i][j] = dp[i-1][j-1] + 1",
+      "Si s[i-1] != t[j-1], entonces dp[i][j] = max(dp[i-1][j], dp[i][j-1])"
+    ],
+    "modelAnswer": "Se construye una tabla de programación dinámica de dimensiones (m+1) x (n+1). Cada celda dp[i][j] representa la longitud de la LCS de los primeros i caracteres de s y los primeros j caracteres de t. La respuesta está en dp[m][n].\n\nfunction lcs(s: string, t: string): number {\n  const m = s.length, n = t.length;\n  const dp: number[][] = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));\n  for (let i = 1; i <= m; i++) {\n    for (let j = 1; j <= n; j++) {\n      if (s[i - 1] === t[j - 1]) {\n        dp[i][j] = dp[i - 1][j - 1] + 1;\n      } else {\n        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n      }\n    }\n  }\n  return dp[m][n];\n}\n\nComplejidad temporal: O(m * n) — se llena toda la tabla DP.\nComplejidad espacial: O(m * n) — se almacena la tabla completa. Se puede optimizar a O(min(m,n)) usando solo dos filas.",
+    "evaluationCriteria": [
+      "Define correctamente la recurrencia de la tabla DP",
+      "Maneja correctamente el caso de strings vacíos (dp[0][j] = dp[i][0] = 0)",
+      "Explica la diferencia entre LCS y la subsecuencia común más larga contigua (LCS vs substring)",
+      "Menciona la optimización de espacio a O(n) con dos filas",
+      "Identifica correctamente la complejidad temporal y espacial",
+      "El código es limpio y legible"
+    ],
+    "timeEstimate": 360,
+    "codeTemplate": "function lcs(s: string, t: string): number {\n  // tu código aquí\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      { "input": "s=\"abcde\", t=\"ace\"", "expected": "3" },
+      { "input": "s=\"abc\", t=\"abc\"", "expected": "3" },
+      { "input": "s=\"abc\", t=\"def\"", "expected": "0" },
+      { "input": "s=\"\", t=\"abc\"", "expected": "0" }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "senior",
+    "tags": ["algoritmos", "hashmaps", "typescript"],
+    "language": "es",
+    "questionText": "Implementa un sistema de rate limiting en memoria usando el algoritmo de **ventana deslizante** (sliding window). La clase `RateLimiter` debe permitir configurar un límite de `N` solicitudes por ventana de tiempo `T` (en milisegundos) por cliente. Implementa el método `isAllowed(clientId: string): boolean` que retorna `true` si la solicitud está permitida y `false` si el cliente excedió el límite. El sistema debe manejar múltiples clientes simultáneamente.",
+    "hints": [
+      "Guarda para cada clientId una cola (array) de timestamps de sus solicitudes recientes",
+      "Antes de evaluar cada solicitud, elimina de la cola todos los timestamps que caen fuera de la ventana actual (más antiguos que ahora - T)",
+      "Si después de limpiar la cola tiene menos de N elementos, permite la solicitud y agrega el timestamp actual; de lo contrario, rechaza"
+    ],
+    "modelAnswer": "El algoritmo de ventana deslizante mantiene una cola de timestamps por cliente. Antes de cada solicitud se descartan los timestamps fuera de la ventana, y se permite la solicitud solo si el conteo dentro de la ventana es menor al límite.\n\nclass RateLimiter {\n  private limite: number;\n  private ventanaMs: number;\n  private solicitudes: Map<string, number[]>;\n\n  constructor(limite: number, ventanaMs: number) {\n    this.limite = limite;\n    this.ventanaMs = ventanaMs;\n    this.solicitudes = new Map();\n  }\n\n  isAllowed(clientId: string): boolean {\n    const ahora = Date.now();\n    const umbral = ahora - this.ventanaMs;\n\n    if (!this.solicitudes.has(clientId)) {\n      this.solicitudes.set(clientId, []);\n    }\n\n    const cola = this.solicitudes.get(clientId)!;\n    // Eliminar timestamps fuera de la ventana\n    while (cola.length > 0 && cola[0] <= umbral) {\n      cola.shift();\n    }\n\n    if (cola.length < this.limite) {\n      cola.push(ahora);\n      return true;\n    }\n    return false;\n  }\n\n  // Limpiar entradas de clientes inactivos para evitar fugas de memoria\n  purgar(): void {\n    const umbral = Date.now() - this.ventanaMs;\n    for (const [clientId, cola] of this.solicitudes) {\n      if (cola.length === 0 || cola[cola.length - 1] <= umbral) {\n        this.solicitudes.delete(clientId);\n      }\n    }\n  }\n}\n\nComplejidad temporal: O(n) por solicitud en el peor caso (limpiar la cola), O(1) amortizado.\nComplejidad espacial: O(C * N) — donde C es el número de clientes activos y N el límite de solicitudes por ventana.",
+    "evaluationCriteria": [
+      "Implementa correctamente el algoritmo de ventana deslizante (no contador simple ni ventana fija)",
+      "Maneja correctamente múltiples clientes de forma independiente",
+      "Limpia los timestamps fuera de la ventana antes de cada evaluación",
+      "Menciona la posibilidad de fugas de memoria y propone un mecanismo de purga",
+      "Discute las alternativas (token bucket, leaky bucket) y sus trade-offs",
+      "Identifica correctamente la complejidad temporal y espacial"
+    ],
+    "timeEstimate": 480,
+    "codeTemplate": "class RateLimiter {\n  constructor(limite: number, ventanaMs: number) {\n    // inicializar\n  }\n\n  isAllowed(clientId: string): boolean {\n    // tu código aquí\n  }\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      { "input": "limite=3, ventana=1000ms; 3 solicitudes en 500ms → todas permitidas; 4ta solicitud inmediata", "expected": "false" },
+      { "input": "limite=3, ventana=1000ms; 3 solicitudes; esperar 1001ms; 1 solicitud más", "expected": "true" }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "senior",
+    "tags": ["typescript", "algoritmos"],
+    "language": "es",
+    "questionText": "Diseña e implementa un **Event Bus** type-safe en TypeScript usando generics. El Event Bus debe permitir: (1) definir un mapa de tipos de eventos con sus payloads, (2) suscribirse a un evento con `on(event, handler)`, (3) emitir eventos con `emit(event, payload)`, (4) cancelar suscripciones con `off(event, handler)`. El sistema debe ser completamente type-safe: TypeScript debe inferir el tipo del payload según el nombre del evento.",
+    "hints": [
+      "Define un tipo genérico `EventMap` que mapee nombres de eventos a tipos de payload",
+      "Usa `keyof EventMap` para restringir los nombres de eventos válidos y `EventMap[K]` para tipar el handler",
+      "Guarda los handlers en un Map<string, Set<Function>> para permitir múltiples handlers por evento"
+    ],
+    "modelAnswer": "La clave es usar un tipo genérico `EventMap` que mapee nombres de eventos a sus payloads. Los métodos `on`, `emit` y `off` usan `K extends keyof EventMap` para que TypeScript infiera el tipo correcto del payload según el evento.\n\ntype Handler<T> = (payload: T) => void;\n\nclass EventBus<EventMap extends Record<string, unknown>> {\n  private handlers: Map<keyof EventMap, Set<Handler<unknown>>>;\n\n  constructor() {\n    this.handlers = new Map();\n  }\n\n  on<K extends keyof EventMap>(evento: K, handler: Handler<EventMap[K]>): void {\n    if (!this.handlers.has(evento)) {\n      this.handlers.set(evento, new Set());\n    }\n    this.handlers.get(evento)!.add(handler as Handler<unknown>);\n  }\n\n  off<K extends keyof EventMap>(evento: K, handler: Handler<EventMap[K]>): void {\n    this.handlers.get(evento)?.delete(handler as Handler<unknown>);\n  }\n\n  emit<K extends keyof EventMap>(evento: K, payload: EventMap[K]): void {\n    this.handlers.get(evento)?.forEach(handler => handler(payload));\n  }\n}\n\n// Ejemplo de uso con type-safety completa\ntype MisEventos = {\n  'usuario:login': { userId: string; email: string };\n  'pedido:creado': { pedidoId: number; total: number };\n};\n\nconst bus = new EventBus<MisEventos>();\nbus.on('usuario:login', ({ userId, email }) => {\n  console.log(`Usuario ${email} inició sesión`);\n});\nbus.emit('usuario:login', { userId: '123', email: 'user@example.com' });\n// bus.emit('usuario:login', { mal: 'payload' }); // Error de TypeScript\n\nComplejidad temporal: O(n) para emit (n = número de handlers del evento), O(1) para on y off.\nComplejidad espacial: O(E * H) — donde E es el número de tipos de eventos y H el número promedio de handlers por evento.",
+    "evaluationCriteria": [
+      "Usa generics correctamente para lograr type-safety completa en los payloads",
+      "El compilador de TypeScript debe detectar payloads incorrectos en tiempo de compilación",
+      "Implementa correctamente on, off y emit",
+      "Maneja múltiples handlers por evento",
+      "Discute consideraciones de memory leaks (handlers no cancelados) y cómo mitigarlos",
+      "Identifica correctamente la complejidad temporal y espacial"
+    ],
+    "timeEstimate": 480,
+    "codeTemplate": "type Handler<T> = (payload: T) => void;\n\nclass EventBus<EventMap extends Record<string, unknown>> {\n  on<K extends keyof EventMap>(evento: K, handler: Handler<EventMap[K]>): void {\n    // tu código aquí\n  }\n\n  off<K extends keyof EventMap>(evento: K, handler: Handler<EventMap[K]>): void {\n    // tu código aquí\n  }\n\n  emit<K extends keyof EventMap>(evento: K, payload: EventMap[K]): void {\n    // tu código aquí\n  }\n}",
+    "codeLanguage": "typescript",
+    "testCases": [
+      { "input": "Suscripción a 'login', emit de 'login' con payload correcto", "expected": "Handler llamado con el payload" },
+      { "input": "Suscripción, off, luego emit", "expected": "Handler NO es llamado tras off" }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "senior",
+    "tags": ["arboles", "recursion", "algoritmos", "java"],
+    "language": "es",
+    "questionText": "Implementa en Java dos métodos para un árbol binario: `serialize(TreeNode root)` que convierte el árbol en un string, y `deserialize(String data)` que reconstruye el árbol desde ese string. El algoritmo debe funcionar con cualquier árbol binario (no necesariamente de búsqueda). Define la clase `TreeNode` con `int val`, `TreeNode left` y `TreeNode right`.",
+    "hints": [
+      "Usa recorrido pre-orden (raíz, izquierda, derecha): facilita la deserialización porque la raíz siempre llega primero",
+      "Representa los nodos null con un marcador especial como '#' o 'null' para saber cuándo termina un subárbol",
+      "Para deserializar, convierte el string en una cola y reconstruye el árbol consumiendo la cola con recursión"
+    ],
+    "modelAnswer": "Se usa recorrido pre-orden para serializar porque al deserializar, la raíz siempre es el primer elemento. Los nodos null se marcan como '#'. La deserialización usa una cola para consumir los tokens en orden y reconstruir el árbol recursivamente.\n\nclass TreeNode {\n    int val;\n    TreeNode left, right;\n    TreeNode(int val) { this.val = val; }\n}\n\npublic class Codec {\n    private static final String NULL_MARKER = \"#\";\n    private static final String SEPARADOR = \",\";\n\n    public String serialize(TreeNode root) {\n        StringBuilder sb = new StringBuilder();\n        serializarAux(root, sb);\n        return sb.toString();\n    }\n\n    private void serializarAux(TreeNode nodo, StringBuilder sb) {\n        if (nodo == null) {\n            sb.append(NULL_MARKER).append(SEPARADOR);\n            return;\n        }\n        sb.append(nodo.val).append(SEPARADOR);\n        serializarAux(nodo.left, sb);\n        serializarAux(nodo.right, sb);\n    }\n\n    public TreeNode deserialize(String data) {\n        Queue<String> tokens = new LinkedList<>(Arrays.asList(data.split(SEPARADOR)));\n        return deserializarAux(tokens);\n    }\n\n    private TreeNode deserializarAux(Queue<String> tokens) {\n        String token = tokens.poll();\n        if (token == null || token.equals(NULL_MARKER)) return null;\n        TreeNode nodo = new TreeNode(Integer.parseInt(token));\n        nodo.left = deserializarAux(tokens);\n        nodo.right = deserializarAux(tokens);\n        return nodo;\n    }\n}\n\nComplejidad temporal: O(n) para serialize y deserialize — se visita cada nodo exactamente una vez.\nComplejidad espacial: O(n) para el string resultado y O(h) para el call stack de recursión, donde h es la altura del árbol (O(n) en el peor caso para árboles degenerados).",
+    "evaluationCriteria": [
+      "La serialización y deserialización son correctas e inversas entre sí para cualquier árbol binario",
+      "Representa correctamente los nodos null para reconstruir la estructura completa",
+      "Usa pre-orden u otro recorrido válido y justifica la elección",
+      "Maneja correctamente árboles vacíos (root = null)",
+      "Discute alternativas (BFS, in-order con restricciones) y sus limitaciones",
+      "Identifica correctamente la complejidad temporal O(n) y espacial"
+    ],
+    "timeEstimate": 480,
+    "codeTemplate": "class TreeNode {\n    int val;\n    TreeNode left, right;\n    TreeNode(int val) { this.val = val; }\n}\n\npublic class Codec {\n    public String serialize(TreeNode root) {\n        // tu código aquí\n    }\n\n    public TreeNode deserialize(String data) {\n        // tu código aquí\n    }\n}",
+    "codeLanguage": "java",
+    "testCases": [
+      { "input": "Árbol: 1 con hijos 2 y 3, nodo 3 con hijos 4 y 5", "expected": "deserialize(serialize(root)) produce el mismo árbol" },
+      { "input": "root = null", "expected": "deserialize(serialize(null)) = null" }
+    ]
+  },
+  {
+    "category": "coding",
+    "difficulty": "senior",
+    "tags": ["sql", "algoritmos"],
+    "language": "es",
+    "questionText": "Tienes una tabla `transacciones` con columnas: `transaccion_id`, `cuenta_id`, `monto`, `fecha_hora` (TIMESTAMP). Escribe una consulta SQL que detecte transacciones potencialmente fraudulentas aplicando las siguientes heurísticas: (1) el monto supera 3 desviaciones estándar de la media de esa cuenta, O (2) el tiempo entre dos transacciones consecutivas de la misma cuenta es menor a 60 segundos. Retorna las transacciones sospechosas con una columna `razon` indicando cuál regla se activó.",
+    "hints": [
+      "Para la regla 1, usa AVG() y STDDEV() como window functions con PARTITION BY cuenta_id",
+      "Para la regla 2, usa LAG() para obtener el timestamp de la transacción anterior de la misma cuenta",
+      "Combina ambas condiciones con OR y usa CASE WHEN para construir la columna 'razon'"
+    ],
+    "modelAnswer": "Se usa una CTE que calcula estadísticas por cuenta (media y desviación estándar) y el lag temporal entre transacciones consecutivas. El SELECT externo aplica los umbrales y construye la columna de razón.\n\nWITH estadisticas AS (\n  SELECT\n    transaccion_id,\n    cuenta_id,\n    monto,\n    fecha_hora,\n    AVG(monto) OVER (PARTITION BY cuenta_id) AS media_cuenta,\n    STDDEV(monto) OVER (PARTITION BY cuenta_id) AS stddev_cuenta,\n    LAG(fecha_hora) OVER (\n      PARTITION BY cuenta_id\n      ORDER BY fecha_hora\n    ) AS fecha_hora_anterior\n  FROM transacciones\n),\nsospechosas AS (\n  SELECT\n    transaccion_id,\n    cuenta_id,\n    monto,\n    fecha_hora,\n    media_cuenta,\n    stddev_cuenta,\n    EXTRACT(EPOCH FROM (fecha_hora - fecha_hora_anterior)) AS segundos_desde_anterior,\n    CASE\n      WHEN stddev_cuenta > 0\n        AND monto > media_cuenta + 3 * stddev_cuenta\n        AND EXTRACT(EPOCH FROM (fecha_hora - fecha_hora_anterior)) < 60\n      THEN 'AMBAS REGLAS: monto anomalo y velocidad alta'\n      WHEN stddev_cuenta > 0\n        AND monto > media_cuenta + 3 * stddev_cuenta\n      THEN 'MONTO ANOMALO: supera 3 desviaciones estandar'\n      WHEN EXTRACT(EPOCH FROM (fecha_hora - fecha_hora_anterior)) < 60\n      THEN 'VELOCIDAD ALTA: menos de 60s desde transaccion anterior'\n      ELSE NULL\n    END AS razon\n  FROM estadisticas\n)\nSELECT\n  transaccion_id,\n  cuenta_id,\n  monto,\n  fecha_hora,\n  ROUND(media_cuenta::numeric, 2) AS media_cuenta,\n  ROUND(stddev_cuenta::numeric, 2) AS stddev_cuenta,\n  segundos_desde_anterior,\n  razon\nFROM sospechosas\nWHERE razon IS NOT NULL\nORDER BY cuenta_id, fecha_hora;\n\nComplejidad temporal: O(n log n) por el ordenamiento implícito de las window functions.\nComplejidad espacial: O(n) para las CTEs intermedias.",
+    "evaluationCriteria": [
+      "Usa correctamente STDDEV() y AVG() como window functions con PARTITION BY cuenta_id",
+      "Usa correctamente LAG() para calcular el intervalo de tiempo entre transacciones consecutivas",
+      "Maneja correctamente el caso de cuentas con stddev = 0 (solo una transacción o todas iguales)",
+      "Construye una columna de razón informativa que indique qué regla se activó",
+      "Discute limitaciones del modelo estadístico y alternativas más robustas (ej. z-score por ventana temporal)",
+      "El código SQL es limpio, bien documentado y produce resultados correctos"
+    ],
+    "timeEstimate": 480,
+    "codeLanguage": "sql"
+  }
+]

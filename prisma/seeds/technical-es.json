@@ -1,0 +1,724 @@
+[
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": ["angular", "components"],
+    "language": "es",
+    "questionText": "¿Qué son los componentes standalone en Angular y en qué se diferencian de los componentes basados en NgModule?",
+    "hints": [
+      "Piensa en el flag standalone en el decorador @Component",
+      "Considera cómo se gestionan las dependencias sin NgModule"
+    ],
+    "modelAnswer": "Los componentes standalone son componentes Angular declarados con `standalone: true` en su decorador. En lugar de necesitar ser declarados en un NgModule, importan sus dependencias directamente en su propio array `imports`. Esto simplifica la estructura de la aplicación eliminando la necesidad de múltiples NgModules. Pueden coexistir con componentes basados en módulos y ser cargados perezosamente directamente desde el router sin necesidad de un módulo contenedor.",
+    "evaluationCriteria": [
+      "Explica el flag standalone: true",
+      "Menciona que las importaciones se declaran en el propio componente",
+      "Entiende que los NgModules se vuelven opcionales",
+      "Sabe que pueden coexistir con componentes basados en módulos"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": ["angular", "lifecycle"],
+    "language": "es",
+    "questionText": "¿Cuáles son los lifecycle hooks más importantes de Angular y cuándo usarías ngOnInit frente a un constructor?",
+    "hints": [
+      "Piensa en qué ocurre antes y después de que Angular inicialice las propiedades del componente",
+      "El constructor es parte de TypeScript/JavaScript, no de Angular"
+    ],
+    "modelAnswer": "Los lifecycle hooks más importantes son: `ngOnChanges` (cuando cambian las @Input), `ngOnInit` (tras la primera inicialización del componente), `ngDoCheck` (en cada ciclo de detección de cambios), `ngAfterViewInit` (tras renderizar la vista) y `ngOnDestroy` (antes de destruir el componente). El constructor se usa para la inyección de dependencias y lógica de inicialización simple. `ngOnInit` es el lugar correcto para lógica de inicialización que depende de las @Input del componente, llamadas a servicios o configuración de suscripciones, ya que en ese momento Angular ya ha asignado las propiedades.",
+    "evaluationCriteria": [
+      "Nombra al menos 3 lifecycle hooks correctamente",
+      "Explica la diferencia entre constructor y ngOnInit",
+      "Menciona que ngOnInit se ejecuta tras asignar las @Input",
+      "Conoce ngOnDestroy para limpiar suscripciones"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": ["angular", "rxjs"],
+    "language": "es",
+    "questionText": "¿Qué es un Observable en RxJS y cómo se diferencia de una Promise?",
+    "hints": [
+      "Piensa en si pueden emitir múltiples valores o solo uno",
+      "Considera cuándo comienza la ejecución (eager vs lazy)"
+    ],
+    "modelAnswer": "Un Observable es una secuencia de valores que se emiten a lo largo del tiempo, mientras que una Promise resuelve un único valor de forma asíncrona. Las diferencias clave son: (1) Los Observables son lazy (no se ejecutan hasta que alguien se suscribe), mientras que las Promises son eager (se ejecutan inmediatamente). (2) Los Observables pueden emitir múltiples valores; las Promises solo uno. (3) Los Observables son cancelables mediante `unsubscribe()`; las Promises no se pueden cancelar. (4) Los Observables permiten aplicar operadores de transformación (map, filter, mergeMap, etc.) mediante el pipe. En Angular, los servicios como HttpClient devuelven Observables.",
+    "evaluationCriteria": [
+      "Explica la diferencia lazy vs eager",
+      "Menciona que Observable puede emitir múltiples valores",
+      "Sabe que los Observables se pueden cancelar",
+      "Conoce el uso de operadores en el pipe"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": ["spring-boot", "java"],
+    "language": "es",
+    "questionText": "¿Qué es Spring Boot y qué ventajas ofrece frente a un proyecto Spring tradicional?",
+    "hints": [
+      "Piensa en la configuración automática y los starters",
+      "Considera cómo se despliega una aplicación Spring Boot"
+    ],
+    "modelAnswer": "Spring Boot es un framework que simplifica la creación de aplicaciones Spring al proporcionar configuración automática (auto-configuration), starters de dependencias y un servidor embebido (Tomcat por defecto). Las principales ventajas frente a Spring tradicional son: (1) Configuración mínima mediante convención sobre configuración. (2) Starters que agrupan dependencias relacionadas (spring-boot-starter-web, spring-boot-starter-data-jpa). (3) Servidor embebido que permite ejecutar la app como un JAR ejecutable. (4) Spring Initializr para generar proyectos rápidamente. (5) Actuator para métricas y health checks. Esto reduce drásticamente el tiempo de configuración inicial y elimina gran parte del XML o configuración manual.",
+    "evaluationCriteria": [
+      "Menciona la auto-configuration",
+      "Explica los starters de dependencias",
+      "Conoce el servidor embebido",
+      "Entiende que reduce la configuración manual"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": ["java", "rest-api"],
+    "language": "es",
+    "questionText": "¿Qué diferencia hay entre @RestController y @Controller en Spring? ¿Cuándo usarías cada uno?",
+    "hints": [
+      "Piensa en qué devuelve cada uno por defecto",
+      "Considera el uso de @ResponseBody"
+    ],
+    "modelAnswer": "@Controller es un estereotipo de Spring que indica que la clase es un controlador MVC y por defecto devuelve nombres de vistas (View names). @RestController es una combinación de @Controller + @ResponseBody, lo que significa que todos los métodos serán serializados directamente a JSON/XML en el cuerpo de la respuesta HTTP. Se usa @Controller cuando se trabaja con Thymeleaf u otras plantillas de servidor, y @RestController cuando se construye una API REST que devuelve datos en JSON. En proyectos modernos de Angular + Spring Boot (frontend separado), casi siempre se usa @RestController.",
+    "evaluationCriteria": [
+      "Explica que @RestController combina @Controller y @ResponseBody",
+      "Entiende que @Controller devuelve nombres de vista",
+      "Sabe cuándo usar cada uno según el tipo de aplicación",
+      "Menciona la serialización a JSON"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": ["java"],
+    "language": "es",
+    "questionText": "¿Qué son los Records en Java 17 y qué problema resuelven respecto a las clases tradicionales?",
+    "hints": [
+      "Piensa en clases que solo almacenan datos (DTOs, value objects)",
+      "Considera el código boilerplate que normalmente se genera"
+    ],
+    "modelAnswer": "Los Records son una característica introducida en Java 16 (estabilizada en 16, disponible desde Java 14 en preview) que permiten declarar clases inmutables portadoras de datos de forma concisa. Con `record Point(int x, int y) {}`, Java genera automáticamente: constructor canónico, getters (x(), y()), equals(), hashCode() y toString(). Resuelven el problema del boilerplate en clases POJO/DTO, que típicamente requieren muchas líneas de código. Los records son implícitamente finales e inmutables (los campos son final). Son ideales para DTOs de respuesta, value objects y clases de datos simples. No deben usarse cuando se necesita mutabilidad o herencia.",
+    "evaluationCriteria": [
+      "Explica que los records son inmutables",
+      "Menciona la generación automática de equals, hashCode, toString",
+      "Sabe que son ideales para DTOs",
+      "Conoce las limitaciones (final, sin herencia)"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": ["postgresql"],
+    "language": "es",
+    "questionText": "¿Qué es una clave foránea (foreign key) en PostgreSQL y qué garantía proporciona?",
+    "hints": [
+      "Piensa en la integridad referencial entre tablas",
+      "Considera qué pasa al intentar insertar un registro con un FK que no existe"
+    ],
+    "modelAnswer": "Una clave foránea es una constraint que establece una relación entre una columna (o conjunto de columnas) de una tabla y la clave primaria de otra tabla, garantizando la integridad referencial. Esto significa que no se puede insertar un valor en la columna FK si no existe en la tabla referenciada, y no se puede eliminar un registro padre si tiene registros hijos que lo referencian (salvo que se configure ON DELETE CASCADE o SET NULL). Por ejemplo, `session_id INTEGER REFERENCES sessions(id)` en la tabla `messages` asegura que cada mensaje pertenece a una sesión existente. Las FKs son fundamentales para mantener la consistencia de los datos en bases de datos relacionales.",
+    "evaluationCriteria": [
+      "Define integridad referencial correctamente",
+      "Explica el comportamiento al insertar un FK inexistente",
+      "Menciona ON DELETE CASCADE o SET NULL",
+      "Da un ejemplo concreto"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": ["docker"],
+    "language": "es",
+    "questionText": "¿Qué es un contenedor Docker y en qué se diferencia de una máquina virtual?",
+    "hints": [
+      "Piensa en qué comparten los contenedores con el sistema operativo host",
+      "Considera el tiempo de arranque y uso de recursos"
+    ],
+    "modelAnswer": "Un contenedor Docker es una unidad de software que empaqueta código y todas sus dependencias para que la aplicación se ejecute de forma confiable en cualquier entorno. A diferencia de una máquina virtual, los contenedores no virtualizan el hardware completo ni incluyen un sistema operativo completo; en cambio, comparten el kernel del sistema operativo host y aíslan los procesos a nivel de sistema operativo mediante namespaces y cgroups. Esto hace que los contenedores sean mucho más ligeros (MB vs GB), arranquen en segundos (vs minutos) y consuman menos recursos. Las VMs ofrecen aislamiento más fuerte (kernel propio) mientras que los contenedores son más eficientes para microservicios y despliegues rápidos.",
+    "evaluationCriteria": [
+      "Explica que los contenedores comparten el kernel del host",
+      "Contrasta con máquinas virtuales en términos de peso y arranque",
+      "Menciona namespaces o cgroups como mecanismo de aislamiento",
+      "Entiende el caso de uso de cada uno"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": ["git"],
+    "language": "es",
+    "questionText": "¿Cuál es la diferencia entre git merge y git rebase? ¿Cuándo usarías cada uno?",
+    "hints": [
+      "Piensa en cómo cada comando integra los cambios de una rama en otra",
+      "Considera el historial de commits resultante"
+    ],
+    "modelAnswer": "`git merge` integra los cambios de una rama creando un nuevo commit de merge, preservando el historial completo con todas las ramificaciones. El resultado muestra exactamente cuándo y cómo se integraron las ramas. `git rebase` reescribe el historial moviendo los commits de la rama actual sobre el punta de la rama destino, creando un historial lineal y más limpio. Se usa merge para ramas de features al integrarlas a main (preserva el contexto), y rebase para mantener una rama de feature actualizada con main durante el desarrollo (evita commits de merge innecesarios). Regla de oro: nunca hacer rebase en ramas compartidas/públicas porque reescribe el historial.",
+    "evaluationCriteria": [
+      "Explica que merge crea un commit de merge y preserva el historial",
+      "Explica que rebase reescribe el historial para ser lineal",
+      "Sabe cuándo usar cada uno",
+      "Menciona el riesgo de rebase en ramas compartidas"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": ["github-actions"],
+    "language": "es",
+    "questionText": "¿Qué es un workflow en GitHub Actions y cuáles son sus componentes principales?",
+    "hints": [
+      "Piensa en el archivo YAML en .github/workflows/",
+      "Considera la jerarquía: workflow → job → step"
+    ],
+    "modelAnswer": "Un workflow en GitHub Actions es un proceso automatizado definido en un archivo YAML ubicado en `.github/workflows/`. Sus componentes principales son: (1) **Trigger (on)**: define cuándo se ejecuta el workflow (push, pull_request, schedule, workflow_dispatch). (2) **Jobs**: unidades de trabajo que se ejecutan en un runner (ubuntu-latest, windows-latest). Por defecto los jobs corren en paralelo. (3) **Steps**: pasos dentro de un job que se ejecutan secuencialmente. Pueden usar acciones (`uses: actions/checkout@v4`) o comandos de shell (`run: npm test`). (4) **Runners**: máquinas virtuales donde se ejecutan los jobs. Los workflows permiten automatizar CI/CD, tests, linting y despliegues.",
+    "evaluationCriteria": [
+      "Localiza el archivo en .github/workflows/",
+      "Explica los triggers (on)",
+      "Describe la jerarquía workflow → job → step",
+      "Distingue entre uses y run en un step"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": ["aws", "s3"],
+    "language": "es",
+    "questionText": "¿Qué es Amazon S3 y para qué tipos de datos es adecuado usarlo en una aplicación web?",
+    "hints": [
+      "Piensa en el tipo de almacenamiento que ofrece (objetos, no bloques ni archivos)",
+      "Considera casos de uso como imágenes, backups, archivos estáticos"
+    ],
+    "modelAnswer": "Amazon S3 (Simple Storage Service) es un servicio de almacenamiento de objetos en la nube altamente escalable, duradero (99.999999999% de durabilidad) y disponible. Organiza los datos en buckets y objetos (archivos), no en directorios reales. Es adecuado para: (1) Almacenamiento de imágenes, videos y archivos de usuario. (2) Hosting de sitios web estáticos (HTML, CSS, JS). (3) Backups y archivado de datos. (4) Almacenamiento de logs. (5) Distribución de contenido junto con CloudFront. No es adecuado para bases de datos relacionales, sistema de archivos compartido para aplicaciones o datos que requieren operaciones frecuentes de escritura parcial.",
+    "evaluationCriteria": [
+      "Define S3 como almacenamiento de objetos",
+      "Menciona al menos 3 casos de uso válidos",
+      "Entiende la diferencia con una base de datos",
+      "Conoce el concepto de bucket y objeto"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": ["angular", "signals"],
+    "language": "es",
+    "questionText": "¿Qué son los Signals en Angular y qué ventaja ofrecen frente a la detección de cambios tradicional basada en Zone.js?",
+    "hints": [
+      "Piensa en cómo Angular sabe cuándo actualizar la vista actualmente",
+      "Considera el concepto de reactividad granular"
+    ],
+    "modelAnswer": "Los Signals son un sistema de reactividad primitivo introducido en Angular 16 que permite definir valores reactivos que notifican automáticamente a sus consumidores cuando cambian. Se crean con `signal(initialValue)` y se actualizan con `.set()` o `.update()`. La ventaja frente a Zone.js es que los Signals permiten una detección de cambios granular: solo se re-renderiza exactamente el componente o la parte de la vista que consume el signal que cambió, sin necesitar verificar el árbol completo de componentes. Esto mejora significativamente el rendimiento. Además, los Signals funcionan sin Zone.js (zoneless), lo que es la dirección futura de Angular. `computed()` crea valores derivados y `effect()` ejecuta efectos secundarios reactivos.",
+    "evaluationCriteria": [
+      "Define Signal correctamente con la sintaxis básica",
+      "Explica la diferencia con la detección de cambios basada en Zone.js",
+      "Menciona la reactividad granular",
+      "Conoce computed() y/o effect()"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": ["jwt"],
+    "language": "es",
+    "questionText": "¿Qué es un JSON Web Token (JWT) y cuáles son sus tres partes?",
+    "hints": [
+      "El token tiene tres partes separadas por puntos",
+      "Piensa en qué información lleva en el payload"
+    ],
+    "modelAnswer": "Un JSON Web Token (JWT) es un estándar abierto (RFC 7519) para transmitir información de forma segura entre partes como un objeto JSON compacto y autoverificable. Tiene tres partes separadas por puntos: (1) **Header**: contiene el tipo de token (JWT) y el algoritmo de firma (HS256, RS256). Está codificado en Base64URL. (2) **Payload**: contiene los claims, es decir, los datos que se transmiten (userId, roles, email, fecha de expiración). También codificado en Base64URL. (3) **Signature**: se genera firmando el header + payload con una clave secreta usando el algoritmo del header. La firma garantiza que el token no fue alterado. El payload NO está cifrado, solo codificado, por lo que nunca se deben incluir datos sensibles como contraseñas.",
+    "evaluationCriteria": [
+      "Nombra las tres partes: header, payload, signature",
+      "Explica que el payload contiene claims/datos del usuario",
+      "Menciona que la firma verifica la integridad",
+      "Sabe que el payload está codificado pero no cifrado"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "junior",
+    "tags": ["jpa", "hibernate"],
+    "language": "es",
+    "questionText": "¿Qué es JPA y qué rol cumple Hibernate en una aplicación Spring Boot?",
+    "hints": [
+      "JPA es una especificación, Hibernate es una implementación",
+      "Piensa en el mapeo entre objetos Java y tablas de base de datos"
+    ],
+    "modelAnswer": "JPA (Java Persistence API) es una especificación de Java EE/Jakarta EE que define una API estándar para el mapeo objeto-relacional (ORM) y la gestión de persistencia. Define anotaciones como @Entity, @Table, @Column, @Id, @OneToMany, etc. Hibernate es la implementación más popular de JPA y es la que Spring Boot usa por defecto cuando se incluye `spring-boot-starter-data-jpa`. Hibernate traduce las operaciones sobre entidades Java a consultas SQL, gestiona el contexto de persistencia (EntityManager/Session), implementa el caché de primer y segundo nivel, y ejecuta las consultas a la base de datos. Spring Data JPA añade una capa encima de JPA/Hibernate para simplificar aún más las operaciones con repositorios como JpaRepository.",
+    "evaluationCriteria": [
+      "Distingue JPA (especificación) de Hibernate (implementación)",
+      "Explica qué es el ORM",
+      "Menciona anotaciones básicas de JPA",
+      "Conoce el rol de Spring Data JPA"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": ["angular", "rxjs"],
+    "language": "es",
+    "questionText": "Explica la diferencia entre los operadores switchMap, mergeMap, concatMap y exhaustMap en RxJS. ¿En qué escenario usarías cada uno?",
+    "hints": [
+      "Piensa en qué ocurre con las solicitudes anteriores cuando llega una nueva",
+      "Considera casos como búsqueda en tiempo real, subida de archivos o login"
+    ],
+    "modelAnswer": "Todos son operadores de aplanamiento que transforman cada valor emitido en un Observable interno, pero difieren en su estrategia de concurrencia: **switchMap**: cancela la suscripción al Observable interno anterior cuando llega un nuevo valor. Ideal para búsqueda en tiempo real (autocomplete), donde solo importa el resultado de la última consulta. **mergeMap**: suscribe a todos los Observables internos simultáneamente sin cancelar ninguno. Ideal cuando se necesitan todas las respuestas (envío de múltiples solicitudes independientes en paralelo). **concatMap**: espera a que cada Observable interno complete antes de procesar el siguiente. Garantiza el orden. Ideal para operaciones secuenciales dependientes. **exhaustMap**: ignora nuevos valores mientras el Observable interno está activo. Ideal para formularios de login (ignora clicks adicionales mientras se procesa la autenticación).",
+    "evaluationCriteria": [
+      "Explica correctamente al menos 3 de los 4 operadores",
+      "Da un caso de uso real para cada uno explicado",
+      "Entiende el concepto de cancelación en switchMap",
+      "Menciona exhaustMap para prevenir solicitudes duplicadas"
+    ],
+    "timeEstimate": 180
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": ["angular", "components"],
+    "language": "es",
+    "questionText": "¿Cómo funciona la detección de cambios en Angular con la estrategia OnPush? ¿Qué condiciones la disparan y qué beneficios aporta?",
+    "hints": [
+      "La estrategia por defecto verifica todo el árbol de componentes",
+      "OnPush solo verifica cuando hay nuevas referencias de input"
+    ],
+    "modelAnswer": "Por defecto, Angular usa la estrategia `Default` que verifica todo el árbol de componentes en cada ciclo de detección de cambios. Con `ChangeDetectionStrategy.OnPush`, Angular solo verifica el componente cuando: (1) Cambia la referencia de un @Input (no el valor interno de un objeto mutable). (2) Se dispara un evento del DOM desde el componente o sus hijos. (3) Se usa `async` pipe en el template. (4) Se llama manualmente a `markForCheck()` o `detectChanges()` en ChangeDetectorRef. Los beneficios son un rendimiento significativamente mejor en aplicaciones grandes porque se reducen drásticamente los componentes verificados. Requiere trabajar con inmutabilidad (crear nuevos objetos en lugar de mutar los existentes) o con Observables. Es la estrategia recomendada en proyectos de producción.",
+    "evaluationCriteria": [
+      "Explica las 4 condiciones que disparan la verificación con OnPush",
+      "Menciona la diferencia con la estrategia Default",
+      "Entiende la importancia de la inmutabilidad",
+      "Conoce ChangeDetectorRef para control manual"
+    ],
+    "timeEstimate": 180
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": ["angular", "rxjs"],
+    "language": "es",
+    "questionText": "¿Cómo evitarías fugas de memoria (memory leaks) producidas por suscripciones a Observables en componentes Angular? Nombra al menos dos patrones.",
+    "hints": [
+      "Piensa en qué ocurre con una suscripción cuando el componente se destruye",
+      "Considera el async pipe y el patrón takeUntil"
+    ],
+    "modelAnswer": "Las fugas de memoria ocurren cuando una suscripción permanece activa después de que el componente se ha destruido. Los patrones para evitarlas son: (1) **async pipe**: la forma más idiomática. Al usar `{{ observable$ | async }}` en el template, Angular gestiona automáticamente la suscripción y la cancela cuando el componente se destruye. (2) **takeUntilDestroyed (Angular 16+)**: operador que completa el Observable automáticamente usando el contexto de destrucción del componente: `obs$.pipe(takeUntilDestroyed()).subscribe(...)`. (3) **Patrón Subject + takeUntil**: se crea un `Subject<void>` llamado `destroy$`, se emite en `ngOnDestroy` con `this.destroy$.next()`, y se usa `takeUntil(this.destroy$)` en cada suscripción. (4) **Almacenar la suscripción y llamar unsubscribe() en ngOnDestroy**. El async pipe y takeUntilDestroyed son los enfoques más recomendados actualmente.",
+    "evaluationCriteria": [
+      "Explica que las fugas ocurren por suscripciones activas tras destruir el componente",
+      "Menciona el async pipe como solución preferida",
+      "Conoce takeUntilDestroyed o el patrón takeUntil con Subject",
+      "Sabe que ngOnDestroy es el lugar para hacer cleanup"
+    ],
+    "timeEstimate": 180
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": ["spring-boot", "jwt"],
+    "language": "es",
+    "questionText": "Describe el flujo completo de autenticación con JWT en Spring Security. ¿Cómo se configura el filtro de autenticación y dónde se valida el token en cada request?",
+    "hints": [
+      "Piensa en el SecurityFilterChain y los filtros de Spring Security",
+      "Considera dónde se almacena la autenticación para que Spring la reconozca"
+    ],
+    "modelAnswer": "El flujo de autenticación JWT en Spring Security es: (1) **Login**: el usuario envía credenciales a `/auth/login`. El `AuthenticationManager` valida las credenciales contra UserDetailsService. Si son válidas, se genera un JWT firmado y se devuelve al cliente. (2) **Request protegida**: el cliente incluye el token en el header `Authorization: Bearer <token>`. (3) **JwtAuthFilter**: un filtro que extiende `OncePerRequestFilter` intercepta cada request, extrae el token del header, lo valida (firma, expiración, estructura) y carga el UserDetails. (4) **SecurityContext**: si el token es válido, se crea un `UsernamePasswordAuthenticationToken` y se registra en el `SecurityContextHolder`, indicando a Spring Security que el usuario está autenticado. (5) **SecurityFilterChain**: se configura para ser stateless (`SessionCreationPolicy.STATELESS`), se desactiva CSRF y se añade el JwtAuthFilter antes del `UsernamePasswordAuthenticationFilter`.",
+    "evaluationCriteria": [
+      "Describe el flujo de login y generación del token",
+      "Explica el JwtAuthFilter y OncePerRequestFilter",
+      "Menciona el SecurityContextHolder y el AuthenticationToken",
+      "Conoce la configuración stateless del SecurityFilterChain"
+    ],
+    "timeEstimate": 180
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": ["jpa", "hibernate"],
+    "language": "es",
+    "questionText": "¿Qué es el problema N+1 en JPA/Hibernate y cómo se soluciona? Explica con un ejemplo concreto.",
+    "hints": [
+      "Piensa en una entidad con una relación @OneToMany y qué consultas se generan al cargar la colección",
+      "Considera EAGER vs LAZY loading y JOIN FETCH"
+    ],
+    "modelAnswer": "El problema N+1 ocurre cuando al cargar N entidades, se generan N consultas adicionales para obtener sus relaciones. Ejemplo: si se obtienen 10 `Order` y cada una tiene una lista `items` con FetchType.LAZY, al acceder a `order.getItems()` en cada iteración, Hibernate ejecuta 1 consulta para los pedidos + 10 consultas para los items = 11 consultas. Las soluciones son: (1) **JOIN FETCH en JPQL**: `SELECT o FROM Order o JOIN FETCH o.items` carga todo en una sola consulta. (2) **EntityGraph**: `@EntityGraph(attributePaths = {'items'})` en el método del repositorio. (3) **Batch Size**: `@BatchSize(size = 20)` le dice a Hibernate que cargue las colecciones en lotes usando IN clauses. (4) **DTO Projections**: proyectar directamente a DTOs con una query que hace el JOIN. JOIN FETCH y EntityGraph son las soluciones más directas para casos puntuales.",
+    "evaluationCriteria": [
+      "Explica correctamente el problema N+1 con un ejemplo",
+      "Menciona JOIN FETCH como solución",
+      "Conoce EntityGraph",
+      "Entiende la relación con FetchType.LAZY"
+    ],
+    "timeEstimate": 180
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": ["postgresql"],
+    "language": "es",
+    "questionText": "¿Qué tipos de índices ofrece PostgreSQL y cómo decidirías qué índice crear para optimizar una consulta específica?",
+    "hints": [
+      "Piensa en B-Tree, Hash, GIN, GiST y sus casos de uso",
+      "Considera cómo usar EXPLAIN ANALYZE para diagnosticar"
+    ],
+    "modelAnswer": "PostgreSQL ofrece varios tipos de índices: (1) **B-Tree** (default): ideal para comparaciones de igualdad y rango (`=`, `<`, `>`, `BETWEEN`, `LIKE 'prefix%'`). Es el tipo más versátil. (2) **Hash**: solo para igualdad exacta (`=`). Más rápido que B-Tree para igualdad pero no soporta rangos ni ordering. (3) **GIN** (Generalized Inverted Index): óptimo para tipos compuestos como arrays, JSONB, full-text search. (4) **GiST**: para tipos geométricos, rangos, full-text. (5) **BRIN**: para columnas con correlación física (timestamps de inserción). Para decidir qué índice crear: (a) Usar `EXPLAIN ANALYZE` para ver el plan de ejecución actual. (b) Identificar Sequential Scans en tablas grandes. (c) Analizar las columnas en WHERE, JOIN ON y ORDER BY. (d) Considerar cardinalidad (índices son más útiles en columnas con muchos valores únicos). (e) Evaluar el costo de escritura vs beneficio de lectura.",
+    "evaluationCriteria": [
+      "Nombra al menos 3 tipos de índices con sus casos de uso",
+      "Menciona EXPLAIN ANALYZE para diagnóstico",
+      "Considera la cardinalidad al decidir crear un índice",
+      "Entiende el trade-off entre lectura y escritura"
+    ],
+    "timeEstimate": 180
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": ["docker"],
+    "language": "es",
+    "questionText": "¿Qué son los multi-stage builds en Docker y cómo reducen el tamaño de la imagen final? Describe cómo los aplicarías a una aplicación Spring Boot.",
+    "hints": [
+      "Piensa en separar la etapa de compilación de la etapa de ejecución",
+      "Considera qué artefactos necesitas realmente en producción"
+    ],
+    "modelAnswer": "Los multi-stage builds permiten usar múltiples instrucciones `FROM` en un Dockerfile. Cada etapa puede copiar artefactos de etapas anteriores, descartando todo lo demás. Para una aplicación Spring Boot: **Etapa 1 (build)**: se usa una imagen con JDK completo y Maven/Gradle para compilar y empaquetar la aplicación (`mvn package -DskipTests`). **Etapa 2 (runtime)**: se usa una imagen base mínima como `eclipse-temurin:17-jre-alpine` y se copia solo el JAR generado en la etapa anterior (`COPY --from=build /app/target/app.jar app.jar`). El resultado es una imagen que puede pasar de 800MB (con JDK + Maven) a ~200MB (solo JRE + JAR). Ventajas: menor superficie de ataque de seguridad, menor tiempo de push/pull, menor costo de almacenamiento. El JDK, las dependencias de Maven y los fuentes no llegan a producción.",
+    "evaluationCriteria": [
+      "Explica el concepto de múltiples FROM en el Dockerfile",
+      "Describe la separación build vs runtime para Spring Boot",
+      "Menciona el uso de JRE en lugar de JDK en producción",
+      "Cuantifica o menciona la reducción de tamaño"
+    ],
+    "timeEstimate": 180
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": ["github-actions"],
+    "language": "es",
+    "questionText": "¿Cómo implementarías caché de dependencias en un workflow de GitHub Actions para un proyecto Java con Maven? ¿Qué otros tipos de caché son comunes?",
+    "hints": [
+      "Piensa en la acción actions/cache y en qué archivos se basa la clave del caché",
+      "Considera el repositorio local de Maven en ~/.m2"
+    ],
+    "modelAnswer": "Para cachear dependencias de Maven en GitHub Actions se usa la acción `actions/cache` o el parámetro `cache` de `actions/setup-java`: ```yaml - uses: actions/setup-java@v4   with:     distribution: temurin     java-version: 17     cache: maven ``` Esto cachea el directorio `~/.m2/repository` usando como cache key un hash del `pom.xml`. Si el pom no cambia, las dependencias se restauran del caché evitando descargas (puede ahorrar 1-3 minutos). Para el caché manual con `actions/cache`, la key típica es `${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}`. Otros tipos de caché comunes: **npm/Node.js**: caché de `~/.npm` con hash de `package-lock.json`. **Docker layers**: con `cache-from` y `cache-to` en buildx. **Gradle**: caché de `~/.gradle`. La clave del caché debe incluir el archivo de lock/manifest para invalidarse cuando cambian las dependencias.",
+    "evaluationCriteria": [
+      "Menciona actions/cache o el parámetro cache de setup-java",
+      "Explica el directorio ~/.m2 que se cachea",
+      "Describe la estrategia de cache key con hash del pom.xml",
+      "Menciona al menos otro tipo de caché (npm, Docker, Gradle)"
+    ],
+    "timeEstimate": 180
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": ["aws", "s3"],
+    "language": "es",
+    "questionText": "¿Qué son las presigned URLs en Amazon S3 y cuándo las usarías frente a servir archivos directamente desde tu backend?",
+    "hints": [
+      "Piensa en quién firma la URL y por cuánto tiempo es válida",
+      "Considera la carga en el servidor backend si toda la descarga pasa por él"
+    ],
+    "modelAnswer": "Una presigned URL es una URL de S3 generada por el servidor que lleva credenciales de AWS incrustadas (firma HMAC) y tiene un tiempo de expiración. Permite que un usuario realice operaciones específicas (GET para descargar, PUT para subir) directamente contra S3, sin que el tráfico pase por el servidor backend. El servidor genera la URL con el SDK de AWS (`s3Client.generatePresignedUrl(...)`) y la entrega al cliente; el cliente luego accede directamente a S3. Se usan presigned URLs cuando: (1) Se quiere evitar que el backend sea el intermediario de descargas pesadas (ahorra ancho de banda y CPU). (2) Se necesita permitir subidas directas del cliente a S3 (upload seguro sin exponer credenciales). (3) Se quiere dar acceso temporal a recursos privados. El bucket no necesita ser público; la URL lleva la autorización implícita.",
+    "evaluationCriteria": [
+      "Explica qué lleva incrustado una presigned URL (firma + expiración)",
+      "Describe que el acceso es directo a S3 sin pasar por el backend",
+      "Menciona el caso de subida directa (PUT presigned URL)",
+      "Entiende la ventaja en términos de carga del servidor"
+    ],
+    "timeEstimate": 180
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": ["aws", "iam"],
+    "language": "es",
+    "questionText": "Explica el principio de mínimo privilegio en AWS IAM y cómo lo aplicarías al configurar permisos para una aplicación Spring Boot que accede a S3 y RDS.",
+    "hints": [
+      "Piensa en usar IAM roles para instancias EC2 en lugar de access keys",
+      "Considera limitar las acciones de S3 solo a las que la app necesita"
+    ],
+    "modelAnswer": "El principio de mínimo privilegio significa otorgar únicamente los permisos necesarios para realizar una tarea específica, y nada más. Para una aplicación Spring Boot en EC2: (1) **Usar IAM Role para EC2**, no access keys hardcodeadas. El rol se asigna a la instancia EC2 y el SDK de AWS lo obtiene automáticamente via Instance Metadata Service. Nunca almacenar credenciales en código o variables de entorno. (2) **Política para S3**: definir acciones específicas en lugar de `s3:*`. Por ejemplo, si la app solo sube y descarga archivos del bucket `my-app-uploads`, la política debe ser `s3:GetObject`, `s3:PutObject` restringidas a `arn:aws:s3:::my-app-uploads/*`. (3) **RDS**: usar la autenticación IAM de RDS o gestionar las credenciales via AWS Secrets Manager. (4) **Separar roles por entorno**: rol diferente para dev, staging y prod con políticas distintas. Nunca usar roles con `AdministratorAccess` en producción.",
+    "evaluationCriteria": [
+      "Explica el principio de mínimo privilegio",
+      "Recomienda IAM roles en lugar de access keys",
+      "Propone políticas S3 con acciones específicas",
+      "Menciona Secrets Manager o restricción a recursos específicos"
+    ],
+    "timeEstimate": 180
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": ["postgresql"],
+    "language": "es",
+    "questionText": "¿Qué son las transacciones ACID en PostgreSQL? Describe un escenario real donde una transacción mal configurada podría causar inconsistencia de datos.",
+    "hints": [
+      "ACID son siglas: Atomicidad, Consistencia, Aislamiento, Durabilidad",
+      "Piensa en una transferencia bancaria o reserva de asientos"
+    ],
+    "modelAnswer": "ACID son las propiedades que garantizan que las transacciones de base de datos se procesan de manera confiable: (1) **Atomicidad**: todas las operaciones de la transacción se ejecutan o ninguna. Si falla cualquier paso, se hace rollback completo. (2) **Consistencia**: la BD pasa de un estado válido a otro válido, respetando todas las constraints. (3) **Aislamiento**: las transacciones concurrentes no interfieren entre sí (configurable mediante niveles de aislamiento: READ COMMITTED, REPEATABLE READ, SERIALIZABLE). (4) **Durabilidad**: una vez confirmada (COMMIT), la transacción persiste aunque el sistema falle (gracias al WAL de PostgreSQL). Escenario problemático: en una reserva de asientos de vuelo, sin aislamiento adecuado, dos usuarios pueden leer simultáneamente que queda 1 asiento disponible, ambos reservan, y el sistema vende el mismo asiento dos veces (problema de lost update). Solución: usar `SELECT FOR UPDATE` o nivel de aislamiento SERIALIZABLE.",
+    "evaluationCriteria": [
+      "Explica correctamente las 4 propiedades ACID",
+      "Da un ejemplo concreto de inconsistencia",
+      "Menciona niveles de aislamiento",
+      "Conoce SELECT FOR UPDATE como solución"
+    ],
+    "timeEstimate": 180
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": ["java"],
+    "language": "es",
+    "questionText": "¿Cómo funciona la API de Streams en Java y qué ventajas ofrece frente a los bucles for tradicionales? ¿Cuándo NO sería recomendable usarlos?",
+    "hints": [
+      "Piensa en operaciones intermedias (map, filter) vs terminales (collect, forEach)",
+      "Considera los streams paralelos y el overhead que introducen"
+    ],
+    "modelAnswer": "La API de Streams de Java (Java 8+) permite procesar colecciones de forma declarativa mediante una cadena de operaciones. Las operaciones se dividen en: **Intermedias** (lazy, no se ejecutan hasta la terminal): `filter()`, `map()`, `flatMap()`, `sorted()`, `distinct()`. **Terminales** (disparan la ejecución): `collect()`, `forEach()`, `count()`, `findFirst()`, `anyMatch()`. Ventajas: código más conciso y expresivo, fácil paralelización con `parallelStream()`, sin bucles explícitos. Desventajas/cuándo NO usar: (1) Para colecciones muy pequeñas (overhead del Stream puede ser mayor que el bucle). (2) Cuando se necesitan múltiples variables locales mutables (difícil con lambdas). (3) En hot paths donde el rendimiento es crítico y el bucle es más predecible. (4) Cuando la lógica es compleja y el Stream la hace menos legible. (5) `parallelStream()` puede causar problemas con operaciones no thread-safe o cuando el overhead de paralelización supera el beneficio.",
+    "evaluationCriteria": [
+      "Distingue operaciones intermedias vs terminales",
+      "Menciona la naturaleza lazy de las operaciones intermedias",
+      "Explica ventajas de legibilidad y expresividad",
+      "Menciona al menos 2 casos donde NO usar Streams"
+    ],
+    "timeEstimate": 180
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": ["spring-boot", "rest-api"],
+    "language": "es",
+    "questionText": "¿Cómo implementarías el manejo centralizado de excepciones en Spring Boot? Describe el uso de @ControllerAdvice y cómo diseñarías las respuestas de error de una API REST.",
+    "hints": [
+      "Piensa en @ExceptionHandler y en qué clase colocarlos",
+      "Considera el formato estándar de una respuesta de error (ProblemDetail, RFC 9457)"
+    ],
+    "modelAnswer": "@ControllerAdvice es una anotación de Spring que permite centralizar el manejo de excepciones en un solo lugar en lugar de dispersarlos por todos los controladores. Se combina con @ExceptionHandler para mapear tipos de excepción a respuestas HTTP específicas. Diseño recomendado: (1) Crear excepciones de dominio propias (`ResourceNotFoundException`, `BusinessException`). (2) Una clase `@ControllerAdvice` que capture estas excepciones y las convierta en respuestas estándar. (3) Para el formato de error, Spring Boot 3+ soporta `ProblemDetail` (RFC 9457/7807) con campos: `type`, `title`, `status`, `detail`, `instance`. O un DTO propio con `timestamp`, `status`, `error`, `message`, `path`. (4) Retornar `ResponseEntity<ProblemDetail>` con el status HTTP apropiado. (5) También capturar `MethodArgumentNotValidException` para errores de validación de Bean Validation, devolviendo los errores de campo en el cuerpo. Esto evita el stack trace en producción y mantiene respuestas consistentes.",
+    "evaluationCriteria": [
+      "Explica @ControllerAdvice y @ExceptionHandler",
+      "Propone excepciones de dominio propias",
+      "Menciona el formato de respuesta de error (ProblemDetail o similar)",
+      "Trata la validación de Bean Validation y sus errores de campo"
+    ],
+    "timeEstimate": 180
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": ["docker"],
+    "language": "es",
+    "questionText": "¿Cómo gestionarías la configuración sensible (contraseñas, API keys) en un entorno Docker Compose para desarrollo local versus una aplicación desplegada en producción?",
+    "hints": [
+      "Piensa en variables de entorno, .env files y Docker secrets",
+      "Considera qué NO debe aparecer en el docker-compose.yml commiteado"
+    ],
+    "modelAnswer": "Para desarrollo local con Docker Compose: (1) Usar archivos `.env` en la raíz del proyecto que Docker Compose carga automáticamente. Las variables se referencian como `${DB_PASSWORD}` en el `docker-compose.yml`. (2) El archivo `.env` se agrega al `.gitignore` para no commitear secretos. (3) Proporcionar un `.env.example` con las variables necesarias pero sin valores reales. Para producción: (1) **Docker Secrets** (Docker Swarm): valores montados como archivos en `/run/secrets/`. (2) **Variables de entorno del orquestador**: Kubernetes usa Secrets, AWS ECS usa task definitions con valores de Secrets Manager. (3) **AWS Secrets Manager / Parameter Store**: la aplicación obtiene los secretos en tiempo de arranque mediante el SDK de AWS. (4) **HashiCorp Vault**: solución enterprise para gestión de secretos. Nunca hardcodear secretos en el Dockerfile, en el `docker-compose.yml` commiteado, ni en variables de entorno en imágenes de Docker. Los secretos deben rotarse periódicamente y tener acceso auditado.",
+    "evaluationCriteria": [
+      "Explica el uso de .env con Docker Compose en desarrollo",
+      "Menciona .gitignore y .env.example",
+      "Propone una solución para producción (Secrets Manager, Vault o Docker Secrets)",
+      "Advierte sobre no hardcodear secretos en imágenes o YAML commiteado"
+    ],
+    "timeEstimate": 180
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": ["git"],
+    "language": "es",
+    "questionText": "Describe una estrategia de branching efectiva para un equipo de 4-6 desarrolladores trabajando en una aplicación web. ¿Qué modelo usarías y por qué?",
+    "hints": [
+      "Considera Git Flow, GitHub Flow o trunk-based development",
+      "Piensa en la frecuencia de despliegues y el tamaño del equipo"
+    ],
+    "modelAnswer": "Para un equipo de 4-6 desarrolladores en una aplicación web con despliegues frecuentes, recomendaría **GitHub Flow** o **Trunk-Based Development**: **GitHub Flow**: una rama principal `main` siempre deployable + feature branches de corta vida. El flujo es: crear branch desde main → desarrollar → PR con code review → merge a main → deploy. Simple, favorece CI/CD y despliegues frecuentes. Ideal para equipos ágiles. **Trunk-Based Development**: todo el mundo integra directamente a `main` varias veces al día usando feature flags para ocultar funcionalidades incompletas. Máxima integración continua. **Git Flow** (main + develop + feature/release/hotfix branches) agrega complejidad que suele ser innecesaria para equipos pequeños con despliegues continuos, aunque es válido para productos con versiones numeradas. Prácticas clave independientemente del modelo: PRs pequeños, revisiones rápidas (< 24h), integración frecuente para evitar merge hell, protección de la rama main con required checks (CI verde obligatorio).",
+    "evaluationCriteria": [
+      "Nombra y explica al menos 2 modelos de branching",
+      "Justifica su elección según el contexto del equipo",
+      "Menciona CI/CD y despliegues frecuentes como factor",
+      "Propone buenas prácticas como PRs pequeños y revisiones rápidas"
+    ],
+    "timeEstimate": 180
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": ["angular", "rest-api"],
+    "language": "es",
+    "questionText": "¿Cómo implementarías un interceptor HTTP en Angular para adjuntar automáticamente el token JWT a todas las peticiones y manejar errores 401 redirigiendo al login?",
+    "hints": [
+      "Piensa en HttpInterceptor o el nuevo enfoque funcional con HttpInterceptorFn",
+      "Considera cómo obtener el token del almacenamiento y qué hacer con el error 401"
+    ],
+    "modelAnswer": "En Angular 15+ se puede usar el enfoque funcional con `HttpInterceptorFn`. El interceptor de autenticación: (1) Obtiene el token del servicio de autenticación (localStorage o Signal). (2) Si hay token, clona el request añadiendo el header `Authorization: Bearer ${token}` (los requests son inmutables, hay que clonarlos). (3) Pasa el request clonado con `next(clonedReq)`. (4) Para manejar 401: usa `catchError` en el pipe, si el error tiene status 401 llama a `authService.logout()` y redirige al login con el Router. Se registra en `app.config.ts` con `provideHttpClient(withInterceptors([authInterceptor]))`. Consideraciones: evitar bucles infinitos (no adjuntar token a las llamadas de login/refresh), implementar token refresh silencioso antes de expiración con `switchMap` cuando el 401 es por token expirado, y manejar también errores 403 (acceso denegado).",
+    "evaluationCriteria": [
+      "Explica la clonación del request para adjuntar el header",
+      "Describe el manejo de errores 401 con catchError",
+      "Menciona la redirección al login",
+      "Conoce el registro del interceptor en app.config.ts"
+    ],
+    "timeEstimate": 180
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": ["spring-boot", "jpa"],
+    "language": "es",
+    "questionText": "¿Cómo gestionarías las transacciones en Spring Boot con @Transactional? Explica los niveles de propagación y un caso donde la configuración incorrecta causa un bug difícil de detectar.",
+    "hints": [
+      "Piensa en qué pasa cuando un método @Transactional llama a otro @Transactional",
+      "Considera las llamadas a métodos dentro de la misma clase (self-invocation)"
+    ],
+    "modelAnswer": "@Transactional en Spring permite declarar que un método debe ejecutarse dentro de una transacción. Si no existe una transacción activa, se crea una nueva (comportamiento REQUIRED, el default). Los modos de propagación más importantes: **REQUIRED** (default): usa la transacción existente o crea una nueva. **REQUIRES_NEW**: siempre crea una nueva transacción, suspendiendo la actual. Útil para operaciones de auditoría que deben persistir aunque la transacción principal haga rollback. **NESTED**: crea un savepoint dentro de la transacción existente. **NOT_SUPPORTED**: ejecuta sin transacción. Bug clásico por self-invocation: si el método `A()` en la misma clase llama a `B()` que tiene `@Transactional(propagation = REQUIRES_NEW)`, la anotación de B se ignora porque la llamada no pasa por el proxy de Spring. Solución: extraer B a un bean separado o inyectar el propio bean (auto-inyección). Otro bug común: `@Transactional` en métodos privados (el proxy no puede interceptarlos).",
+    "evaluationCriteria": [
+      "Explica la propagación REQUIRED como default",
+      "Describe REQUIRES_NEW y su caso de uso",
+      "Identifica el problema de self-invocation",
+      "Propone la solución al self-invocation"
+    ],
+    "timeEstimate": 180
+  },
+  {
+    "category": "technical",
+    "difficulty": "mid",
+    "tags": ["github-actions"],
+    "language": "es",
+    "questionText": "Diseña un pipeline de CI/CD en GitHub Actions para una aplicación Spring Boot que incluya: tests, análisis de calidad, construcción de imagen Docker y despliegue a AWS.",
+    "hints": [
+      "Piensa en separar los jobs: test, build, deploy",
+      "Considera el uso de secrets de GitHub para credenciales de AWS"
+    ],
+    "modelAnswer": "Un pipeline típico tendría estos jobs en secuencia: **Job 1 - test**: `actions/checkout`, `actions/setup-java` con caché Maven, `mvn verify` (ejecuta unit + integration tests). Falla rápido si los tests no pasan. **Job 2 - quality** (paralelo al test o tras él): Análisis con SonarCloud o Jacoco. **Job 3 - build**: `mvn package -DskipTests`, `docker build` y `docker push` al registro (ECR). Usa `aws-actions/configure-aws-credentials` con los secrets `AWS_ACCESS_KEY_ID` y `AWS_SECRET_ACCESS_KEY` (o preferiblemente OIDC con `role-to-assume`). Tag de la imagen con el SHA del commit. **Job 4 - deploy**: solo se ejecuta en merge a `main` (`if: github.ref == 'refs/heads/main'`). Actualiza el task definition de ECS o ejecuta `aws ecs update-service`. Se usan `needs: [build]` para encadenar jobs. Los secrets de AWS se almacenan en GitHub Secrets (Settings → Secrets and variables). OIDC es preferible a access keys por seguridad.",
+    "evaluationCriteria": [
+      "Diseña una secuencia lógica de jobs (test → build → deploy)",
+      "Menciona el uso de GitHub Secrets para credenciales",
+      "Propone condicionar el deploy a la rama main",
+      "Conoce OIDC o aws-actions/configure-aws-credentials"
+    ],
+    "timeEstimate": 180
+  },
+  {
+    "category": "technical",
+    "difficulty": "senior",
+    "tags": ["angular", "signals", "rxjs"],
+    "language": "es",
+    "questionText": "En una aplicación Angular de gran escala, ¿cómo decidirías cuándo usar Signals frente a RxJS Observables? ¿Cuáles son los trade-offs de migrar una base de código existente de Zone.js a Signals?",
+    "hints": [
+      "Piensa en casos donde la sincronización y la composición asíncrona son clave",
+      "Considera el costo de migración incremental vs big bang"
+    ],
+    "modelAnswer": "La elección depende del caso de uso: **Signals** son ideales para estado local del componente y UI derivada síncrona: valores que se leen en templates, estado de formularios, props calculadas. Son más simples, más eficientes para la detección de cambios y no requieren gestión de suscripciones. **RxJS Observables** siguen siendo superiores para: flujos de eventos asíncronos complejos (WebSockets, polling), composición con operadores avanzados (debounceTime, combineLatest sobre múltiples fuentes), streams que se completan naturalmente y donde la semántica de hot/cold es relevante. **Interoperabilidad**: `toSignal()` convierte un Observable a Signal; `toObservable()` hace lo contrario. En aplicaciones grandes se combinan ambos. **Trade-offs de migración a Zoneless**: Beneficios: mejor rendimiento sin el monkey-patching de Zone.js, menor bundle. Costos: requiere revisar todo el código que depende de detección automática de cambios (setTimeout, XMLHttpRequest no detectados sin Zone.js), testar que todos los componentes usen OnPush o Signals, riesgo de regresiones visuales difíciles de detectar. Recomendación: migración incremental por módulo/feature, activando zoneless solo cuando el módulo sea completamente compatible.",
+    "evaluationCriteria": [
+      "Distingue claramente los casos de uso de Signals vs RxJS",
+      "Menciona toSignal() y toObservable() para interoperabilidad",
+      "Analiza los beneficios y riesgos de la migración zoneless",
+      "Propone una estrategia de migración incremental"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "technical",
+    "difficulty": "senior",
+    "tags": ["spring-boot", "jwt", "rest-api"],
+    "language": "es",
+    "questionText": "Diseña una estrategia de seguridad completa para una API REST Spring Boot multi-tenant con JWT. ¿Cómo gestionarías la rotación de tokens, la revocación y el aislamiento de datos entre tenants?",
+    "hints": [
+      "Piensa en refresh tokens y token blacklisting vs stateless puro",
+      "Considera cómo incluir el tenantId en el JWT y cómo aislarlo en las queries"
+    ],
+    "modelAnswer": "Una estrategia completa multi-tenant con JWT: **Autenticación y tokens**: usar access tokens de corta vida (15 min) + refresh tokens de larga vida (30 días) almacenados en base de datos. El JWT incluye claims: `sub` (userId), `tenantId`, `roles`, `jti` (JWT ID único). **Revocación**: dado que JWT es stateless, la revocación requiere una de: (a) Token blacklist en Redis con TTL igual al tiempo de expiración del token. (b) Versión de token por usuario en DB: el JWT incluye `tokenVersion`; al revocar se incrementa en DB y el filtro valida la versión. (c) Refresh tokens en BD: revocar el refresh token impide obtener nuevos access tokens. **Rotación**: implementar refresh token rotation (cada uso del refresh token genera uno nuevo e invalida el anterior) detecta robo de tokens. **Multi-tenancy**: incluir `tenantId` en el JWT, validar en el filtro que el `tenantId` del token corresponde al recurso solicitado. Usar Row Level Security en PostgreSQL o filtros JPA por tenant en todas las queries. Un error de configuración que exponga datos de otro tenant es un fallo de seguridad crítico. **Consideraciones adicionales**: rate limiting por tenant, auditoría de accesos, HttpOnly cookies para refresh tokens en lugar de localStorage.",
+    "evaluationCriteria": [
+      "Propone access + refresh tokens con estrategia de revocación concreta",
+      "Describe la rotación de refresh tokens",
+      "Explica el aislamiento de datos multi-tenant (RLS o filtros por tenant)",
+      "Menciona almacenamiento seguro del refresh token (HttpOnly cookie)"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "technical",
+    "difficulty": "senior",
+    "tags": ["postgresql"],
+    "language": "es",
+    "questionText": "Una tabla de eventos con 500 millones de registros tiene consultas que tardan 30 segundos. ¿Cómo abordarías el diagnóstico y la optimización? ¿Qué estrategias de particionamiento considerarías?",
+    "hints": [
+      "Comienza por EXPLAIN (ANALYZE, BUFFERS) para entender el plan de ejecución actual",
+      "Considera el particionamiento por rango (fecha) y la eliminación de particiones"
+    ],
+    "modelAnswer": "Proceso de diagnóstico y optimización: **Diagnóstico inicial**: `EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)` para ver el plan real: identificar Sequential Scans en tablas grandes, Nested Loops con muchas iteraciones, estimaciones incorrectas de rows que llevan a planes subóptimos. Revisar `pg_stat_user_tables` para detectar tablas con muchos seq scans. **Optimización de índices**: crear índices parciales para consultas frecuentes (`CREATE INDEX ON events (user_id) WHERE status = 'active'`), índices compuestos en el orden correcto (selectividad primero), considerar BRIN para columnas temporales ordenadas. **Particionamiento**: para 500M registros con datos históricos, el particionamiento por rango en `created_at` (por mes o año) es ideal. PostgreSQL Declarative Partitioning: `CREATE TABLE events (...) PARTITION BY RANGE (created_at)`. Ventajas: partition pruning (solo escanea particiones relevantes), mantenimiento paralelo, archivado/borrado de particiones antiguas en O(1). **Otras estrategias**: tablas de resumen (materialized views actualizadas periódicamente), TimescaleDB para datos de series temporales, archivado de datos antiguos a tablas cold storage, columnar storage para analítica. **Conexiones**: revisar `max_connections`, usar PgBouncer para pooling, evitar N+1 desde la aplicación.",
+    "evaluationCriteria": [
+      "Empieza por EXPLAIN ANALYZE antes de proponer soluciones",
+      "Describe el particionamiento por rango con sus ventajas",
+      "Menciona partition pruning como mecanismo de rendimiento",
+      "Propone estrategias adicionales (índices parciales, materialized views)"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "technical",
+    "difficulty": "senior",
+    "tags": ["docker", "aws"],
+    "language": "es",
+    "questionText": "Diseña la estrategia de contenedorización y despliegue en AWS para una aplicación Spring Boot + Angular que necesita alta disponibilidad, auto-scaling y zero-downtime deployments.",
+    "hints": [
+      "Piensa en ECS Fargate vs EC2, Application Load Balancer y rolling deployments",
+      "Considera la gestión de configuración y secretos en producción"
+    ],
+    "modelAnswer": "Arquitectura recomendada para alta disponibilidad: **Contenedorización**: imágenes Docker con multi-stage builds (JRE en producción). Imágenes versionadas con SHA del commit y latest. Almacenadas en Amazon ECR. **Orquestación en AWS**: ECS Fargate (serverless containers) con mínimo 2 tasks en 2 Availability Zones para HA. Application Load Balancer con health checks en `/actuator/health` para distribuir tráfico. Auto Scaling basado en CPU/memoria con ECS Service Auto Scaling. **Zero-downtime deployments**: ECS rolling update con `minimumHealthyPercent: 50` y `maximumPercent: 200`, o blue/green deployment via CodeDeploy (crea nuevo task set, desvía tráfico gradualmente, rollback automático si los health checks fallan). **Frontend Angular**: S3 Static Website + CloudFront CDN con invalidación de caché en cada deploy. Versionar los assets (hashing en nombres de archivo). **Gestión de configuración**: AWS Secrets Manager para credenciales de BD, parámetros no sensibles en SSM Parameter Store. La app los lee al arrancar. Variables de entorno de ECS apuntan a los ARN de Secrets Manager. **Monitoreo**: CloudWatch Logs, métricas de ECS, alarmas para errores 5xx y latencia. Spring Boot Actuator expone métricas para CloudWatch.",
+    "evaluationCriteria": [
+      "Propone ECS Fargate con múltiples AZs y ALB",
+      "Describe una estrategia de zero-downtime deployment (rolling o blue/green)",
+      "Aborda el frontend con S3 + CloudFront",
+      "Menciona Secrets Manager para credenciales y auto-scaling"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "technical",
+    "difficulty": "senior",
+    "tags": ["java", "spring-boot"],
+    "language": "es",
+    "questionText": "¿Cómo diseñarías la gestión de concurrencia en una aplicación Spring Boot de alta carga? Compara las opciones: synchronized, ReentrantLock, optimistic locking con JPA y operaciones atómicas en Redis.",
+    "hints": [
+      "Piensa en el scope del bloqueo: dentro de una JVM vs distribuido",
+      "Considera el impacto en la escalabilidad horizontal de cada enfoque"
+    ],
+    "modelAnswer": "La elección depende del contexto: **synchronized / ReentrantLock**: bloqueo a nivel de JVM. `synchronized` es simple pero no permite timeouts ni tryLock. `ReentrantLock` ofrece más control (tryLock con timeout, fairness). Ambos son inútiles en entornos multi-instancia (scale-out), donde cada JVM tiene su propio bloqueo. Adecuados solo para recursos locales en memoria. **Optimistic Locking con JPA (@Version)**: se añade un campo `@Version` a la entidad. JPA actualiza solo si la versión no cambió desde la lectura (`UPDATE ... WHERE version = ?`). Si otro proceso modificó el registro, lanza `OptimisticLockException`. No bloquea lecturas, maximiza el throughput. Ideal para baja contención, requiere manejo de conflictos (retry). Funciona con múltiples instancias. **Pessimistic Locking con JPA (SELECT FOR UPDATE)**: bloquea el registro a nivel de BD. Útil para alta contención donde los conflictos son frecuentes. **Redis (SETNX / Redisson)**: bloqueo distribuido real para multi-instancia. `SETNX key value EX seconds` implementa mutex. Redisson ofrece `RLock` con auto-renovación. Crítico: siempre configurar TTL para evitar deadlocks si el proceso muere. Para contadores: `INCR` en Redis es atómico sin necesidad de lock. Regla: empezar por optimistic locking, escalar a Redis solo cuando sea necesario.",
+    "evaluationCriteria": [
+      "Explica la limitación de synchronized/ReentrantLock en entornos distribuidos",
+      "Describe optimistic locking con @Version y sus trade-offs",
+      "Propone Redis para bloqueo distribuido multi-instancia",
+      "Menciona TTL en locks distribuidos para prevenir deadlocks"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "technical",
+    "difficulty": "senior",
+    "tags": ["angular", "testing"],
+    "language": "es",
+    "questionText": "¿Cómo estructurarías una estrategia de testing completa para una aplicación Angular enterprise? Compara las diferentes capas de testing y describe cuándo cada tipo aporta más valor.",
+    "hints": [
+      "Piensa en la pirámide de testing: unit, integration, e2e",
+      "Considera el balance entre velocidad de ejecución, confianza y costo de mantenimiento"
+    ],
+    "modelAnswer": "Una estrategia de testing para Angular enterprise: **Unit tests (base de la pirámide, ~70%)**: Jest o Jasmine + TestBed. Cubren: lógica de servicios, pipes, guards, interceptors, funciones de utilidad. Los componentes se testean de forma aislada con mock de dependencias. Rápidos (ms), alta cobertura, fácil de mantener. Usar `spectator` o `ng-mocks` para reducir boilerplate de TestBed. **Integration tests (~20%)**: TestBed con dependencias reales entre componentes relacionados. Probar que un componente padre pasa datos correctamente a componentes hijo, que un formulario completo valida y envía. Más costosos que unit tests pero dan más confianza en las interacciones. **Component testing con Cypress Component Testing o Storybook tests**: testear componentes UI en aislamiento con un navegador real, útil para detectar problemas de renderizado y CSS. **E2E tests (punta de la pirámide, ~10%)**: Playwright o Cypress. Cubren los flujos críticos de negocio (login, checkout, flujo principal). Lentos, frágiles a cambios de UI, alto mantenimiento. Solo para los happy paths más importantes. **Contrato tests**: para APIs REST, usar Spring Cloud Contract o Pact. Garantizan que el frontend y backend hablan el mismo idioma sin E2E completo. **Decisión clave**: más tests rápidos y aislados que tests lentos y acoplados. Los tests deben ejecutarse en CI en < 5 minutos para no bloquear el flujo.",
+    "evaluationCriteria": [
+      "Describe la pirámide de testing con distribución aproximada",
+      "Menciona herramientas concretas (Jest, Playwright, Cypress)",
+      "Explica el trade-off entre velocidad y confianza",
+      "Menciona contract testing o algún enfoque para la integración frontend-backend"
+    ],
+    "timeEstimate": 240
+  }
+]

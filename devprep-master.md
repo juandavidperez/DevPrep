@@ -1,7 +1,11 @@
 # DevPrep — AI-Powered Interview Preparation Platform
 
-> **Master Document v6.0** | March 2026
-> **Status:** Phase 1 MVP complete and deployed to Vercel (https://dev-prep-xi.vercel.app). All epics done: auth, i18n, AI engine (4 providers + Zod validation + smart routing), 200-question bank, smart selector, Monaco editor, chat UI, session results, bookmarks + spaced repetition, dashboard analytics, loading skeletons, CI/CD, pre-commit hooks, swap test, `aiLatencyMs` tracking. Pending: unit tests.
+> **Master Document v6.1** | April 2026
+> **Status:** Phase 1 complete ✅. Phase 2 (Voice) complete ✅. Phase 3 (Avatar) pending.
+>
+> **Phase 1 done:** auth, i18n, AI engine (4 providers + Zod validation + smart routing), 200-question EN bank + 120-question ES bank, smart selector, Monaco editor, chat UI, session results, bookmarks + spaced repetition, dashboard analytics, loading skeletons, CI/CD, pre-commit hooks, swap test, `aiLatencyMs` tracking. Pending: unit tests.
+>
+> **Phase 2 done:** STT pipeline (faster-whisper-server local + OpenAI Whisper API), TTS pipeline (Kokoro local + OpenAI TTS + ElevenLabs), push-to-talk mic button + spacebar shortcut, waveform visualizer, transcript display + edit, audio playback with progress bar, evaluation→question audio chaining, TTS speed control (0.75×/1×/1.25×/1.5×), voice↔text modality toggle with graceful fallback, InteractionManager abstraction (`src/lib/interaction/`).
 
 ---
 
@@ -237,11 +241,11 @@ Same abstraction pattern as the AI engine — swap providers via env var, no cod
 #### Provider Matrix
 
 ```
-               DEV ($0)                  PROD (default)          PROD (alternative)
-               ────────────────────────────────────────────────────────────────────
-STT            Whisper via Ollama    →   OpenAI Whisper API
-TTS            Kokoro (local)        →   OpenAI TTS          →   ElevenLabs
-AI Engine      Ollama + Llama 3.1   →   Claude Haiku         →   Gemini Flash
+               DEV ($0)                      PROD (default)          PROD (alternative)
+               ──────────────────────────────────────────────────────────────────────
+STT ✅         faster-whisper-server (Docker) →   OpenAI Whisper API
+TTS ✅         Kokoro FastAPI (Docker)        →   OpenAI TTS          →   ElevenLabs
+AI Engine ✅   Ollama + Llama 3.1            →   Claude Haiku         →   Gemini Flash
 ```
 
 **Why OpenAI TTS as default (not ElevenLabs):**
@@ -300,7 +304,7 @@ export function getTTSProvider(): TTSProvider {
 
 #### Provider Notes
 
-**STT — Whisper via Ollama (dev):** Ollama supports Whisper natively — same process already running for the AI engine, no extra setup. Supports EN/ES. Latency ~2–4s without GPU, acceptable for push-to-talk flow.
+**STT — faster-whisper-server (dev):** ✅ OpenAI-compatible local server (`fedirz/faster-whisper-server`). Run with Docker on port 8000. Model configured via `WHISPER_LOCAL_MODEL` (default: `Systran/faster-whisper-small`). Supports EN/ES. Latency ~2–4s without GPU, acceptable for push-to-talk flow. Note: Ollama does NOT have a `/api/transcribe` endpoint — faster-whisper-server is the correct local alternative.
 
 **STT — OpenAI Whisper API (prod):** $0.006/min (~$0.012 per 2-min answer). High accuracy on technical terms (NgRx, JPA, PostgreSQL). Same API key as OpenAI TTS.
 
@@ -479,7 +483,9 @@ model QuestionBank {
 
 ## 5. Question Bank
 
-200 curated questions seeded to Supabase, tailored to Juan David's stack — not generic JS/React questions.
+320 curated questions seeded to Supabase (200 EN + 120 ES), tailored to Juan David's stack — not generic JS/React questions.
+
+**English bank (200 questions):**
 
 | File | Count | Topics |
 |------|-------|--------|
@@ -488,7 +494,19 @@ model QuestionBank {
 | `system-design.json` | 50 | Architecture, CI/CD, AWS, DB design, monitoring |
 | `behavioral.json` | 40 | STAR format, bilingual EN/ES |
 
-**Distribution by difficulty:** 65 junior · 115 mid · 20 senior
+**Spanish bank (120 questions) ✅:**
+
+| File | Count | Topics |
+|------|-------|--------|
+| `technical-es.json` | 40 | Angular, Spring Boot, Java 17, PostgreSQL, Docker, AWS |
+| `coding-es.json` | 25 | Algoritmos, TypeScript, Java, SQL (window functions) |
+| `system-design-es.json` | 25 | Arquitectura, CI/CD, AWS, patrones distribuidos |
+| `behavioral-es.json` | 30 | Formato STAR completo en español |
+
+**Distribution EN:** 65 junior · 115 mid · 20 senior
+**Distribution ES:** 42 junior · 56 mid · 22 senior
+
+> **Language selection:** `selector.ts` queries by `language` field. If no match in the bank → AI generates in the selected language (no English fallback).
 
 ### Target Stack Focus
 
@@ -800,10 +818,14 @@ devprep/
 │   ├── schema.prisma
 │   ├── seed.ts
 │   └── seeds/
-│       ├── technical.json       (60 questions: Angular, Spring Boot, PostgreSQL, Docker, AWS...)
-│       ├── coding.json          (50 questions: Algorithms, Java, TypeScript, SQL, Testing)
-│       ├── system-design.json   (50 questions)
-│       └── behavioral.json      (40 questions, bilingual EN/ES)
+│       ├── technical.json       (60 questions EN: Angular, Spring Boot, PostgreSQL, Docker, AWS)
+│       ├── coding.json          (50 questions EN: Algorithms, Java, TypeScript, SQL, Testing)
+│       ├── system-design.json   (50 questions EN)
+│       ├── behavioral.json      (40 questions EN, bilingual model answers)
+│       ├── technical-es.json    (40 questions ES) ✅
+│       ├── coding-es.json       (25 questions ES) ✅
+│       ├── system-design-es.json (25 questions ES) ✅
+│       └── behavioral-es.json   (30 questions ES, STAR format) ✅
 ├── messages/
 │   ├── en.json                  (namespaces: HomePage, Navbar, Dashboard, Login, SessionConfig, Settings, History)
 │   └── es.json
@@ -843,7 +865,18 @@ devprep/
 │   │   │   ├── HistoryFilters.tsx
 │   │   │   └── SessionList.tsx
 │   │   ├── session/
-│   │   │   └── SessionConfigForm.tsx
+│   │   │   ├── ChatContainer.tsx             (voice state, STT/TTS orchestration, audio chaining)
+│   │   │   ├── ChatInput.tsx                 (text + voice mode paths, TTS speed selector)
+│   │   │   ├── MessageBubble.tsx             (audio playback, triggerPlay chaining)
+│   │   │   ├── SessionConfigForm.tsx         (EN/ES language selector, input modality)
+│   │   │   ├── CodeEditor.tsx
+│   │   │   └── voice/                        ✅ Phase 2
+│   │   │       ├── useMicrophone.ts          (MediaRecorder hook, stream, analyser)
+│   │   │       ├── MicButton.tsx             (hold-to-record + spacebar shortcut)
+│   │   │       ├── WaveformVisualizer.tsx    (canvas frequency bars)
+│   │   │       ├── TranscriptDisplay.tsx     (editable STT result)
+│   │   │       ├── AudioPlayback.tsx         (play/pause/progress, triggerPlay, onEnded)
+│   │   │       └── VoiceToggle.tsx           (text ↔ voice mode button)
 │   │   ├── settings/
 │   │   │   └── SettingsForm.tsx
 │   │   └── providers/
@@ -859,11 +892,20 @@ devprep/
 │   │   │       ├── anthropic.ts              ✅
 │   │   │       ├── openai.ts                 ✅
 │   │   │       └── gemini.ts                 ✅
-│   │   ├── interaction/
-│   │   │   ├── types.ts
-│   │   │   └── InteractionManager.ts
+│   │   ├── interaction/                          ✅ Phase 2
+│   │   │   ├── types.ts                      (UserInput, AIOutput, SessionState, AvatarDirective)
+│   │   │   └── index.ts                      (transcribeAudio, synthesizeAudio — used by ChatContainer)
+│   │   ├── speech/                           ✅ Phase 2
+│   │   │   ├── types.ts                      (STTProvider, TTSProvider interfaces, error types)
+│   │   │   ├── index.ts                      (getSTTProvider, getTTSProvider factories)
+│   │   │   └── providers/
+│   │   │       ├── WhisperLocalProvider.ts   (faster-whisper-server, OpenAI-compatible API)
+│   │   │       ├── WhisperAPIProvider.ts     (OpenAI Whisper API)
+│   │   │       ├── KokoroProvider.ts         (local FastAPI, af_heart EN / ef_dora ES)
+│   │   │       ├── OpenAITTSProvider.ts
+│   │   │       └── ElevenLabsProvider.ts
 │   │   ├── questions/
-│   │   │   └── selector.ts                   (bank → spaced repetition → AI fallback)
+│   │   │   └── selector.ts                   (bank → spaced repetition → AI fallback, no EN fallback)
 │   │   ├── db.ts                             (Prisma client singleton)
 │   │   ├── auth.ts                           (NextAuth config + PrismaAdapter)
 │   │   └── auth.config.ts                    (callbacks: authorized, jwt, session)
@@ -905,14 +947,16 @@ devprep/
 | 8 | CI/CD (GitHub Actions), deploy to Vercel | ✅ |
 | 8 | Zod validation on AI responses (`parser.ts`), smart provider routing (`AI_ROUTING=smart`) | ✅ |
 
-### Phase 2 — Voice Interaction (~4 weeks)
+### Phase 2 — Voice Interaction (~4 weeks) ✅
 
 **Definition of Done:** User can speak answers via push-to-talk. AI transcribes (STT), evaluates, and responds in audio (TTS). Graceful fallback to text if mic unavailable. Provider swap (STT/TTS) via env var only — not exposed in UI.
 
-| Week | Milestone |
-|------|-----------|
-| 9–10 | STT pipeline: Whisper via Ollama (dev) + OpenAI Whisper API (prod), push-to-talk mic button, waveform visualizer, transcript display |
-| 11–12 | TTS pipeline: Kokoro local (dev) + OpenAI TTS (prod default) + ElevenLabs (alt), audio playback controls, modality switching (voice ↔ text fallback) |
+| Week | Milestone | Status |
+|------|-----------|--------|
+| 9–10 | STT pipeline: faster-whisper-server (dev) + OpenAI Whisper API (prod), push-to-talk mic button + spacebar shortcut, waveform visualizer, transcript display + edit | ✅ |
+| 11–12 | TTS pipeline: Kokoro local (dev, `af_heart` voice) + OpenAI TTS + ElevenLabs, audio playback controls, evaluation→question chaining, TTS speed control (0.75×/1×/1.25×/1.5×), voice↔text toggle with graceful fallback | ✅ |
+| 11–12 | InteractionManager abstraction (`src/lib/interaction/`) — `transcribeAudio()`, `synthesizeAudio()`, `UserInput`/`AIOutput`/`AvatarDirective` types ready for Phase 3 | ✅ |
+| 11–12 | Spanish question bank (120 questions) + removed English fallback in selector | ✅ |
 
 ### Phase 3 — Avatar Interviewer (~4 weeks)
 
@@ -1064,13 +1108,16 @@ ANTHROPIC_MODEL="claude-haiku-4-5-20251001"
 GEMINI_API_KEY="..."
 GEMINI_MODEL="gemini-2.5-flash"
 
-# STT — Phase 2
-STT_PROVIDER="whisper-local"        # "whisper-local" | "whisper-api"
+# STT — Phase 2 ✅
+STT_PROVIDER="whisper-local"        # "whisper-local" (faster-whisper-server) | "whisper-api" (OpenAI)
+WHISPER_LOCAL_URL="http://localhost:8000"          # faster-whisper-server Docker port
+WHISPER_LOCAL_MODEL="Systran/faster-whisper-small" # tiny | small | base | large-v3
 OPENAI_API_KEY="..."                # Used for both Whisper API (STT) and OpenAI TTS
 
-# TTS — Phase 2
-TTS_PROVIDER="openai"               # "kokoro" | "openai" | "elevenlabs"
-KOKORO_URL="http://localhost:8880"  # Local Kokoro server (dev only)
+# TTS — Phase 2 ✅
+TTS_PROVIDER="kokoro"               # "kokoro" (local, dev) | "openai" | "elevenlabs"
+KOKORO_URL="http://localhost:8880"  # Kokoro FastAPI Docker port (dev only)
+# Kokoro voices: EN=af_heart (default), ES=ef_dora
 OPENAI_TTS_VOICE_EN="alloy"         # OpenAI voice for English sessions
 OPENAI_TTS_VOICE_ES="alloy"         # OpenAI voice for Spanish sessions
 ELEVENLABS_API_KEY="..."            # Only needed if TTS_PROVIDER=elevenlabs
@@ -1136,6 +1183,6 @@ NEXT_PUBLIC_DEFAULT_LOCALE="en"
 
 ---
 
-*Document version: 6.0*
-*Last updated: March 2026*
+*Document version: 6.1*
+*Last updated: April 2026*
 *Author: Juan David Perez Vergara*

@@ -55,7 +55,7 @@ export async function selectNextQuestion(
   );
   if (fromBank) return fromBank;
 
-  // 3. Fallback to AI generation
+  // 3. Fallback to AI generation (respects the selected language)
   return selectFromAI(options);
 }
 
@@ -166,6 +166,13 @@ async function selectFromAI(options: SelectQuestionOptions): Promise<Question> {
 
   const ai = getAIProvider();
   const questions = await ai.generateQuestions(config);
+
+  if (!questions || questions.length === 0 || !questions[0]?.text) {
+    throw new Error(
+      `AI provider returned no questions for category="${options.category}" difficulty="${options.difficulty}". Is the AI provider running?`
+    );
+  }
+
   return questions[0];
 }
 
