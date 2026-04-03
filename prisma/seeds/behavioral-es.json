@@ -1,0 +1,602 @@
+[
+  {
+    "category": "behavioral",
+    "difficulty": "junior",
+    "tags": ["trabajo-en-equipo", "colaboracion"],
+    "language": "es",
+    "questionText": "Cuéntame sobre una vez que tuviste que colaborar estrechamente con un compañero de equipo que tenía un estilo de trabajo muy diferente al tuyo.",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Describe cómo adaptaste tu forma de comunicarte",
+      "Menciona el resultado concreto de esa colaboración"
+    ],
+    "modelAnswer": "Situación: En mi primer trabajo como desarrollador junior, me asignaron con un compañero senior para construir un módulo de gestión de clientes en Angular. Él prefería trabajar de forma muy autónoma, sin reuniones, mientras que yo necesitaba más contexto y orientación para avanzar con seguridad. Tarea: Teníamos que entregar el módulo en tres semanas y los primeros días sentí que avanzaba muy lento porque no sabía exactamente cuál era el límite de mis tareas y las suyas. Acción: Decidí escribirle un mensaje en Slack proponiéndole una sincronización de diez minutos al inicio de cada día para alinear qué archivos tocaría cada uno. Fue muy directo: aceptó siempre que fuera breve y estructurada. También preparé una lista de preguntas antes de cada sesión para no interrumpirle con dudas dispersas a lo largo del día. Resultado: Los conflictos de merge bajaron drásticamente desde la primera semana. Entregamos el módulo dos días antes del plazo y el tech lead felicitó la integración del código. Aprendí que adaptar mi estilo de comunicación no es ceder, sino ser profesional. Hoy siempre propongo una rutina de sincronización mínima al inicio de cualquier colaboración.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Describe una adaptación concreta en su estilo de comunicación",
+      "Muestra respeto por el estilo del otro sin renunciar a sus necesidades",
+      "Presenta un resultado medible o concreto"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "junior",
+    "tags": ["feedback", "aprendizaje"],
+    "language": "es",
+    "questionText": "Describe una situación en la que recibiste críticas fuertes sobre tu código durante una revisión. ¿Cómo lo manejaste?",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Sé honesto sobre tu reacción inicial",
+      "Muestra qué aprendiste y cómo cambió tu forma de trabajar"
+    ],
+    "modelAnswer": "Situación: A los dos meses de entrar a mi primera empresa, envié un pull request con un endpoint REST en Spring Boot para el módulo de autenticación. El desarrollador senior dejó más de doce comentarios señalando lógica de negocio en el controlador, ausencia de validaciones con Bean Validation y manejo de errores inconsistente. Tarea: Tenía que corregir el PR y además entender por qué mis decisiones no eran las correctas, para no repetir los mismos errores. Acción: En lugar de solo corregir los comentarios sin entenderlos, pedí una videollamada de veinte minutos con el revisor. Me explicó el patrón de capas y el principio de responsabilidad única. Tomé notas detalladas y refactoricé el endpoint completo. También creé una checklist personal con los puntos más frecuentes de feedback para revisarla antes de abrir cualquier PR. Resultado: Mi siguiente pull request tuvo solo dos comentarios menores y el revisor señaló explícitamente la mejora. Tres meses después, yo mismo empecé a compartir esa checklist con otro junior que se unió al equipo. Aprendí que recibir feedback duro temprano, si lo gestionas bien, acelera mucho tu crecimiento.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Muestra humildad y disposición a aprender",
+      "Toma acciones proactivas para mejorar, no solo corrige",
+      "Menciona un cambio concreto en su comportamiento futuro"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "junior",
+    "tags": ["adaptacion", "aprendizaje"],
+    "language": "es",
+    "questionText": "Cuéntame sobre una vez que tuviste que aprender una tecnología o herramienta nueva en poco tiempo para completar una tarea.",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Explica el método que usaste para aprender rápido",
+      "Menciona qué recursos utilizaste y cuánto tiempo tomó"
+    ],
+    "modelAnswer": "Situación: En mi segundo mes de trabajo, el equipo decidió migrar el frontend de AngularJS legacy a Angular 17 con standalone components. Yo nunca había trabajado con Angular moderno ni con la nueva API de signals. Tarea: Me asignaron migrar tres componentes del módulo de reportes en una semana, para no bloquear el sprint. Acción: El primer día dediqué cuatro horas a la documentación oficial de Angular, enfocándome exclusivamente en standalone components y signal inputs. Luego tomé uno de los componentes más simples como ejemplo piloto, lo migré paso a paso y pedí a mi tech lead que lo revisara antes de avanzar con los demás. Sus comentarios me dieron una base sólida para los siguientes dos componentes. También preparé una pequeña guía de migración interna con los patrones más comunes para el resto del equipo. Resultado: Entregué los tres componentes migrados en cinco días, uno antes del plazo. El tech lead usó mi guía interna como referencia para otros miembros del equipo. La experiencia me enseñó que la mejor forma de aprender rápido es hacer un ejemplo piloto pequeño y validarlo antes de escalar.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Describe un método de aprendizaje estructurado y eficiente",
+      "Muestra iniciativa más allá de lo mínimo requerido",
+      "Presenta un resultado concreto dentro del plazo"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "junior",
+    "tags": ["trabajo-en-equipo", "comunicacion"],
+    "language": "es",
+    "questionText": "Dame un ejemplo de una vez que cometiste un error en el trabajo y cómo lo resolviste.",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Sé específico sobre el error, no lo minimices",
+      "Muestra responsabilidad y qué hiciste para corregirlo y evitarlo en el futuro"
+    ],
+    "modelAnswer": "Situación: Durante el desarrollo de una API en Spring Boot, eliminé por error una constraint de unicidad de la base de datos en una migración de Liquibase porque asumí que era redundante. El cambio llegó a producción en el siguiente despliegue. Tarea: Dos días después, empezamos a recibir registros duplicados en la tabla de usuarios, lo que causaba errores en varios flujos de la aplicación. Acción: En cuanto identifiqué que el problema venía de mi cambio, lo reporté inmediatamente a mi tech lead sin esperar a que me lo señalaran. Juntos preparamos una migración de rollback y un script para limpiar los duplicados con el menor impacto posible. También escribí un informe breve explicando la causa raíz y propuse un proceso de revisión obligatoria para migraciones que modifiquen constraints. Resultado: El incidente se resolvió en menos de cuatro horas. Mi tech lead valoró especialmente que yo lo reportara de forma proactiva. A partir de entonces, el equipo adoptó una revisión de dos personas para cualquier migración de esquema. Aprendí que reportar errores rápido reduce el daño mucho más que intentar resolverlos en silencio.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Asume responsabilidad sin excusas",
+      "Describe acciones concretas para resolver y prevenir el error",
+      "Muestra aprendizaje real de la experiencia"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "junior",
+    "tags": ["prioridades", "deadlines"],
+    "language": "es",
+    "questionText": "¿Cómo manejaste una situación en la que tenías múltiples tareas con la misma urgencia y no podías completarlas todas a tiempo?",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Explica cómo priorizaste y con quién comunicaste la situación",
+      "Menciona el criterio que usaste para decidir qué hacer primero"
+    ],
+    "modelAnswer": "Situación: En mi primer sprint formal, me asignaron cuatro tareas que el product owner marcó todas como alta prioridad: un bug crítico en producción, dos historias de usuario nuevas y una mejora en la cobertura de tests. Era jueves y el sprint cerraba el viernes. Tarea: Era imposible terminar todo con calidad, así que necesitaba decidir qué entregar y comunicarlo de forma clara. Acción: Hice una tabla rápida con el impacto estimado y el esfuerzo de cada tarea. El bug en producción afectaba directamente a usuarios reales, así que lo puse primero. Luego hablé con el product owner y le presenté el análisis, proponiendo entregar las dos historias en el siguiente sprint. Él estuvo de acuerdo y ajustó el backlog. Me enfoqué en el bug y una de las historias, que completé con tests. Resultado: El bug quedó resuelto ese mismo día y la historia entregada pasó el code review sin comentarios bloqueantes. El product owner reconoció en la retrospectiva que la comunicación proactiva había evitado un problema mayor de expectativas. Aprendí que priorizar bien y comunicarlo a tiempo es tan valioso como escribir buen código.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Muestra un criterio claro de priorización",
+      "Comunica proactivamente a los stakeholders relevantes",
+      "Presenta un resultado satisfactorio dado el contexto"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "junior",
+    "tags": ["comunicacion", "trabajo-en-equipo"],
+    "language": "es",
+    "questionText": "Cuéntame sobre una vez que tuviste que pedir ayuda porque estabas bloqueado en un problema técnico.",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Describe cuánto tiempo intentaste resolverlo solo antes de pedir ayuda",
+      "Muestra qué aprendiste de la experiencia"
+    ],
+    "modelAnswer": "Situación: Al inicio de mi carrera, tuve que implementar la paginación de una lista en Angular consumiendo una API REST que devolvía los datos con un formato no estándar. Llevaba tres horas intentando hacer funcionar el componente y cada intento generaba errores diferentes. Tarea: Necesitaba tener el componente funcionando para el día siguiente, ya que bloqueaba a otro desarrollador que dependía de él. Acción: Decidí que tres horas era suficiente tiempo de intento individual. Escribí un mensaje en el canal de equipo describiendo el problema con detalle: el comportamiento esperado, lo que obtenía, el fragmento de código y los errores que veía. Un compañero respondió en quince minutos y señaló que el servicio Angular estaba mapeando mal la propiedad de paginación del backend. En media hora lo resolvimos juntos. Además aproveché para entender el patrón correcto. Resultado: El componente quedó listo esa misma tarde y el compañero que dependía de él pudo continuar sin retrasos. Aprendí a fijarme un límite de tiempo razonable antes de pedir ayuda, y a documentar el problema claramente para que la ayuda sea más efectiva y rápida.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Demuestra que intentó resolver el problema antes de pedir ayuda",
+      "Muestra cómo comunicó el problema de forma efectiva",
+      "Refleja aprendizaje sobre cuándo y cómo pedir ayuda"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "junior",
+    "tags": ["adaptacion", "aprendizaje"],
+    "language": "es",
+    "questionText": "Describe una situación en la que entraste a un proyecto en curso y tuviste que entender un código que no habías escrito tú.",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Explica las estrategias que usaste para entender el código existente",
+      "Menciona cuánto tiempo tardaste y cómo validaste tu comprensión"
+    ],
+    "modelAnswer": "Situación: Me incorporé a un equipo a mitad de un proyecto de e-commerce en Angular con Spring Boot. El backend tenía más de cuarenta endpoints y una lógica de descuentos muy compleja que ninguno de mis compañeros actuales había escrito: los desarrolladores originales ya no estaban en la empresa. Tarea: Necesitaba implementar un nuevo tipo de descuento en dos semanas, pero primero tenía que entender cómo funcionaba el sistema existente sin documentación actualizada. Acción: Empecé por los tests de integración existentes, que me dieron la mejor idea del comportamiento esperado. Luego trazé el flujo completo desde el controlador hasta la base de datos usando el debugger de IntelliJ. Hice anotaciones en comentarios del código y pregunté al product owner los casos de negocio clave para validar mis hipótesis. Documenté el flujo en Confluence a medida que lo entendía. Resultado: Implementé el nuevo tipo de descuento en diez días, con tests que cubrían los escenarios principales. El tech lead destacó que la documentación que escribí en Confluence le ahorró tiempo a otros dos desarrolladores que entraron después. La experiencia me enseñó que los tests son la mejor documentación viva de un sistema.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Describe estrategias concretas para entender código ajeno",
+      "Muestra iniciativa para documentar el conocimiento adquirido",
+      "Presenta un resultado exitoso con impacto más allá de su tarea"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "junior",
+    "tags": ["feedback", "comunicacion"],
+    "language": "es",
+    "questionText": "¿Cómo manejaste una situación en la que no estabas de acuerdo con la decisión técnica de tu tech lead o manager?",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Muestra que expresaste tu opinión de forma constructiva",
+      "Describe cómo manejaste la situación una vez tomada la decisión final"
+    ],
+    "modelAnswer": "Situación: En un proyecto de migración de servicios, mi tech lead propuso usar una tabla de base de datos para gestionar el estado de tareas asíncronas. Yo había investigado brevemente sobre colas de mensajes y pensaba que una solución como RabbitMQ sería más adecuada a largo plazo. Tarea: Quería expresar mi perspectiva sin generar un conflicto innecesario y sin simplemente acatar sin entender. Acción: Pedí diez minutos al tech lead fuera de la reunión general. Le pregunté primero cuál era su razonamiento principal para la solución de tabla. Explicó que el equipo no tenía experiencia con brokers de mensajes, que añadía complejidad operacional y que el volumen de tareas no justificaba esa infraestructura. Entendí que su decisión tenía en cuenta factores que yo no había considerado. Aun así compartí mi punto de vista señalando las limitaciones a escala, y él agradeció el input. Acordamos revisarlo si el volumen creciera. Resultado: Implementé la solución acordada con buena actitud. Seis meses después el volumen no había crecido lo suficiente para justificar el cambio, lo cual confirmó que la decisión inicial fue correcta. Aprendí que el contexto de equipo y la deuda operacional son tan importantes como la elegancia técnica.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Expresa desacuerdo de forma respetuosa y constructiva",
+      "Muestra disposición a entender el razonamiento del otro",
+      "Acepta la decisión final y la ejecuta con profesionalismo"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "junior",
+    "tags": ["trabajo-en-equipo", "iniciativa"],
+    "language": "es",
+    "questionText": "Dame un ejemplo de una vez que tomaste la iniciativa para mejorar algo en tu equipo o en el proyecto, sin que te lo pidieran.",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Describe qué identificaste como problema o área de mejora",
+      "Muestra cómo propusiste e implementaste la mejora"
+    ],
+    "modelAnswer": "Situación: En mi primer proyecto, noté que cada vez que alguien nuevo configuraba el entorno de desarrollo, pasaba entre medio día y un día completo resolviendo dependencias y configuraciones no documentadas. Ocurrió dos veces en un mes con diferentes compañeros. Tarea: No era mi responsabilidad formal documentar el entorno, pero el problema me parecía costoso y fácil de resolver. Acción: Dediqué tres horas un viernes por la tarde a escribir un README de onboarding paso a paso: cómo instalar las dependencias, configurar el archivo de variables de entorno local, levantar Docker Compose y ejecutar los seeds de base de datos. Lo revisé con un compañero que acababa de incorporarse para validar que los pasos fueran claros. Luego lo compartí con el tech lead y lo añadí al repositorio. Resultado: El siguiente desarrollador que se incorporó configuró el entorno en menos de dos horas y sin interrupciones al equipo. El tech lead lo mencionó en la siguiente retrospectiva como una mejora valiosa. Aprendí que las mejoras pequeñas con alto impacto en productividad son una gran manera de aportar valor más allá de tus tickets asignados.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Identifica un problema real con impacto en el equipo",
+      "Actúa sin necesitar autorización para algo de bajo riesgo y alto valor",
+      "Muestra un resultado concreto y reconocido"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "junior",
+    "tags": ["presion", "deadlines"],
+    "language": "es",
+    "questionText": "Cuéntame sobre una situación en la que tuviste que trabajar bajo mucha presión para cumplir una fecha de entrega importante.",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Describe cómo gestionaste tu tiempo y energía bajo presión",
+      "Menciona si pediste ayuda o comunicaste el riesgo a tu equipo"
+    ],
+    "modelAnswer": "Situación: Una semana antes del cierre de un sprint clave, el cliente adelantó la demo de producto dos días. Yo era responsable del módulo de generación de reportes en PDF desde un endpoint de Spring Boot, que todavía tenía tres casos de uso pendientes. Tarea: Necesitaba completar el módulo funcional en tres días en lugar de cinco, sin bajar la calidad mínima aceptable para la demo. Acción: Lo primero que hice fue comunicar al tech lead el riesgo real. Juntos priorizamos: los tres casos de uso no eran igualmente críticos para la demo, así que acordamos que dos eran imprescindibles y uno podía mostrarse como próximamente disponible. Me enfoqué sin interrupciones en los dos casos prioritarios, bloqueé mi calendario para reuniones no esenciales y pedí a un compañero que revisara mis PRs de forma urgente el mismo día. Resultado: Entregué los dos casos funcionales el día de la demo y el tercero quedó listo al día siguiente. El cliente no notó nada incompleto. Aprendí que bajo presión lo más importante es comunicar el riesgo pronto, priorizar sin ambigüedad y pedir apoyo puntual al equipo.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Comunica el riesgo de forma proactiva",
+      "Prioriza de forma racional bajo presión",
+      "Presenta un resultado exitoso con apoyo del equipo"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "junior",
+    "tags": ["comunicacion", "trabajo-en-equipo"],
+    "language": "es",
+    "questionText": "Describe una situación en la que tuviste que dar retroalimentación a un compañero sobre algo que no estaba haciendo bien.",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Describe cómo diste el feedback de forma constructiva y respetuosa",
+      "Menciona cómo reaccionó el compañero y cuál fue el resultado"
+    ],
+    "modelAnswer": "Situación: Estaba trabajando con un compañero junior en el mismo módulo y noté que sus commits incluían código comentado y variables con nombres como 'temp2' o 'dataX'. Esto dificultaba las revisiones y no seguía las convenciones del equipo. Tarea: Quería señalarlo sin dañar la relación ni que se sintiera atacado, ya que era una persona con la que trabajaba a diario y cuya motivación me importaba preservar. Acción: Esperé un momento tranquilo fuera del código review formal y le dije directamente pero con cuidado: \"Oye, quería comentarte algo sobre los commits porque creo que te puede ayudar en las revisiones.\" Le expliqué las convenciones del equipo sobre nombres de variables y código muerto, compartí ejemplos concretos de sus commits y le mostré cómo eso afectaba la legibilidad. No lo critiqué como persona, lo enmarqué como algo fácil de mejorar. Resultado: Agradeció el feedback y en los siguientes commits mejoró notablemente. Incluso me preguntó si podía revisar sus ramas antes de abrirlas al equipo. Aprendí que el feedback directo pero empático fortalece las relaciones de trabajo en lugar de dañarlas.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Da el feedback de forma directa pero empática",
+      "Se enfoca en el comportamiento, no en la persona",
+      "Muestra un resultado positivo en la relación y el trabajo"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "junior",
+    "tags": ["aprendizaje", "fracaso"],
+    "language": "es",
+    "questionText": "Cuéntame sobre un proyecto o tarea que no salió como esperabas. ¿Qué aprendiste de esa experiencia?",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Sé honesto sobre lo que salió mal y por qué",
+      "Enfócate en el aprendizaje concreto que te llevaste"
+    ],
+    "modelAnswer": "Situación: En mi tercer mes de trabajo, desarrollé solo una funcionalidad de exportación de datos a Excel en Spring Boot. Estaba satisfecho con el resultado y lo presenté directamente en la demo sin haber hecho pruebas suficientes con datos reales de producción. Tarea: La funcionalidad debía exportar hasta cinco mil registros correctamente y ser usada por el equipo de operaciones al día siguiente de la demo. Acción: Durante la demo, al intentar exportar más de quinientos registros, la aplicación lanzaba un OutOfMemoryError. No lo había probado con volumen real porque en mi entorno local tenía menos de cien registros de prueba. Tuve que reconocer el error frente al cliente y al equipo. Después de la demo, implementé paginación en la exportación usando streaming con Apache POI y volví a presentarlo una semana después. Resultado: La segunda demo funcionó perfectamente hasta con diez mil registros. El cliente quedó satisfecho con la solución final. Pero la lección real fue más valiosa: desde entonces, siempre pruebo con datos de volumen similar al de producción y nunca presento algo que no haya validado en condiciones reales. Ese incidente definió cómo entiendo la calidad en mi trabajo.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Asume responsabilidad sin excusas ni minimización",
+      "Describe acciones concretas para corregir el error",
+      "Articula un aprendizaje real y duradero"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["conflictos", "comunicacion"],
+    "language": "es",
+    "questionText": "Describe una situación en la que tuviiste un desacuerdo técnico significativo con un compañero y cómo lo resolvieron.",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Explica el núcleo del desacuerdo técnico con claridad",
+      "Muestra cómo llegaron a una decisión sin que fuera un conflicto personal"
+    ],
+    "modelAnswer": "Situación: En un proyecto de microservicios, mi compañero senior y yo teníamos visiones opuestas sobre cómo implementar la comunicación entre servicios. Él defendía eventos asíncronos con Kafka para todo, yo argumentaba que para ciertas operaciones críticas de usuario la sincronía con REST era más predecible y fácil de depurar con el stack actual del equipo. Tarea: Teníamos que tomar una decisión antes de la siguiente semana para no bloquear el diseño del servicio de pedidos. Acción: Propuse hacer un análisis conjunto con criterios objetivos: latencia esperada, experiencia del equipo, complejidad de observabilidad y casos de fallo. Los escribimos en una tabla en Confluence. El análisis mostró que para tres de los cinco flujos identificados, los eventos asíncronos tenían ventajas claras, pero para los dos flujos de confirmación de pago la sincronía era más segura dado nuestro nivel de madurez con Kafka. Llevamos la propuesta híbrida al tech lead, quien la aprobó. Resultado: El servicio de pedidos se implementó con esa arquitectura mixta. Seis meses después no tuvimos incidentes relacionados con la comunicación entre servicios. Mi compañero reconoció que la tabla de criterios había sido útil para separar la discusión técnica del ego. Aprendí que en desacuerdos técnicos, los datos y criterios objetivos son el mejor árbitro.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Describe el desacuerdo técnico con precisión",
+      "Propone un método objetivo para resolverlo",
+      "Muestra capacidad de llegar a soluciones de compromiso fundamentadas"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["liderazgo", "iniciativa"],
+    "language": "es",
+    "questionText": "Cuéntame sobre una vez que lideraste una iniciativa técnica o de proceso dentro de tu equipo.",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Describe cómo conseguiste el apoyo del equipo para la iniciativa",
+      "Menciona los obstáculos que encontraste y cómo los superaste"
+    ],
+    "modelAnswer": "Situación: En mi equipo de seis desarrolladores, los despliegues a producción eran manuales: alguien conectaba por SSH al servidor, copiaba el JAR y reiniciaba el servicio. Esto causaba errores humanos y tiempos de inactividad de veinte a cuarenta minutos por despliegue. Tarea: No era mi responsabilidad formal, pero como desarrollador mid con más contexto en CI/CD que el resto, me ofrecí a liderar la automatización. Acción: Presenté al tech lead una propuesta de tres semanas para implementar un pipeline en GitHub Actions con build, tests automáticos y despliegue a un servidor EC2. Él me dio el visto bueno con la condición de que no afectara la velocidad de entrega del sprint. Dividí el trabajo en incrementos: primero solo el build y los tests en CI, luego el despliegue automático a staging, finalmente a producción con aprobación manual. Organicé una sesión de treinta minutos con el equipo para explicar los cambios y recoger feedback. Resultado: El pipeline quedó completo en dieciséis días. Los tiempos de despliegue bajaron de cuarenta minutos a ocho minutos totalmente automatizados. Los errores por despliegue manual desaparecieron. El tech lead lo presentó como caso de éxito interno. Aprendí que liderar sin autoridad formal requiere resultados incrementales visibles y comunicación constante.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Muestra capacidad para liderar sin autoridad formal",
+      "Describe cómo gestionó el apoyo y las expectativas del equipo",
+      "Presenta un impacto medible en la operación del equipo"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["mentoria", "trabajo-en-equipo"],
+    "language": "es",
+    "questionText": "Dame un ejemplo de una vez que ayudaste a crecer profesionalmente a un compañero junior.",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Describe cómo identificaste en qué necesitaba ayuda",
+      "Muestra el impacto concreto en su desarrollo o en el equipo"
+    ],
+    "modelAnswer": "Situación: Se incorporó al equipo una desarrolladora junior con buenas bases de Java pero sin experiencia en Angular. Era su primera semana y tenía que implementar un formulario reactivo con validaciones personalizadas en dos días. Tarea: El tech lead me pidió que la apoyara sin hacerle el trabajo, para que realmente aprendiera el patrón. Acción: Primero le pregunté qué había entendido de Angular Reactive Forms leyendo la documentación. Identificé que el concepto de FormGroup anidado le resultaba confuso. En lugar de explicárselo directamente, le preparé un mini-ejercicio de quince minutos con un formulario más sencillo que el real, para que lo construyera ella sola mientras yo observaba. Cuando se trabó, le hacía preguntas guía en lugar de darle la respuesta: '¿Qué crees que hace este método del FormBuilder?' Después de completar el ejercicio piloto, implementó el formulario real con autonomía y sólo me consultó dos veces. Revisé su PR con comentarios constructivos. Resultado: Entregó la funcionalidad en el plazo. Tres semanas después implementó otro formulario complejo sin apoyo. Me agradeció el enfoque porque dijo que así había interiorizado el patrón de verdad, no solo copiado código. Aprendí que la mejor mentoría es la que hace preguntas, no la que da respuestas.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Distingue entre ayudar y hacer el trabajo por otro",
+      "Usa técnicas pedagógicas concretas y reflexionadas",
+      "Muestra impacto duradero en el desarrollo del junior"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["comunicacion", "resolucion-problemas"],
+    "language": "es",
+    "questionText": "Describe una situación en la que tuviste que explicar un problema técnico complejo a alguien sin conocimientos técnicos.",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Explica qué analogías o recursos usaste para simplificar el concepto",
+      "Menciona si lograste que tomaran una decisión informada"
+    ],
+    "modelAnswer": "Situación: Detectamos que la aplicación tenía un problema de N+1 queries en Hibernate que causaba que la página de listado de proyectos tardara ocho segundos en cargar. El product owner necesitaba decidir si posponer otras features para priorizar esta corrección. Tarea: Tenía que explicarle el problema de N+1 de forma que entendiera el impacto real sin entrar en detalles de ORM que no le aportaban valor. Acción: Le dije: 'Imagina que tienes que hacer la compra de cien productos. El sistema actual hace un viaje al supermercado por cada producto, en lugar de ir una sola vez y traerlos todos. Por eso tardamos ocho segundos cuando con la solución correcta debería tardar menos de uno.' Luego le mostré en una tabla simple: tiempo actual, tiempo esperado y el esfuerzo estimado en puntos. También le expliqué el riesgo de no corregirlo: si llegábamos a quinientos proyectos, la página podría tardar más de cuarenta segundos. Resultado: El product owner priorizó la corrección en ese mismo sprint. Implementamos fetch join con JPQL y el tiempo de carga bajó a 0,8 segundos. En la siguiente reunión, el product owner contó la analogía del supermercado a los stakeholders del negocio para justificar la priorización. Aprendí que las analogías del mundo físico son la herramienta más poderosa para comunicar problemas técnicos a perfiles no técnicos.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Traduce el problema técnico a términos comprensibles sin perder precisión",
+      "Conecta el problema técnico con impacto de negocio",
+      "Logra que el interlocutor tome una decisión informada"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["presion", "resolucion-problemas"],
+    "language": "es",
+    "questionText": "Cuéntame sobre una vez que tuviste que resolver un incidente crítico en producción bajo mucha presión.",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Describe el proceso de diagnóstico paso a paso",
+      "Menciona cómo gestionaste la comunicación durante el incidente"
+    ],
+    "modelAnswer": "Situación: Un lunes a las nueve de la mañana recibimos alertas de que el servicio de autenticación estaba devolviendo 500 en el ochenta por ciento de las peticiones. Unos doscientos usuarios no podían iniciar sesión. Era el día de lanzamiento de una nueva campaña de marketing. Tarea: Era el desarrollador de guardia y tenía que diagnosticar y resolver el incidente lo antes posible, idealmente en menos de treinta minutos. Acción: Lo primero fue revisar los logs de la última hora en CloudWatch. Encontré un NullPointerException en el JWTService relacionado con una propiedad de configuración. Revisé el historial de despliegues y vi que habíamos desplegado a las ocho de la mañana: el nuevo despliegue había olvidado incluir una variable de entorno nueva que yo mismo había añadido en el código. Actualicé la variable en AWS Parameter Store y reinicié el servicio. Mientras tanto mantuve un hilo en Slack con actualizaciones cada cinco minutos para el equipo y el manager. Resultado: El servicio volvió a estar operativo en dieciséis minutos desde la alerta. El impacto en la campaña fue mínimo. Implementamos un checklist de despliegue que incluye validación de variables de entorno antes de cada release. Aprendí que bajo presión la comunicación frecuente y breve tranquiliza al equipo tanto como resolver el problema.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Describe un proceso de diagnóstico estructurado y metódico",
+      "Gestiona la comunicación con el equipo durante el incidente",
+      "Propone mejoras del proceso para evitar la recurrencia"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["prioridades", "liderazgo"],
+    "language": "es",
+    "questionText": "¿Cómo manejaste una situación en la que el equipo acumuló una cantidad significativa de deuda técnica que empezaba a afectar la velocidad de entrega?",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Explica cómo cuantificaste o visualizaste la deuda técnica para el equipo",
+      "Muestra cómo conseguiste espacio en el roadmap para abordarla"
+    ],
+    "modelAnswer": "Situación: En mi segundo año como desarrollador mid, el equipo empezó a notar que las historias de usuario que antes tomaban dos días empezaban a tomar cuatro o cinco. Teníamos más de sesenta issues técnicos abiertos en Jira, incluyendo migraciones de Spring Boot 2 a 3, tests de integración rotos y servicios con lógica de negocio mezclada. Tarea: No era fácil convencer al product owner de dedicar tiempo a tareas que no generaban features visibles para el negocio. Necesitaba comunicar el impacto de la deuda técnica en términos de negocio. Acción: Junto con el tech lead, construimos un gráfico simple que mostraba la correlación entre el número de issues técnicos abiertos y el tiempo promedio de las historias en los últimos seis meses. Era una correlación clara. También estimamos que si dedicábamos el veinte por ciento del sprint a deuda técnica, en tres meses recuperaríamos la velocidad base. Presentamos el análisis al product owner y propusimos una regla del 80-20 por sprint. Resultado: El product owner aceptó el 80-20. Cuatro meses después, el tiempo promedio de las historias volvió a los dos o tres días anteriores. El equipo también reportó más satisfacción al trabajar en un código más limpio. Aprendí que la deuda técnica hay que hablarla en lenguaje de negocio, no de ingeniería.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Cuantifica el impacto de la deuda técnica en términos de negocio",
+      "Propone una solución equilibrada y sostenible",
+      "Muestra un resultado medible en velocidad del equipo"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["adaptacion", "aprendizaje"],
+    "language": "es",
+    "questionText": "Describe una situación en la que el alcance de un proyecto cambió significativamente a mitad del desarrollo. ¿Cómo te adaptaste?",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Describe el impacto del cambio en el trabajo ya hecho",
+      "Muestra cómo replanificaste y comunicaste el cambio al equipo"
+    ],
+    "modelAnswer": "Situación: Llevábamos tres semanas construyendo un sistema de notificaciones por email para una plataforma educativa cuando el cliente decidió que también necesitaba notificaciones push en móvil y notificaciones en tiempo real en la web, con el mismo plazo de entrega original. Tarea: Yo era el desarrollador responsable del backend de notificaciones en Spring Boot y tenía que replantear la arquitectura para soportar múltiples canales sin reescribir lo ya hecho. Acción: Lo primero fue comunicar al product owner y al tech lead el impacto real: mantener el plazo con los tres canales era inviable sin comprometer la calidad. Propuse entregar el canal de email en la fecha original y los dos canales adicionales en fases de dos semanas cada una. Para hacer posible las fases siguientes, refactoricé el servicio de notificaciones hacia un patrón Strategy con un NotificationChannel como interfaz, de modo que añadir un nuevo canal no requiriera modificar el código existente. Resultado: El cliente aceptó el plan por fases. Email se entregó en la fecha prevista. Las notificaciones push llegaron dos semanas después. La arquitectura con el patrón Strategy permitió que otro desarrollador implementara las notificaciones web sin casi tocar mi código. El tech lead lo usó como ejemplo de diseño para el equipo.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Evalúa el impacto del cambio y comunica riesgos de forma proactiva",
+      "Propone una solución técnica que absorbe el cambio elegantemente",
+      "Muestra capacidad de negociar el alcance con stakeholders"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["logros", "iniciativa"],
+    "language": "es",
+    "questionText": "Cuéntame sobre el logro técnico del que más te enorgulleces hasta ahora en tu carrera.",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Sé específico sobre tu contribución personal, no del equipo en general",
+      "Incluye el impacto concreto y por qué fue significativo para ti"
+    ],
+    "modelAnswer": "Situación: En una plataforma de gestión de activos, el proceso de generación de reportes financieros mensuales tardaba cuatro horas y había que ejecutarlo manualmente. Generaba archivos Excel de varios miles de filas consultando directamente la base de datos de producción, lo cual causaba degradación visible del servicio. Tarea: Me propuse como objetivo personal refactorizar ese proceso para que fuera automatizado, no degradara producción y tardara menos de quince minutos. Acción: Analicé el proceso original y encontré que hacía miles de queries no optimizadas sin índices y cargaba todo en memoria. Diseñé una solución de tres partes: primero moví los datos necesarios a tablas de reporting con índices específicos actualizadas por un job nocturno; luego implementé la generación de Excel con streaming usando Apache POI para no cargar todo en memoria; finalmente automaticé la ejecución con un job de Spring Batch con notificación por email al completar. Resultado: El tiempo de generación bajó de cuatro horas a nueve minutos. El proceso corría de madrugada sin impacto en producción. El equipo financiero dejó de necesitar coordinarse con IT para ejecutarlo manualmente. Este logro me importa especialmente porque lo identifiqué yo solo, lo propuse, lo diseñé y lo implementé de principio a fin, y tuvo un impacto real en personas fuera del equipo de tecnología.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Describe contribución personal y diferenciada",
+      "Presenta impacto técnico y de negocio medibles",
+      "Articula por qué el logro es significativo para él/ella"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["conflictos", "trabajo-en-equipo"],
+    "language": "es",
+    "questionText": "Describe una situación en la que un compañero no cumplía con los compromisos del equipo de forma recurrente. ¿Cómo lo manejaste?",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Describe cómo abordaste la situación directamente con esa persona antes de escalarla",
+      "Muestra el equilibrio entre mantener la relación y exigir responsabilidad"
+    ],
+    "modelAnswer": "Situación: Durante dos sprints consecutivos, un compañero mid entregaba sus historias al final del sprint sin pasar por code review, lo que bloqueaba el cierre y obligaba al resto del equipo a hacer reviews apresuradas o posponer el merge. Tarea: El tech lead estaba al tanto pero esperaba que el equipo se autorregulara. Yo era quien más estaba siendo bloqueado por esta situación. Acción: Pedí hablar con él en privado fuera de cualquier reunión formal. Le comenté con datos concretos lo que había observado en los dos últimos sprints: sus PRs llegaban el último día, lo que generaba cuellos de botella específicos. Le pregunté directamente si había algo que lo estaba bloqueando. Me explicó que tenía problemas para estimar sus tareas y le daba vergüenza pedir ayuda a mitad del sprint. Propusimos juntos un check-in informal a mitad de sprint entre los dos para detectar bloqueos antes de que se acumularan. Resultado: En los siguientes dos sprints sus PRs empezaron a llegar al menos dos días antes del cierre. El equipo dejó de tener los cuellos de botella. El tech lead notó la mejora y en la retrospectiva él mismo mencionó el check-in informal como algo útil. Aprendí que muchos problemas de rendimiento tienen causas ocultas y que abordarlos directamente y con empatía es más efectivo que escalarlos.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Aborda la situación directamente con la persona antes de escalarla",
+      "Muestra empatía para entender la causa raíz",
+      "Propone una solución colaborativa y sostenible"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["comunicacion", "liderazgo"],
+    "language": "es",
+    "questionText": "Dame un ejemplo de una vez que tuviste que defender una decisión técnica ante stakeholders o un cliente que no estaban de acuerdo.",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Explica cómo preparaste los argumentos técnicos en lenguaje de negocio",
+      "Muestra si lograste convencerlos o si llegaste a un compromiso"
+    ],
+    "modelAnswer": "Situación: El cliente de un proyecto de plataforma SaaS nos presionaba para reutilizar una base de datos relacional existente para almacenar logs de auditoría, ya que quería evitar el costo de una solución adicional. Nuestro equipo estimaba que eso generaría problemas de rendimiento graves en menos de seis meses. Tarea: Como desarrollador mid con más contexto técnico en la reunión, el tech lead me pidió que liderara la explicación técnica ante el cliente. Acción: Preparé un análisis de dos páginas con tres escenarios: usar la base de datos existente, usar un servicio de logs gestionado como AWS CloudWatch Logs y usar Elasticsearch. Para cada uno estimé el costo mensual, el tiempo de implementación, el impacto en rendimiento de producción y la escalabilidad. Usé datos concretos: al volumen actual de eventos de auditoría, la tabla de logs crecería a veinte millones de registros en seis meses, lo que haría lentas las consultas de producción por la competencia de I/O. En la reunión presenté el análisis y propuse CloudWatch Logs como solución de menor costo y cero mantenimiento. Resultado: El cliente aceptó CloudWatch Logs al ver los números. El costo adicional era menor al tiempo de desarrollo que hubiera requerido manejar los problemas de la base de datos compartida. La plataforma lleva doce meses en producción sin incidentes de logs. Aprendí que defender una decisión técnica requiere datos, no solo criterio técnico.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Prepara argumentos técnicos en lenguaje de negocio con datos",
+      "Presenta alternativas en lugar de solo oponerse",
+      "Logra una decisión informada y aceptada por el cliente"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["fracaso", "resolucion-problemas"],
+    "language": "es",
+    "questionText": "Cuéntame sobre una decisión técnica que tomaste que resultó ser incorrecta. ¿Cómo lo gestionaste?",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Sé honesto sobre los factores que te llevaron a la decisión equivocada",
+      "Enfócate en cómo corregiste el rumbo y qué aprendiste"
+    ],
+    "modelAnswer": "Situación: Al diseñar el sistema de caché para un servicio de catálogo de productos en Spring Boot, decidí usar caché en memoria con Caffeine en lugar de Redis distribuido. Mi razonamiento fue que la latencia local era menor y que el servicio era stateless. Tarea: El sistema debía soportar múltiples instancias del servicio en producción con balanceo de carga. Acción: Puse en producción la solución con Caffeine. Al escalar a tres instancias, descubrimos que cada instancia tenía su propia caché local, lo que causaba inconsistencias: un usuario veía datos actualizados y otro veía datos desactualizados de hasta diez minutos antes, dependiendo de qué instancia respondía su petición. El error era mío: no había considerado el escenario multi-instancia correctamente al tomar la decisión. Lo reporté al tech lead sin esperar a que lo descubriera alguien más. Juntos evaluamos el costo de migrar a Redis versus mantener Caffeine con TTL muy corto. Migramos a Redis en cuatro días. Resultado: Las inconsistencias desaparecieron. El tech lead valoró que lo reportara antes de que causara quejas de usuarios. Desde entonces, al diseñar cualquier componente de caché, la primera pregunta que hago es: ¿este servicio escala horizontalmente? Esa pregunta me evitó el mismo error dos veces en proyectos posteriores.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Analiza honestamente los factores que llevaron al error",
+      "Reporta el problema proactivamente antes de que escale",
+      "Articula un aprendizaje concreto que cambió su forma de tomar decisiones"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["trabajo-en-equipo", "comunicacion"],
+    "language": "es",
+    "questionText": "Describe una situación en la que trabajaste en un equipo con personas de distintas disciplinas (diseño, producto, QA) y hubo tensión por prioridades diferentes.",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Explica las perspectivas de cada parte y por qué diferían",
+      "Muestra cómo facilitaste un acuerdo o solución"
+    ],
+    "modelAnswer": "Situación: En el desarrollo de un nuevo flujo de checkout, el equipo de diseño había creado un flujo de cinco pasos con animaciones y transiciones elaboradas. QA señaló que las animaciones hacían difícil automatizar los tests de end-to-end. El equipo de producto quería lanzar en dos semanas. Como desarrollador frontend angular a cargo de la implementación, estaba en el medio de estas tres tensiones. Tarea: Necesitaba encontrar una solución que respetara el diseño, hiciera la vida de QA razonable y cumpliera el plazo de producto. Acción: Organicé una reunión corta de veinte minutos con los tres perfiles. Primero hice que cada uno explicara su restricción principal. Luego propuse una solución técnica: añadir un atributo data-testid a cada elemento interactivo y deshabilitar las animaciones CSS cuando la variable de entorno fuera de testing. Esto permitía que QA automatizara sin ver las animaciones, sin tocar el código de animaciones del componente real. Todos estuvieron de acuerdo porque nadie tenía que ceder en lo esencial. Resultado: El flujo se lanzó en el plazo previsto. QA completó la automatización de los tests tres días antes de lo esperado gracias al atributo data-testid. El equipo de diseño quedó satisfecho porque las animaciones en producción no se modificaron. Aprendí que muchos conflictos interdisciplinares se resuelven buscando soluciones técnicas que hagan posible lo que cada parte necesita, en lugar de negociar quién cede.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Comprende y articula las perspectivas de cada disciplina",
+      "Propone una solución técnica que satisface restricciones múltiples",
+      "Facilita el acuerdo sin que nadie sienta que pierde"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "mid",
+    "tags": ["aprendizaje", "iniciativa"],
+    "language": "es",
+    "questionText": "Cuéntame sobre una vez que identificaste una brecha de conocimiento importante en tu equipo y tomaste acciones para cerrarla.",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Describe cómo identificaste la brecha y su impacto en el equipo",
+      "Muestra las acciones concretas que tomaste para transferir conocimiento"
+    ],
+    "modelAnswer": "Situación: En mi equipo de backend con Spring Boot, detecté que ninguno de los cuatro desarrolladores, incluyéndome a mí, tenía experiencia real con Spring Security y JWT más allá de copiar configuraciones de Stack Overflow. Estábamos a dos meses de implementar un módulo de autenticación crítico para el proyecto. Tarea: Necesitábamos elevar el nivel colectivo del equipo antes de que llegara esa tarea para no tener que depender de un solo experto o cometer errores de seguridad por desconocimiento. Acción: Propuse al tech lead dedicar cuatro sesiones de una hora a lo largo de tres semanas a un formato que llamé 'deep dive compartido': cada sesión, uno del equipo se preparaba un tema concreto y lo explicaba al resto con código de ejemplo. Yo preparé la primera sesión sobre el flujo de filtros de Spring Security para establecer la base. Coordiné que los tres restantes cubrieran JWT generation, JWT validation y autorización basada en roles respectivamente. Creamos un repositorio de ejemplos internos donde cada sesión dejaba código ejecutable. Resultado: Cuando llegó el módulo de autenticación, los cuatro desarrolladores podían trabajar en él con autonomía. El módulo se implementó sin incidentes de seguridad y con un tiempo de revisión de código más corto de lo habitual porque todos compartíamos el mismo vocabulario. El tech lead adoptó el formato de 'deep dive compartido' como práctica mensual del equipo. Aprendí que elevar el nivel del equipo de forma colectiva reduce la dependencia en individuos y acelera más el equipo que cualquier héroe técnico individual.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Identifica la brecha de conocimiento de forma proactiva, antes de que cause problemas",
+      "Diseña una solución de transferencia de conocimiento escalable y participativa",
+      "Muestra impacto en la autonomía y velocidad del equipo"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "senior",
+    "tags": ["liderazgo", "comunicacion"],
+    "language": "es",
+    "questionText": "Describe una situación en la que tuviste que impulsar un cambio técnico significativo en tu organización que generó resistencia. ¿Cómo lo gestionaste?",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Describe las fuentes de resistencia y cómo las entendiste",
+      "Muestra la estrategia que usaste para generar alineación sin autoridad jerárquica"
+    ],
+    "modelAnswer": "Situación: En una empresa de fintech con cuatro equipos de desarrollo, cada equipo tenía su propio estándar de logging, monitoreo y alertas. Ante un incidente de producción multi-servicio, era imposible correlacionar logs porque los formatos, los niveles y los identificadores de traza eran incompatibles entre equipos. Tarea: Como senior developer, propuse estandarizar la observabilidad con OpenTelemetry y un formato de logs estructurado común. La resistencia era alta: los equipos sentían que era burocracia que los ralentizaría sin beneficio inmediato visible para ellos. Acción: Empecé por escuchar: hice entrevistas individuales de treinta minutos con el tech lead de cada equipo para entender sus objeciones reales. La mayoría tenía miedo a que los obligaran a refactorizar sin tiempo y a que los evaluaran con métricas que no controlaban. Con ese contexto, reformulé la propuesta: en lugar de un estándar impuesto, creé una librería compartida en Spring Boot con la configuración de observabilidad lista para usar con cero configuración adicional. Los equipos podían adoptarla de forma incremental. Organicé un demo de cuarenta minutos mostrando cómo en un incidente real el trazado multi-servicio habría reducido el tiempo de diagnóstico de cuarenta minutos a cinco. Resultado: Tres de los cuatro equipos adoptaron la librería en los siguientes dos meses. El cuarto lo hizo después del siguiente incidente de producción. El tiempo medio de resolución de incidentes multi-servicio bajó un sesenta por ciento. La dirección de ingeniería adoptó el proyecto como estándar oficial. Aprendí que el cambio técnico exitoso no se impone: se diseña para ser inevitable porque hace el trabajo de cada persona más fácil.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Comprende y gestiona las fuentes de resistencia con empatía",
+      "Diseña la adopción del cambio como incremental y de bajo costo",
+      "Muestra impacto medible en la organización, no solo en su equipo"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "senior",
+    "tags": ["liderazgo", "mentoria"],
+    "language": "es",
+    "questionText": "Cuéntame sobre una vez que tuviste que construir o mejorar la cultura de ingeniería de tu equipo.",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Describe qué problema de cultura identificaste y por qué era importante resolverlo",
+      "Muestra las acciones concretas que tomaste y su impacto"
+    ],
+    "modelAnswer": "Situación: Al unirme como senior developer a un equipo de ocho personas, noté que el ambiente de code review era defensivo: los comentarios se hacían de forma impersonal y a veces áspera, y varios juniors evitaban hacer preguntas en las revisiones por miedo a parecer incompetentes. La consecuencia era que el conocimiento técnico no circulaba bien y los juniors avanzaban más lento de lo que deberían. Tarea: No era mi responsabilidad formal cambiar la cultura del equipo, pero era la consecuencia más importante para la salud a largo plazo del equipo. Acción: Tomé tres acciones en paralelo. Primero, empecé a hacer mis propias reviews de forma diferente: usaba preguntas abiertas como '¿Consideraste este escenario?' en lugar de afirmaciones como 'Esto está mal.' Pedí al equipo que adoptara una convención simple: prefixar cada comentario con su naturaleza, por ejemplo 'Pregunta:', 'Sugerencia:', 'Bloqueante:'. Segundo, propuse un canal de Slack donde cualquiera pudiera compartir un problema técnico difícil que hubiera resuelto esa semana, sin importar su nivel. Tercero, empecé sesiones mensuales informales de cuarenta minutos donde alguien presentaba algo que había aprendido recientemente. Resultado: En seis meses, el número de comentarios por PR bajó y la calidad subió: eran más específicos y menos defensivos. Los juniors empezaron a hacer preguntas en reviews. Tres desarrolladores junior alcanzaron el nivel mid en menos tiempo del histórico del equipo. El tech lead mencionó el cambio en la evaluación de desempeño del equipo como uno de los logros más importantes del año.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Identifica el problema cultural con precisión y sin juicio",
+      "Actúa con acciones concretas, no solo con palabras",
+      "Muestra impacto en el crecimiento de las personas y la calidad del equipo"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "senior",
+    "tags": ["liderazgo", "resolucion-problemas"],
+    "language": "es",
+    "questionText": "Describe una decisión de arquitectura difícil que tuviste que tomar con información incompleta y cómo gestionaste la incertidumbre.",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Explica qué información faltaba y por qué no podías esperarla",
+      "Muestra cómo tomaste la decisión y cómo la revisaste posteriormente"
+    ],
+    "modelAnswer": "Situación: En una startup de logística, teníamos que decidir si construir el sistema de tracking de envíos en tiempo real con WebSockets directos en el backend de Spring Boot o migrar a una arquitectura de eventos con Kafka. El sistema tenía diez mil usuarios activos y se esperaba que creciera a cien mil en el siguiente año, pero no teníamos datos históricos de picos reales ni benchmarks del sistema actual. Tarea: La decisión tenía que tomarse en una semana porque bloqueaba el diseño de tres módulos dependientes. Yo era el responsable de la decisión arquitectónica. Acción: Ante la falta de datos históricos, definí los supuestos de forma explícita y los documenté: asumí pico de cinco mil conexiones simultáneas basado en el ratio de sesiones activas que sí teníamos. Hice un spike técnico de dos días implementando un prototipo básico con WebSockets en Spring Boot con carga simulada. Los resultados mostraron que a dos mil conexiones simultáneas el consumo de memoria era manejable pero a cinco mil empezaba a ser un riesgo. Decidí un enfoque híbrido: WebSockets para el MVP con un límite de conexiones configurado y Kafka como el siguiente paso si superábamos el umbral definido. Documenté los supuestos, el spike, la decisión y los criterios para revisar. Resultado: El sistema llegó a producción en el plazo. Seis meses después alcanzamos las tres mil conexiones simultáneas sin problemas. A los diez meses el crecimiento nos llevó a planificar la migración a Kafka con tiempo suficiente, sin urgencia. La documentación de la decisión permitió que el equipo que hizo la migración entendiera exactamente el razonamiento original. Aprendí que las mejores decisiones arquitectónicas bajo incertidumbre son las que explicitan sus supuestos y definen cuándo revisarlas.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Gestiona la incertidumbre con spikes y supuestos explícitos, no con parálisis",
+      "Documenta la decisión de forma que sea revisable y auditable",
+      "Construye un camino de evolución incremental en lugar de apostar todo a una solución"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "senior",
+    "tags": ["liderazgo", "comunicacion"],
+    "language": "es",
+    "questionText": "Cuéntame sobre una situación en la que tuviste que gestionar expectativas de múltiples stakeholders con prioridades en conflicto sobre un proyecto técnico.",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Describe las prioridades en conflicto con precisión",
+      "Muestra cómo construiste alineación sin que nadie sintiera que perdió"
+    ],
+    "modelAnswer": "Situación: Lideraba técnicamente la migración de una plataforma monolítica a microservicios. El director de producto quería que las nuevas features siguieran desarrollándose durante la migración. El CTO quería que la migración terminara en seis meses. El equipo de operaciones pedía que los nuevos servicios estuvieran completamente instrumentados antes de ir a producción. El equipo de desarrollo quería estabilidad y no trabajar en paralelo en dos arquitecturas. Tarea: Tenía que diseñar un plan que diera a cada stakeholder suficiente de lo que necesitaba para mantener su apoyo al proyecto, sin mentir sobre las implicaciones reales. Acción: Preparé un análisis de ruta crítica que mostraba los trade-offs explícitos: si desarrollábamos features en paralelo, la migración tardaría nueve meses, no seis; si pausábamos features, los seis meses eran posibles pero con riesgo de mercado. Si la instrumentación era un requisito bloqueante para producción, necesitábamos dos semanas adicionales por servicio. Presenté tres escenarios con sus costos y beneficios en una reunión conjunta con los cuatro stakeholders. Facilité la conversación para que ellos tomaran la decisión con información clara. Eligieron el escenario de ocho meses con features mínimas en paralelo y instrumentación gradual. Resultado: La migración se completó en ocho meses y dos semanas. Ningún stakeholder sintió que la habían tomado por sorpresa porque todos habían elegido el escenario con información completa. El CTO usó el análisis de trade-offs como plantilla para decisiones de roadmap posteriores. Aprendí que gestionar stakeholders no es decirles lo que quieren oír, es darles la información que necesitan para tomar decisiones alineadas.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Identifica y articula los conflictos de prioridad con precisión",
+      "Presenta trade-offs explícitos en lugar de compromisos vagos",
+      "Construye alineación basada en información, no en negociación de posiciones"
+    ],
+    "timeEstimate": 150
+  },
+  {
+    "category": "behavioral",
+    "difficulty": "senior",
+    "tags": ["adaptacion", "liderazgo"],
+    "language": "es",
+    "questionText": "¿Cómo manejaste una situación en la que tu organización atravesó un cambio significativo (reestructuración, pivote de producto, cambio de liderazgo) que afectó a tu equipo técnico?",
+    "hints": [
+      "Usa el formato STAR: Situación, Tarea, Acción, Resultado",
+      "Describe el impacto del cambio en la incertidumbre y la moral del equipo",
+      "Muestra cómo diste estabilidad técnica y humana al equipo durante el cambio"
+    ],
+    "modelAnswer": "Situación: La empresa donde trabajaba como tech lead fue adquirida por una compañía más grande. La adquisición trajo consigo una fusión de equipos, cambios en el stack tecnológico impuestos por la empresa compradora y la incertidumbre sobre qué roles serían absorbidos y cuáles no. Mi equipo de seis personas pasó de tener claridad sobre el roadmap a tener un período de tres meses sin dirección clara de producto. Tarea: Tenía que mantener a mi equipo productivo, con buen ánimo y sin perder talento clave durante la incertidumbre, mientras yo mismo gestionaba mi propia incertidumbre sobre el futuro. Acción: Lo primero que hice fue ser completamente honesto con el equipo en nuestra siguiente 1:1 y en la reunión semanal: no sabía qué iba a pasar con todos los detalles del roadmap, pero sí podía comprometer que les daría información en cuanto la tuviera y que trabajaría activamente para proteger el equipo. Usé los tres meses de incertidumbre de producto para hacer cosas que normalmente no teníamos tiempo: eliminamos deuda técnica significativa, mejoramos la cobertura de tests de integración y documentamos la arquitectura. Esto mantuvo el equipo ocupado con trabajo de valor real. También tuve conversaciones individuales frecuentes para detectar señales de desenganche antes de que se convirtieran en renuncias. Resultado: Pasamos los tres meses sin ninguna renuncia. Cuando el nuevo roadmap llegó, el equipo lo recibió con energía porque había usado el tiempo de forma productiva. La nueva dirección notó que éramos el equipo con mejor documentación y menos deuda técnica de los absorbidos. Aprendí que en momentos de cambio organizacional, la estabilidad que un tech lead puede dar es la del trabajo diario con significado, no la certeza sobre el futuro.",
+    "evaluationCriteria": [
+      "Usa el formato STAR correctamente",
+      "Gestiona la incertidumbre con honestidad, no con optimismo vacío",
+      "Convierte el período de incertidumbre en una oportunidad de mejora técnica",
+      "Muestra liderazgo humano: atención individual al equipo durante el cambio"
+    ],
+    "timeEstimate": 150
+  }
+]

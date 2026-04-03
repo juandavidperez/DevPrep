@@ -1,0 +1,502 @@
+[
+  {
+    "category": "system_design",
+    "difficulty": "junior",
+    "tags": ["arquitectura", "monolito", "microservicios"],
+    "language": "es",
+    "questionText": "Tu equipo mantiene una aplicación Spring Boot monolítica que gestiona usuarios, pedidos y notificaciones. Un desarrollador nuevo pregunta por qué no se ha dividido en microservicios. Explica los compromisos entre mantener el monolito y migrar a microservicios, y en qué circunstancias recomendarías la migración.",
+    "hints": [
+      "Considera el tamaño del equipo y la frecuencia de despliegues",
+      "Piensa en la complejidad operacional de los microservicios",
+      "Considera el enfoque 'monolito primero'"
+    ],
+    "modelAnswer": "Un monolito es más simple de desarrollar, probar, desplegar y depurar: una sola base de código, un único artefacto de despliegue y desarrollo local sencillo. Los microservicios introducen complejidad de sistemas distribuidos: latencia de red, service discovery, transacciones distribuidas, despliegues independientes y necesidad de orquestación de contenedores. La migración tiene sentido cuando el equipo crece lo suficiente como para que los despliegues independientes reduzcan la coordinación, cuando módulos específicos necesitan escalar independientemente (p.ej., notificaciones con picos en campañas), o cuando distintas partes se benefician de stacks tecnológicos diferentes. El enfoque recomendado es 'monolito primero': mantenerlo modular internamente con límites de paquetes claros, y extraer servicios solo cuando exista un punto de dolor concreto como cuellos de botella en despliegues o necesidades de escalado. La descomposición prematura generalmente cuesta más de lo que ahorra.",
+    "evaluationCriteria": [
+      "Identifica ventajas clave del monolito: simplicidad, depuración más fácil, despliegue único",
+      "Identifica ventajas de microservicios: escalado independiente, despliegues autónomos, independencia de equipos",
+      "Menciona desventajas concretas de microservicios: complejidad de red, transacciones distribuidas, overhead operacional",
+      "Recomienda un enfoque pragmático en lugar de preferencia dogmática"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "system_design",
+    "difficulty": "junior",
+    "tags": ["arquitectura", "api-design"],
+    "language": "es",
+    "questionText": "Estás diseñando una API REST con Spring Boot para una aplicación de gestión de tareas. Un compañero te pregunta cómo organizarías las capas de la aplicación. Describe la arquitectura en capas típica y la responsabilidad de cada capa.",
+    "hints": [
+      "Piensa en Controller, Service y Repository como capas principales",
+      "¿Dónde va la lógica de negocio?",
+      "¿Cómo se comunican las capas entre sí?"
+    ],
+    "modelAnswer": "La arquitectura en capas estándar para Spring Boot tiene tres capas principales. La capa de Presentación (Controllers) recibe las peticiones HTTP, valida la entrada con @Valid y anotaciones de validación, delega la lógica al servicio y devuelve ResponseEntity con el código HTTP apropiado. La capa de Negocio (Services) contiene toda la lógica de negocio, orquesta llamadas a repositorios, aplica reglas y transformaciones, maneja transacciones con @Transactional y lanza excepciones de negocio. La capa de Acceso a Datos (Repositories) usa Spring Data JPA o consultas personalizadas para interactuar con PostgreSQL, expone métodos CRUD y consultas sin exponer SQL a capas superiores. Opcionalmente se añaden DTOs para separar la representación externa del modelo de dominio, y una capa de mapeo (MapStruct). Las dependencias siempre fluyen hacia abajo: Controller → Service → Repository, nunca en sentido contrario.",
+    "evaluationCriteria": [
+      "Describe correctamente las tres capas: Controller, Service, Repository",
+      "Explica dónde reside la lógica de negocio (capa Service)",
+      "Menciona DTOs para desacoplar la representación externa del modelo interno",
+      "Entiende el flujo unidireccional de dependencias"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "system_design",
+    "difficulty": "junior",
+    "tags": ["base-de-datos", "arquitectura"],
+    "language": "es",
+    "questionText": "Estás diseñando la base de datos PostgreSQL para una aplicación con usuarios, sesiones de entrevista y mensajes por sesión. Un cliente pide que el diseño soporte búsquedas por usuario y por fecha. ¿Cómo estructurarías las tablas y qué índices crearías?",
+    "hints": [
+      "Identifica las entidades principales y sus relaciones",
+      "¿Qué columnas se consultarán frecuentemente?",
+      "Piensa en claves foráneas e índices compuestos"
+    ],
+    "modelAnswer": "Las tablas principales serían: users (id UUID PK, email UNIQUE, name, created_at), sessions (id UUID PK, user_id FK → users, category, difficulty, status, created_at, ended_at) y session_messages (id UUID PK, session_id FK → sessions, role, content, score, created_at). Los índices esenciales son: un índice en sessions(user_id) para consultas por usuario, un índice en sessions(created_at DESC) para ordenación temporal, un índice compuesto sessions(user_id, created_at DESC) para el caso de uso más común (historial de un usuario ordenado), e índice en session_messages(session_id) para recuperar todos los mensajes de una sesión. Las restricciones de integridad referencial con ON DELETE CASCADE en session_messages garantizan consistencia. Para búsquedas por rango de fechas, un índice B-tree en created_at es suficiente; si las búsquedas de texto libre son necesarias se añadiría full-text search con tsvector.",
+    "evaluationCriteria": [
+      "Define correctamente las tres tablas con tipos de datos apropiados",
+      "Identifica las relaciones OneToMany entre User→Session y Session→Message",
+      "Propone índices relevantes para los patrones de consulta descritos",
+      "Menciona la integridad referencial con claves foráneas"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "system_design",
+    "difficulty": "junior",
+    "tags": ["ci-cd", "docker"],
+    "language": "es",
+    "questionText": "Tu equipo tiene un proyecto Spring Boot en GitHub y quiere automatizar pruebas y despliegues. Diseña un pipeline básico de CI/CD con GitHub Actions que compile, ejecute pruebas y publique una imagen Docker.",
+    "hints": [
+      "¿Qué pasos necesita el pipeline en orden?",
+      "¿Cómo se autentica GitHub Actions con Docker Hub o un registry?",
+      "¿En qué evento se dispara el pipeline?"
+    ],
+    "modelAnswer": "Un pipeline básico tendría tres jobs o un job con múltiples steps: (1) Trigger: push a main o pull_request. (2) Build & Test: checkout del código con actions/checkout, setup de JDK con actions/setup-java, caché de dependencias Maven/Gradle, ejecución de mvn test o ./gradlew test. (3) Build & Push Docker Image: solo en push a main, usa docker/login-action con credenciales de Docker Hub almacenadas como GitHub Secrets (DOCKER_USERNAME, DOCKER_PASSWORD), luego docker/build-push-action para construir y publicar la imagen con tag basado en SHA del commit o versión semántica. La separación entre CI (siempre) y CD (solo en main) evita despliegues accidentales desde feature branches. Los secrets nunca van en el YAML, siempre en la configuración de GitHub Secrets del repositorio.",
+    "evaluationCriteria": [
+      "Define los eventos de trigger apropiados (push/PR)",
+      "Incluye pasos de compilación y ejecución de pruebas",
+      "Explica el proceso de build y push de imagen Docker",
+      "Menciona el uso de GitHub Secrets para credenciales sensibles"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "system_design",
+    "difficulty": "junior",
+    "tags": ["seguridad", "api-design"],
+    "language": "es",
+    "questionText": "Un cliente pide que su API Spring Boot tenga autenticación segura. Explica la diferencia entre autenticación y autorización, y cómo implementarías ambas usando JWT en Spring Security.",
+    "hints": [
+      "¿Qué verifica la autenticación vs qué verifica la autorización?",
+      "¿Cómo funciona un token JWT?",
+      "¿Dónde se valida el JWT en cada petición?"
+    ],
+    "modelAnswer": "Autenticación verifica la identidad ('¿quién eres?'): el usuario presenta credenciales y el sistema las valida. Autorización verifica permisos ('¿qué puedes hacer?'): dado que el usuario es conocido, se comprueba si tiene permiso para el recurso solicitado. Con JWT en Spring Security: el flujo de login llama a POST /auth/login, Spring autentica con AuthenticationManager (compara con la BD), y si es válido genera un JWT firmado con clave secreta que contiene userId, roles y expiración. En cada petición subsecuente, un JwtAuthFilter (extiende OncePerRequestFilter) extrae el token del header Authorization: Bearer <token>, lo valida (firma y expiración) con jjwt, y si es válido crea un UsernamePasswordAuthenticationToken con los roles y lo pone en el SecurityContextHolder. Spring Security luego aplica las reglas de autorización con @PreAuthorize o HttpSecurity.authorizeHttpRequests() según los roles del token.",
+    "evaluationCriteria": [
+      "Distingue claramente autenticación (identidad) de autorización (permisos)",
+      "Describe el flujo completo: login → JWT → validación en cada petición",
+      "Menciona la validación de firma y expiración del token",
+      "Explica cómo los roles del JWT alimentan el SecurityContext de Spring"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "system_design",
+    "difficulty": "junior",
+    "tags": ["docker", "arquitectura"],
+    "language": "es",
+    "questionText": "Estás preparando tu aplicación Spring Boot para ejecutarse en contenedores Docker. Diseña un Dockerfile eficiente y explica cómo orquestarías la app junto con PostgreSQL usando Docker Compose para desarrollo local.",
+    "hints": [
+      "¿Qué es una imagen multi-stage build y por qué es útil?",
+      "¿Cómo se comunican los contenedores entre sí?",
+      "¿Cómo persistes los datos de PostgreSQL?"
+    ],
+    "modelAnswer": "Un Dockerfile multi-stage eficiente tiene dos etapas: la primera (builder) usa eclipse-temurin:17-jdk para compilar con Maven/Gradle y producir el JAR; la segunda (runtime) usa eclipse-temurin:17-jre-alpine (imagen mínima) y copia solo el JAR del builder, reduciendo el tamaño de imagen de ~500MB a ~150MB. En docker-compose.yml se definen dos servicios: app (build: ., ports: 8080:8080, environment con DB_URL, DB_USER, DB_PASS, depends_on: db) y db (image: postgres:15-alpine, environment con POSTGRES_DB/USER/PASSWORD, volumes para persistencia de datos en un named volume). Los contenedores se comunican por nombre de servicio (jdbc:postgresql://db:5432/mydb) dentro de la red Docker por defecto. Los named volumes garantizan que los datos persistan entre reinicios de contenedor. Para desarrollo, se puede añadir un volumen bind-mount del código fuente con Spring DevTools para hot reload.",
+    "evaluationCriteria": [
+      "Propone un Dockerfile multi-stage para optimizar el tamaño de imagen",
+      "Define correctamente la configuración de Docker Compose con los dos servicios",
+      "Explica la comunicación entre contenedores por nombre de servicio",
+      "Menciona volumes para persistencia de datos de la base de datos"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "system_design",
+    "difficulty": "junior",
+    "tags": ["base-de-datos", "arquitectura"],
+    "language": "es",
+    "questionText": "Estás modelando la base de datos para una plataforma educativa con cursos, estudiantes y las inscripciones entre ellos. Un estudiante puede inscribirse en muchos cursos y un curso tiene muchos estudiantes. ¿Cómo diseñarías las tablas y cómo lo mapearías con JPA en Spring Boot?",
+    "hints": [
+      "¿Qué tipo de relación es esta? (OneToMany, ManyToMany)",
+      "¿Cómo representa SQL una relación ManyToMany?",
+      "¿Qué anotaciones JPA necesitas?"
+    ],
+    "modelAnswer": "La relación Estudiante-Curso es ManyToMany y en SQL se representa con una tabla intermedia enrollments (student_id FK, course_id FK, enrolled_at timestamp). En JPA, en la entidad Student se anota @ManyToMany con @JoinTable(name='enrollments', joinColumns=@JoinColumn(name='student_id'), inverseJoinColumns=@JoinColumn(name='course_id')) y una List<Course> courses. En Course se pone @ManyToMany(mappedBy='courses') con List<Student> students para el lado inverso. Si la tabla de unión necesita atributos adicionales (como enrolled_at o grade), se convierte en una entidad propia Enrollment con relaciones @ManyToOne hacia Student y Course, que es el patrón más recomendado. Para evitar el problema N+1, se usa fetch join en JPQL o @EntityGraph en las consultas que necesitan cargar las colecciones. FetchType.LAZY es el default recomendado para collections.",
+    "evaluationCriteria": [
+      "Identifica correctamente la relación como ManyToMany",
+      "Describe la tabla intermedia necesaria en la base de datos",
+      "Explica las anotaciones JPA requeridas (@ManyToMany, @JoinTable)",
+      "Menciona el problema N+1 y cómo mitigarlo"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "system_design",
+    "difficulty": "junior",
+    "tags": ["api-design", "arquitectura"],
+    "language": "es",
+    "questionText": "Tu equipo está construyendo una API REST pública con Spring Boot que evoluciona con el tiempo. Un cliente pide que los cambios en la API no rompan las integraciones existentes. ¿Qué estrategias de versionado de APIs conoces y cuál recomendarías?",
+    "hints": [
+      "¿Dónde se puede indicar la versión? (URL, header, parámetro)",
+      "¿Qué es un cambio 'breaking' vs 'non-breaking'?",
+      "¿Cuánto tiempo deberías mantener versiones antiguas?"
+    ],
+    "modelAnswer": "Hay tres estrategias principales de versionado. Versionado en URL (/api/v1/users, /api/v2/users): la más común, explícita y fácil de documentar y cachear. Versionado por header (Accept: application/vnd.app.v2+json o API-Version: 2): más limpio semánticamente, pero menos visible y más difícil de probar en el navegador. Versionado por parámetro de query (/api/users?version=2): fácil de implementar pero mezcla metadatos de protocolo con parámetros de negocio. La recomendación para la mayoría de equipos es versionado en URL por su simplicidad. En Spring Boot se implementa con prefijos de ruta (@RequestMapping('/api/v1') en el controller o configuración de base path). Un cambio breaking (renombrar campo, cambiar tipo, eliminar endpoint) requiere nueva versión; cambios additive (nuevo campo opcional, nuevo endpoint) no requieren nueva versión. Se recomienda mantener al menos dos versiones en paralelo con período de deprecación comunicado.",
+    "evaluationCriteria": [
+      "Describe al menos dos estrategias de versionado con sus pros y contras",
+      "Diferencia entre cambios breaking y non-breaking",
+      "Recomienda una estrategia con justificación",
+      "Menciona la política de deprecación y soporte de versiones antiguas"
+    ],
+    "timeEstimate": 240
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": ["mensajeria", "escalabilidad", "arquitectura"],
+    "language": "es",
+    "questionText": "Tu equipo necesita diseñar un sistema de notificaciones en tiempo real para una plataforma con 50.000 usuarios activos. Las notificaciones incluyen alertas de nuevos mensajes, actualizaciones de estado y recordatorios programados. ¿Cómo diseñarías este sistema?",
+    "hints": [
+      "¿WebSockets, SSE o polling? ¿Cuáles son los compromisos?",
+      "¿Cómo manejarías usuarios desconectados que se reconectan?",
+      "¿Cómo escalarías horizontalmente con múltiples instancias del backend?"
+    ],
+    "modelAnswer": "El sistema tiene dos canales: notificaciones en tiempo real para usuarios conectados y notificaciones diferidas para usuarios offline. Para tiempo real, Server-Sent Events (SSE) es suficiente si las notificaciones son unidireccionales (server→client), WebSockets si hay bidireccionalidad. Spring Boot soporta ambos nativamente. El problema de escala horizontal: con múltiples instancias, un usuario puede estar conectado a la instancia A mientras la notificación llega a la instancia B. La solución es un broker de mensajes (Redis Pub/Sub o Kafka): todas las instancias se suscriben al canal del usuario; cuando se genera una notificación, se publica en Redis y la instancia que tiene la conexión la envía. Para usuarios offline, las notificaciones se persisten en una tabla notifications en PostgreSQL con estado (pending/sent/read). Al reconectarse, el cliente solicita notificaciones pendientes. Para notificaciones programadas (recordatorios), se usa Spring @Scheduled o una cola de mensajes con delay. Los canales de entrega (push, email, SMS) se implementan como consumidores independientes del bus de eventos.",
+    "evaluationCriteria": [
+      "Elige y justifica el protocolo de tiempo real (SSE vs WebSockets)",
+      "Resuelve el problema de escala horizontal con broker de mensajes",
+      "Diseña la persistencia para notificaciones de usuarios offline",
+      "Considera canales de entrega múltiples y notificaciones programadas"
+    ],
+    "timeEstimate": 300
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": ["cache", "escalabilidad", "base-de-datos"],
+    "language": "es",
+    "questionText": "Estás diseñando un sistema de caché para una API de catálogo de productos con 1.000 peticiones por segundo y datos que cambian pocas veces al día. El equipo considera usar Redis. ¿Cómo diseñarías la estrategia de caché?",
+    "hints": [
+      "¿Qué patrón de caché usarías? (cache-aside, write-through, write-behind)",
+      "¿Cuál sería el TTL adecuado?",
+      "¿Cómo manejarías la invalidación cuando los datos cambian?"
+    ],
+    "modelAnswer": "Para un catálogo con alta lectura y pocas escrituras, el patrón cache-aside (lazy loading) es el más apropiado: la aplicación consulta Redis primero; en cache miss consulta PostgreSQL y almacena en Redis. En Spring Boot se implementa con @Cacheable de Spring Cache y el backend Redis (spring-boot-starter-data-redis). La estructura de claves debe ser descriptiva: product:{id}, products:category:{categoryId}, products:search:{hash}. El TTL depende de la tolerancia a datos desactualizados: para catálogo con cambios diarios, 1-4 horas es razonable. Para invalidación ante cambios, hay dos estrategias: invalidación reactiva (en el endpoint de actualización del producto, llamar a cacheManager.evict('products', id) y patrones relacionados) o invalidación proactiva (TTL corto y aceptar datos ligeramente desactualizados). Para evitar cache stampede (muchos cache misses simultáneos al expirar la clave), se puede usar jitter en el TTL o el patrón probabilistic early expiration. Para búsquedas complejas, cachear el resultado del hash de los parámetros de búsqueda. Se debe monitorear el hit rate (objetivo >90%) y el uso de memoria de Redis.",
+    "evaluationCriteria": [
+      "Selecciona y justifica el patrón de caché apropiado (cache-aside)",
+      "Define una estrategia de TTL razonable según los patrones de cambio",
+      "Describe la estrategia de invalidación de caché",
+      "Menciona cache stampede y cómo mitigarlo"
+    ],
+    "timeEstimate": 300
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": ["base-de-datos", "disponibilidad"],
+    "language": "es",
+    "questionText": "Tu equipo necesita aplicar una migración de base de datos en PostgreSQL que añade una columna NOT NULL a una tabla con 10 millones de filas, en un sistema de producción que no puede tener downtime. ¿Cuál es tu estrategia?",
+    "hints": [
+      "¿Qué sucede si añades directamente una columna NOT NULL sin default?",
+      "¿Cómo funciona el patrón expand-contract?",
+      "¿Qué herramientas de migración usarías con Spring Boot?"
+    ],
+    "modelAnswer": "Añadir directamente una columna NOT NULL sin valor default bloquea la tabla entera durante la reescritura, causando downtime. La estrategia zero-downtime sigue el patrón expand-contract en varias fases. Fase 1 (Expand): añadir la columna como nullable (ALTER TABLE products ADD COLUMN description TEXT) sin bloqueo prolongado ya que PostgreSQL no reescribe la tabla. Fase 2 (Backfill): rellenar los datos existentes en batches pequeños (UPDATE products SET description = '' WHERE description IS NULL AND id BETWEEN x AND y) para evitar bloqueos largos; se puede hacer con un job programado. Fase 3 (Constraint): una vez todos los registros tienen valor, añadir la restricción NOT NULL (ALTER TABLE products ALTER COLUMN description SET NOT NULL); en PostgreSQL 12+ esto es un check que no requiere reescritura si los datos ya están completos. Fase 4 (Contract): si se eliminó código legacy, limpiar la migración. Con Flyway o Liquibase en Spring Boot, cada fase es un script de migración separado versionado. Durante el backfill, el código de la aplicación ya escribe el nuevo campo pero no lo requiere para leer, tolerando ambos estados.",
+    "evaluationCriteria": [
+      "Identifica el problema de bloqueo con ALTER TABLE en producción",
+      "Describe el patrón expand-contract con fases claras",
+      "Menciona el backfill en batches para evitar bloqueos",
+      "Integra la estrategia con herramientas de migración (Flyway/Liquibase)"
+    ],
+    "timeEstimate": 300
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": ["seguridad", "arquitectura", "microservicios"],
+    "language": "es",
+    "questionText": "Estás diseñando un sistema multi-tenant donde múltiples empresas usan la misma plataforma Spring Boot. Cada empresa tiene sus propios usuarios con roles diferentes. ¿Cómo diseñarías la autenticación y autorización multi-tenant con Spring Security?",
+    "hints": [
+      "¿Cómo identificas a qué tenant pertenece cada petición?",
+      "¿Los roles son globales o por tenant?",
+      "¿Cómo aislas los datos entre tenants?"
+    ],
+    "modelAnswer": "El diseño multi-tenant tiene tres capas. Identificación del tenant: el tenant se identifica por subdominio (empresa.app.com), header (X-Tenant-ID) o claim en el JWT. Al autenticar, el JWT incluye claims tenantId y roles[]. Un TenantContextHolder (ThreadLocal) almacena el tenantId durante el ciclo de vida de la petición. Aislamiento de datos: con Row-Level Security en PostgreSQL, cada tabla tiene una columna tenant_id y se crea una política RLS que filtra automáticamente por el tenant de la sesión actual, previniendo fugas de datos incluso con bugs en la aplicación. Alternativamente, Hibernate Filters con @Filter en las entidades. Roles por tenant: la tabla user_roles tiene columnas (user_id, tenant_id, role), permitiendo que el mismo usuario tenga roles diferentes en distintos tenants. Spring Security carga las authorities incluyendo el tenant: ROLE_ADMIN_TENANT_123. El @PreAuthorize verifica tanto el rol como el tenant. Para la administración, existe un rol SUPER_ADMIN con acceso cross-tenant para soporte. Los tests de seguridad deben verificar explícitamente que las operaciones de un tenant no afectan a otro.",
+    "evaluationCriteria": [
+      "Define el mecanismo de identificación del tenant en cada petición",
+      "Diseña el aislamiento de datos entre tenants (RLS o filtros de aplicación)",
+      "Explica cómo los roles son específicos por tenant",
+      "Menciona la segregación de superadministrador con acceso cross-tenant"
+    ],
+    "timeEstimate": 300
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": ["aws", "arquitectura"],
+    "language": "es",
+    "questionText": "Un cliente pide que su aplicación Spring Boot permita a los usuarios subir archivos (imágenes y documentos hasta 50MB) de forma segura a S3. ¿Cómo diseñarías el sistema de subida usando URLs pre-firmadas?",
+    "hints": [
+      "¿Por qué no subir el archivo a través del backend?",
+      "¿Qué es una URL pre-firmada de S3?",
+      "¿Cómo controlas el tipo de archivo y el tamaño máximo?"
+    ],
+    "modelAnswer": "El flujo con URLs pre-firmadas evita que el archivo pase por el backend, reduciendo costos y latencia. Flujo: (1) El cliente Angular llama a POST /api/files/presigned-url con {filename, contentType, size}. (2) El backend valida el tipo de archivo (lista blanca: image/jpeg, image/png, application/pdf) y el tamaño máximo (50MB). Si es válido, llama al SDK de AWS (S3Client.presignPutObject) generando una URL pre-firmada con expiración de 15 minutos y la clave del objeto {tenantId}/{userId}/{uuid}/{filename}. Devuelve la URL pre-firmada y la futura URL pública al cliente. (3) El cliente hace PUT directamente a S3 usando la URL pre-firmada con el Content-Type correcto. (4) Tras la subida exitosa, el cliente notifica al backend con POST /api/files/confirm pasando la clave del objeto. El backend verifica que el objeto existe en S3 (HeadObject) y guarda el registro en la BD. Para CORS, se configura el bucket S3 para permitir PUT desde el dominio de la app. Las políticas IAM del rol de la aplicación solo permiten s3:PutObject en el bucket específico con prefijo del tenant.",
+    "evaluationCriteria": [
+      "Explica la motivación de usar URLs pre-firmadas en lugar de proxying por el backend",
+      "Describe el flujo completo en 4 pasos: solicitud → URL → upload → confirmación",
+      "Menciona validaciones de seguridad: tipo de archivo, tamaño, expiración",
+      "Considera políticas IAM con principio de mínimo privilegio"
+    ],
+    "timeEstimate": 300
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": ["base-de-datos", "microservicios", "arquitectura"],
+    "language": "es",
+    "questionText": "Tu equipo está migrando a microservicios y tiene una operación de negocio que modifica datos en dos servicios diferentes: al crear un pedido se debe descontar inventario y crear el registro de pago. ¿Cómo manejarías las transacciones distribuidas?",
+    "hints": [
+      "¿Por qué las transacciones ACID tradicionales no funcionan entre microservicios?",
+      "¿Qué es el patrón Saga?",
+      "¿Cuál es la diferencia entre Saga coreografiada y orquestada?"
+    ],
+    "modelAnswer": "Las transacciones ACID cross-servicio son imposibles sin coordinación distribuida, y el protocolo 2PC (Two-Phase Commit) introduce acoplamiento y puntos de falla únicos. La alternativa moderna es el patrón Saga. En una Saga, la operación se divide en transacciones locales con compensaciones. Para 'crear pedido': T1: Order Service crea el pedido en estado PENDING → publica evento OrderCreated. T2: Inventory Service descuenta stock al recibir OrderCreated → publica InventoryReserved o InventoryFailed. T3: Payment Service procesa el pago → publica PaymentCompleted o PaymentFailed. Si falla T3: Compensación C2: Inventory Service repone el stock (InventoryReleased). Compensación C1: Order Service cancela el pedido (OrderCancelled). Saga orquestada: un Order Saga Orchestrator (puede ser un estado en la BD o un motor como Temporal/Axon) coordina los pasos y compensaciones explícitamente. Saga coreografiada: los servicios reaccionan a eventos sin coordinador central, más acoplado en evento. La consistencia es eventual, no inmediata. Los pedidos deben soportar estados intermedios (PENDING_PAYMENT) visibles al usuario. La idempotencia de cada paso (IDs de idempotencia en los mensajes) es esencial para manejar reintentos.",
+    "evaluationCriteria": [
+      "Explica por qué no se puede usar una transacción ACID distribuida directamente",
+      "Describe el patrón Saga con pasos de compensación",
+      "Diferencia Saga orquestada de coreografiada con sus compromisos",
+      "Menciona consistencia eventual, idempotencia y estados intermedios visibles"
+    ],
+    "timeEstimate": 300
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": ["arquitectura", "seguridad", "base-de-datos"],
+    "language": "es",
+    "questionText": "Estás diseñando un servicio de pagos para un e-commerce con Spring Boot. El servicio debe integrarse con un proveedor externo de pagos (como Stripe), ser tolerante a fallos y garantizar que ningún cargo se duplique. ¿Cómo lo diseñarías?",
+    "hints": [
+      "¿Cómo previenes cobros duplicados ante reintentos?",
+      "¿Qué pasa si el servicio falla después de cobrar pero antes de confirmar en la BD?",
+      "¿Cómo manejas los webhooks del proveedor de pagos?"
+    ],
+    "modelAnswer": "El diseño del servicio de pagos tiene tres preocupaciones críticas. Idempotencia: cada intento de pago genera un idempotency_key único (orderId + timestamp o UUID del cliente). Al llamar a Stripe, se pasa este key; Stripe garantiza que llamadas con el mismo key devuelven el mismo resultado sin cobrar dos veces. En la BD se almacena la key con el resultado, y antes de procesar se verifica si ya existe. Manejo de fallos (estado inconsistente): si la app falla después de cobrar en Stripe pero antes de confirmar en la BD, el estado queda 'ghost'. La solución es persistir primero el intento de pago con estado PENDING, llamar a Stripe, y actualizar a COMPLETED/FAILED según el resultado. Un job de reconciliación periódico consulta Stripe por todos los payments en estado PENDING y actualiza el estado local. Webhooks: Stripe envía webhooks ante cambios de estado (charge.succeeded, charge.failed). El endpoint /webhooks/stripe verifica la firma del webhook (Stripe-Signature header), es idempotente (verifica si el evento ya fue procesado) y procesa de forma asíncrona (responde 200 rápido y encola el procesamiento). Las llamadas a Stripe usan circuit breaker (Resilience4j) con fallback a estado PENDING para reintentar después.",
+    "evaluationCriteria": [
+      "Describe la idempotencia con idempotency keys para prevenir cobros duplicados",
+      "Explica el manejo del estado inconsistente con job de reconciliación",
+      "Diseña el endpoint de webhooks con verificación de firma e idempotencia",
+      "Menciona circuit breaker para tolerancia a fallos en llamadas al proveedor externo"
+    ],
+    "timeEstimate": 300
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": ["api-design", "escalabilidad", "seguridad"],
+    "language": "es",
+    "questionText": "Tu equipo lanza una API pública para terceros. El producto requiere proteger la API de abuso limitando la cantidad de peticiones por cliente. Diseña un sistema de rate limiting para una API Spring Boot con múltiples instancias.",
+    "hints": [
+      "¿Qué algoritmos de rate limiting existen? (token bucket, leaky bucket, sliding window)",
+      "¿Cómo compartes el estado del rate limiter entre múltiples instancias?",
+      "¿Qué respuesta HTTP envías cuando se supera el límite?"
+    ],
+    "modelAnswer": "El rate limiting con múltiples instancias requiere estado compartido; Redis es la solución estándar. Algoritmo recomendado: sliding window counter — más preciso que fixed window y más simple que token bucket para implementar con Redis. Implementación: cada petición incrementa un contador en Redis con clave {apiKey}:{windowStart} y TTL igual a la ventana de tiempo. Si el contador supera el límite, se rechaza la petición con HTTP 429 Too Many Requests, header Retry-After indicando cuándo se puede reintentar, y headers informativos X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset. En Spring Boot se implementa como un Filter o HandlerInterceptor que se ejecuta antes de los controllers. La librería Resilience4j RateLimiter funciona para instancia única; para distribuido se usa Bucket4j con backend Redis o se implementa manualmente con Lua scripts en Redis para atomicidad. Los límites varían por plan: free (100 req/min), pro (1000 req/min), enterprise (custom). Los API keys se almacenan en la BD con su plan y se cachean en Redis para no consultar la BD en cada petición. Las IPs sin API key tienen un límite global compartido muy restrictivo.",
+    "evaluationCriteria": [
+      "Selecciona y explica el algoritmo de rate limiting elegido",
+      "Resuelve el estado compartido entre instancias con Redis",
+      "Define la respuesta HTTP correcta (429) con headers informativos",
+      "Considera límites diferenciados por plan o tipo de cliente"
+    ],
+    "timeEstimate": 300
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": ["base-de-datos", "escalabilidad"],
+    "language": "es",
+    "questionText": "Estás diseñando un sistema de búsqueda de productos con filtros por categoría, rango de precio, disponibilidad y texto libre. La tabla tiene 5 millones de registros. ¿Cómo optimizarías las consultas en PostgreSQL?",
+    "hints": [
+      "¿Qué tipos de índices tiene PostgreSQL además de B-tree?",
+      "¿Cómo funciona el full-text search en PostgreSQL?",
+      "¿Cuándo consideras una solución de búsqueda dedicada como Elasticsearch?"
+    ],
+    "modelAnswer": "La optimización de búsqueda en PostgreSQL con 5M registros aborda varios frentes. Índices B-tree compuestos: para filtros frecuentes como (category_id, price, is_available), un índice compuesto parcial (WHERE is_available = true) reduce el espacio y mejora la velocidad para el caso más común. La selectividad del orden importa: la columna más selectiva va primera. Full-text search: para búsqueda de texto libre, se añade una columna tsvector generada (GENERATED ALWAYS AS to_tsvector('spanish', name || ' ' || description)) y un índice GIN sobre ella. Las búsquedas usan to_tsquery('spanish', :term) con @@ operator y ts_rank para relevancia. Índices para rangos: para filtros de precio, el índice B-tree en price con BRIN si los precios están correlacionados con el ID de inserción. Paginación eficiente: evitar OFFSET grande; usar cursor-based pagination (WHERE id > lastSeenId ORDER BY id LIMIT 20) que no degrada con páginas lejanas. Para búsquedas muy complejas con facets y autocompletado, Elasticsearch o el plugin pg_search (Meilisearch) ofrecen mejor experiencia, pero agregan complejidad operacional. PostgreSQL con índices bien diseñados puede manejar este caso de uso sin infraestructura adicional.",
+    "evaluationCriteria": [
+      "Propone índices B-tree compuestos estratégicos con orden correcto",
+      "Explica full-text search con tsvector/GIN para búsqueda de texto",
+      "Menciona paginación cursor-based para evitar degradación con OFFSET",
+      "Evalúa cuándo justifica añadir Elasticsearch vs quedarse en PostgreSQL"
+    ],
+    "timeEstimate": 300
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": ["aws", "disponibilidad", "base-de-datos"],
+    "language": "es",
+    "questionText": "Tu empresa usa AWS RDS PostgreSQL en producción. El CTO pide diseñar una estrategia de backups y recuperación ante desastres con RTO (Recovery Time Objective) de 1 hora y RPO (Recovery Point Objective) de 5 minutos. ¿Cómo lo implementarías?",
+    "hints": [
+      "¿Qué herramientas de backup ofrece RDS nativamente?",
+      "¿Qué es Point-in-Time Recovery (PITR)?",
+      "¿Cómo logras alta disponibilidad vs recuperación ante desastres?"
+    ],
+    "modelAnswer": "La estrategia combina varias capas de protección. Backups automáticos de RDS: activar automated backups con retention de 7 días y backup window en horario de baja actividad. RDS almacena snapshots diarios y transaction logs cada 5 minutos en S3, habilitando Point-in-Time Recovery (PITR) a cualquier segundo del período de retención, satisfaciendo el RPO de 5 minutos. Para el RTO de 1 hora: RDS Multi-AZ activa un standby sincrónico en otra zona de disponibilidad; el failover automático ocurre en 60-120 segundos sin intervención manual, satisfaciendo el RTO. Para recuperación ante desastres regional (si toda una región de AWS falla): copiar snapshots automáticamente a otra región (Cross-Region Automated Backups) y configurar una Read Replica en la región secundaria que puede ser promovida a primaria. El runbook de DR debe documentar: (1) detección del fallo, (2) decisión de activar DR (RTO de la región secundaria es ~30 min incluyendo actualización de DNS), (3) actualización de parámetros de conexión de la aplicación, (4) validación de integridad de datos. Los simulacros de DR deben realizarse trimestralmente. Se recomienda alarmas CloudWatch para latencia de replicación y tamaño de storage.",
+    "evaluationCriteria": [
+      "Distingue RTO y RPO con soluciones concretas para cada objetivo",
+      "Explica PITR de RDS para lograr RPO de 5 minutos",
+      "Describe Multi-AZ para failover automático dentro de la región",
+      "Considera recuperación cross-region y menciona runbook de DR"
+    ],
+    "timeEstimate": 300
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": ["docker", "ci-cd", "arquitectura"],
+    "language": "es",
+    "questionText": "Tu equipo tiene tres entornos: desarrollo local, staging y producción. Un cliente pide que la configuración de la aplicación Spring Boot sea consistente entre entornos pero con valores diferentes (URLs de BD, credenciales, feature flags). ¿Cómo gestionarías la configuración?",
+    "hints": [
+      "¿Cómo externaliza Spring Boot la configuración?",
+      "¿Dónde almacenas secretos de forma segura?",
+      "¿Cómo vas de dev a staging a prod con Docker?"
+    ],
+    "modelAnswer": "La gestión de configuración sigue el principio 12-factor: separar config del código. Estructura: un application.yml base con valores por defecto no sensibles commiteado al repo, y perfiles específicos (application-dev.yml, application-staging.yml, application-prod.yml) con configuración no sensible de cada entorno. Las variables sensibles (contraseñas, API keys) NUNCA van en el repo: en desarrollo se usan archivos .env con docker-compose (en .gitignore); en staging/prod se usan variables de entorno inyectadas por el sistema de CI/CD. En AWS, AWS Secrets Manager o SSM Parameter Store almacena los secretos; la app los lee al iniciar con el Spring Cloud AWS SDK. En GitHub Actions, los secrets del pipeline se almacenan en GitHub Secrets (Settings > Secrets) y se exponen como env vars al contenedor Docker durante el despliegue. Para feature flags, se usa un perfil o variable FEATURE_X_ENABLED=true/false que Spring convierte en @Value o @ConditionalOnProperty. Con Kubernetes, los ConfigMaps manejan config no sensible y los Secrets (codificados en base64, integrados con Vault o Secrets Manager) manejan lo sensible. La imagen Docker es la misma en todos los entornos; solo cambian las variables de entorno.",
+    "evaluationCriteria": [
+      "Aplica el principio 12-factor para externalizar configuración del código",
+      "Separa configuración no sensible (perfiles) de secretos (secrets manager)",
+      "Describe el flujo concreto para dev, staging y prod",
+      "Menciona que la imagen Docker debe ser idéntica entre entornos"
+    ],
+    "timeEstimate": 300
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": ["ci-cd", "disponibilidad", "docker"],
+    "language": "es",
+    "questionText": "Tu equipo quiere implementar un pipeline de CI/CD con GitHub Actions que incluya despliegue a staging automático y a producción con aprobación manual. ¿Cómo diseñarías el pipeline completo?",
+    "hints": [
+      "¿Cómo implementas la aprobación manual en GitHub Actions?",
+      "¿Qué estrategia de despliegue usas para producción? (blue-green, rolling, canary)",
+      "¿Cómo manejas un rollback rápido si algo falla?"
+    ],
+    "modelAnswer": "El pipeline tiene tres fases. CI (todas las ramas): checkout, setup Java, caché Maven, compilación, pruebas unitarias, pruebas de integración con Testcontainers, análisis de calidad (SonarQube o Codecov), build y push de imagen Docker con tag del SHA del commit a ECR. CD Staging (merge a main): job deploy-staging usa la imagen recién publicada, conecta a la instancia EC2/ECS de staging por SSH o actualiza el task definition de ECS, ejecuta smoke tests automáticos post-despliegue (health check, tests de humo con RestAssured). CD Producción (con aprobación): en GitHub Actions se usa environment: production con required reviewers configurados en Settings > Environments; el job queda en pausa hasta que un aprobador hace click en 'Approve'. La estrategia blue-green en AWS: se mantienen dos target groups (blue=activo, green=nuevo), el despliegue actualiza green, se valida, y se cambia el ALB listener de blue a green. El rollback es instantáneo volviendo el listener a blue. Para ECS, CodeDeploy integrado con ECS soporta blue-green nativamente. Los tags de imagen deben ser inmutables (SHA del commit), nunca se sobreescribe 'latest' en producción para garantizar reproducibilidad.",
+    "evaluationCriteria": [
+      "Diseña los tres stages: CI, CD staging automático, CD prod con aprobación",
+      "Explica el mecanismo de aprobación manual en GitHub Actions (environments)",
+      "Describe la estrategia de despliegue blue-green para rollback instantáneo",
+      "Menciona tags de imagen inmutables y smoke tests post-despliegue"
+    ],
+    "timeEstimate": 300
+  },
+  {
+    "category": "system_design",
+    "difficulty": "mid",
+    "tags": ["monitoreo", "seguridad", "base-de-datos"],
+    "language": "es",
+    "questionText": "Tu empresa opera en un sector regulado y necesita un sistema de auditoría que registre quién hizo qué y cuándo en la aplicación Spring Boot. El sistema debe cumplir con requisitos de no repudio y ser a prueba de manipulaciones. ¿Cómo lo diseñarías?",
+    "hints": [
+      "¿Dónde capturas los eventos de auditoría? (interceptores, AOP, triggers de BD)",
+      "¿Cómo previenes que un admin borre los logs de auditoría?",
+      "¿Qué información debe contener cada entrada de auditoría?"
+    ],
+    "modelAnswer": "El sistema de auditoría tiene captura, almacenamiento y protección. Captura: Spring Data JPA con @EnableJpaAuditing y la interfaz AuditorAware que obtiene el usuario del SecurityContext proporciona automáticamente createdBy, createdAt, lastModifiedBy, lastModifiedAt a todas las entidades. Para auditoría más granular (qué campos cambiaron), Hibernate Envers (@Audited en la entidad) crea tablas de revisión (entity_AUD) con el historial completo. Para eventos de negocio (login, exportación de datos, cambio de permisos), un @Aspect captura métodos anotados con @Auditable y publica eventos a una cola de auditoría asíncrona. Esquema de un registro de auditoría: audit_log(id, timestamp, user_id, user_email, action, entity_type, entity_id, old_value JSONB, new_value JSONB, ip_address, user_agent, request_id). Almacenamiento inmutable: los registros de auditoría solo tienen INSERT, nunca UPDATE ni DELETE (garantizado por política de BD o roles). Para cumplimiento avanzado, se exportan a un bucket S3 con Object Lock (WORM) o a AWS CloudTrail. Cada registro incluye un hash encadenado (hash del registro anterior + contenido actual) para detectar manipulaciones. Retención según regulación (GDPR: hasta eliminación del usuario; PCI-DSS: 12 meses activos, 3 años archivados). El acceso a los logs de auditoría requiere rol especial (ROLE_AUDITOR) separado de ROLE_ADMIN.",
+    "evaluationCriteria": [
+      "Describe múltiples mecanismos de captura: JPA Auditing, Envers, AOP",
+      "Define el esquema de registro con todos los campos necesarios para no repudio",
+      "Garantiza la inmutabilidad del log con restricciones de BD o almacenamiento WORM",
+      "Menciona retención, acceso separado y exportación para cumplimiento regulatorio"
+    ],
+    "timeEstimate": 300
+  },
+  {
+    "category": "system_design",
+    "difficulty": "senior",
+    "tags": ["microservicios", "monolito", "disponibilidad", "arquitectura"],
+    "language": "es",
+    "questionText": "Tu empresa tiene un monolito Spring Boot en producción con 200.000 usuarios activos y 99.5% de uptime actual. El CTO quiere migrar a microservicios sin downtime y sin que los usuarios lo noten. Diseña la estrategia de migración completa, incluyendo el orden de extracción de servicios y cómo manejas los riesgos.",
+    "hints": [
+      "¿Qué es el patrón Strangler Fig y cómo se aplica aquí?",
+      "¿Cómo manejas los datos compartidos entre el monolito y los nuevos microservicios durante la transición?",
+      "¿En qué orden extraes los servicios para minimizar riesgo?"
+    ],
+    "modelAnswer": "La migración usa el patrón Strangler Fig: un API Gateway (Kong, AWS API Gateway o NGINX) se coloca delante del monolito desde el principio. Gradualmente, las rutas se redirigen del monolito a los nuevos microservicios sin que los clientes noten el cambio. Preparación (semanas 1-4): introducir el API Gateway en producción redirigiendo el 100% al monolito (sin cambio funcional), añadir observabilidad al monolito (métricas, trazas), modularizar internamente el código del monolito con bounded contexts claros, y establecer feature flags para el tráfico dual. Orden de extracción (menor riesgo primero): (1) Servicios con datos propios y bajo acoplamiento (notificaciones, reportes, búsqueda) — no tienen transacciones con otros dominios. (2) Servicios de lectura intensiva que pueden tolerar replicación de datos (catálogo). (3) Servicios core con escrituras (usuarios, pedidos) — máxima complejidad. Migración de datos: durante la transición, el nuevo servicio y el monolito comparten la misma BD PostgreSQL (schema separado pero misma instancia). Se usa el patrón Dual Write temporalmente: el monolito escribe en ambos schemas, el nuevo servicio lee solo del suyo. Una vez validado, el monolito deja de escribir en ese schema. Finalmente, el schema se mueve a una BD dedicada. Gestión de riesgo: feature flags permiten redirigir el tráfico al monolito en segundos si hay problemas; canary releases (5% → 20% → 50% → 100%) con métricas de error rate antes de cada incremento; circuit breakers en el API Gateway. El KPI de éxito es mantener error rate < 0.1% y latencia p99 < 500ms durante toda la migración.",
+    "evaluationCriteria": [
+      "Aplica el patrón Strangler Fig con API Gateway como punto de control central",
+      "Define un orden de extracción basado en acoplamiento de datos y riesgo",
+      "Diseña la migración de datos con el patrón Dual Write y separación progresiva de BDs",
+      "Establece mecanismos de control de riesgo: feature flags, canary releases, circuit breakers, rollback"
+    ],
+    "timeEstimate": 360
+  },
+  {
+    "category": "system_design",
+    "difficulty": "senior",
+    "tags": ["escalabilidad", "disponibilidad", "aws", "arquitectura"],
+    "language": "es",
+    "questionText": "Estás diseñando la arquitectura de infraestructura para una plataforma con 1 millón de usuarios registrados, picos de 50.000 usuarios concurrentes y un SLA de 99.9% de disponibilidad. El stack es Spring Boot + Angular + PostgreSQL en AWS. ¿Cómo diseñarías la arquitectura completa?",
+    "hints": [
+      "¿Cómo escalas horizontal y verticalmente cada capa?",
+      "¿Cómo logras 99.9% de disponibilidad (8.7 horas de downtime/año permitidas)?",
+      "¿Cómo diseñas para que los fallos de un componente no causen caída total?"
+    ],
+    "modelAnswer": "La arquitectura a escala tiene múltiples capas con redundancia en cada nivel. Capa de red y entrada: Route 53 con health checks para failover DNS, CloudFront CDN para assets estáticos del Angular (S3 + CloudFront), y ALB (Application Load Balancer) Multi-AZ con SSL termination que distribuye el tráfico entre las instancias de Spring Boot. Capa de aplicación: Auto Scaling Group con mínimo 3 instancias EC2 (o ECS Fargate) distribuidas en 3 AZs distintas. El ASG escala según CPU > 70% con cooldown de 5 minutos. Para picos predecibles (campañas), Scheduled Scaling añade capacidad antes del evento. Las instancias son stateless (sin estado local); el estado de sesión va en Redis (ElastiCache). Circuit breakers (Resilience4j) en cada llamada a dependencias externas. Capa de datos: RDS PostgreSQL Multi-AZ con Read Replicas (una por AZ) para distribuir la carga de lectura. Spring Boot usa un pool de conexiones HikariCP dimensionado según la capacidad de RDS (máximo de conexiones = (CPU cores * 2) + effective_spindle_count). ElastiCache Redis en modo cluster para caché y sesiones. Para 50.000 concurrentes: cada instancia EC2 c5.xlarge puede manejar ~500-1.000 conexiones activas; se necesitan al menos 50-100 instancias en el pico, con ASG ajustado. Observabilidad: CloudWatch para métricas de infraestructura, APM (AWS X-Ray o Datadog) para trazas de aplicación, alarmas automáticas con runbook para respuesta a incidentes. 99.9% de disponibilidad requiere eliminar single points of failure: cada componente con al menos 2 instancias en AZs distintas, health checks agresivos y failover automatizado.",
+    "evaluationCriteria": [
+      "Diseña cada capa (CDN, LB, aplicación, BD, caché) con redundancia Multi-AZ",
+      "Dimensiona el Auto Scaling Group para el pico de 50K usuarios concurrentes",
+      "Garantiza stateless en la capa de aplicación con estado externalizado en Redis",
+      "Establece la estrategia de observabilidad y responde a cómo se logra el 99.9% SLA"
+    ],
+    "timeEstimate": 360
+  },
+  {
+    "category": "system_design",
+    "difficulty": "senior",
+    "tags": ["monitoreo", "microservicios", "arquitectura"],
+    "language": "es",
+    "questionText": "Tu empresa opera 15 microservicios Spring Boot en producción. Cuando hay un incidente, el equipo tarda 45 minutos en identificar el servicio causante. El CTO pide diseñar una estrategia de observabilidad completa: métricas, logs y trazas distribuidas. ¿Cómo la implementarías?",
+    "hints": [
+      "¿Qué son los tres pilares de la observabilidad?",
+      "¿Cómo correlacionas una petición a través de múltiples servicios?",
+      "¿Qué herramientas del ecosistema Spring/AWS usarías?"
+    ],
+    "modelAnswer": "La observabilidad se basa en los tres pilares: métricas, logs y trazas, con correlación entre ellos. Métricas: Spring Boot Actuator + Micrometer expone métricas en formato Prometheus (/actuator/prometheus). Las métricas esenciales son las cuatro señales doradas: latencia (p50, p95, p99), tráfico (req/seg), errores (tasa de 5xx) y saturación (CPU, memoria, conexiones de BD). Prometheus las recoge y Grafana las visualiza con dashboards por servicio. Alertas con Alertmanager: error rate > 1% o latencia p99 > 500ms durante 5 minutos dispara PagerDuty. Logs estructurados: todos los servicios escriben JSON a stdout con campos estándar: timestamp, level, service, version, traceId, spanId, userId, message. El agente Fluent Bit en cada nodo recoge los logs y los envía a OpenSearch (AWS) o Loki. El campo traceId permite filtrar todos los logs de una petición distribuida desde un único ID. Trazas distribuidas: Spring Cloud Sleuth (o Micrometer Tracing en Boot 3+) con exportación a Zipkin o Jaeger. Cada petición genera un traceId que se propaga en los headers HTTP (B3 o W3C TraceContext). Al investigar un incidente, se parte del traceId del error (visible en los logs del API Gateway), se abre en Jaeger y se ve el grafo de llamadas con latencias por servicio. La correlación de los tres pilares: el dashboard de Grafana muestra un spike de errores → se hace drill-down a los logs con el filtro de esa ventana de tiempo → se extrae un traceId de los logs de error → se abre en Jaeger para ver el servicio causante. SLOs/SLAs: se definen SLOs (99.9% de peticiones < 300ms) y se miden con Prometheus para el error budget. Con esta implementación, el MTTD (Mean Time To Detect) objetivo es < 5 minutos.",
+    "evaluationCriteria": [
+      "Describe los tres pilares de observabilidad con herramientas concretas para Spring Boot",
+      "Explica la correlación entre pilares mediante traceId propagado en headers",
+      "Define las cuatro señales doradas y las alertas sobre ellas",
+      "Describe el flujo concreto de investigación de un incidente de extremo a extremo"
+    ],
+    "timeEstimate": 360
+  },
+  {
+    "category": "system_design",
+    "difficulty": "senior",
+    "tags": ["seguridad", "arquitectura", "microservicios"],
+    "language": "es",
+    "questionText": "Estás diseñando el sistema de permisos para una plataforma SaaS B2B donde cada empresa cliente tiene roles personalizables, recursos con permisos granulares y reglas contextuales (p.ej., 'solo puede editar documentos de su departamento creados en los últimos 30 días'). Diseña un sistema RBAC/ABAC híbrido con Spring Boot.",
+    "hints": [
+      "¿Cuál es la diferencia entre RBAC (Role-Based) y ABAC (Attribute-Based)?",
+      "¿Cómo modelas permisos granulares en la base de datos?",
+      "¿Cómo evalúas las políticas de autorización de forma eficiente sin consultar la BD en cada request?"
+    ],
+    "modelAnswer": "El sistema híbrido RBAC+ABAC tiene tres componentes: modelo de datos, motor de evaluación y aplicación. Modelo de datos: las entidades base son Subject (usuario o service account), Resource (documento, proyecto, factura), Action (read, write, delete, approve) y Context (tenant, department, time, IP). RBAC: tablas roles (id, tenant_id, name), permissions (id, resource_type, action, conditions JSONB) y role_assignments (user_id, role_id, tenant_id). ABAC extiende esto con las condiciones en JSONB: {'department': 'match:subject.department', 'created_at': 'gte:now()-30d', 'owner': 'match:subject.id'}. Motor de evaluación (Policy Decision Point): un servicio AuthorizationService con método isAllowed(subject, action, resource, context). El proceso: (1) cargar los roles del usuario (cacheados en Redis, TTL 5 min), (2) filtrar permisos que coincidan con resource_type y action, (3) evaluar las condiciones ABAC contra los atributos del sujeto y recurso en tiempo real. Las condiciones simples se evalúan en memoria con un intérprete de expresiones (SpEL o una DSL propia). Condiciones complejas que requieren datos de la BD (cuántos documentos ha creado hoy) se resuelven con contadores en Redis. Aplicación: a nivel de API, @PreAuthorize('hasPermission(#documentId, \"write\")') llama al AuthorizationService. A nivel de datos, Spring Data JPA @PostFilter o cláusulas WHERE dinámicas para filtrar colecciones. Para reportes masivos, las políticas se compilan a SQL WHERE clauses. Gestión de políticas: interfaz de administración para que cada tenant configure sus roles y condiciones, con validación de que las condiciones son expresiones válidas y no circulares. El sistema de permisos se autonmitorea: latencia de evaluación (objetivo < 10ms), cache hit rate y número de evaluaciones fallidas (posibles intentos de escalada de privilegios).",
+    "evaluationCriteria": [
+      "Distingue RBAC (roles) de ABAC (atributos contextuales) y justifica el modelo híbrido",
+      "Diseña el esquema de datos con soporte para condiciones dinámicas en JSONB",
+      "Describe el Policy Decision Point con caché para eficiencia en cada request",
+      "Explica la aplicación en API (anotaciones) y a nivel de datos (filtrado de queries)"
+    ],
+    "timeEstimate": 360
+  }
+]
