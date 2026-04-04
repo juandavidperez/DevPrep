@@ -3,6 +3,8 @@ import { auth } from '@/lib/auth';
 import { getTTSProvider } from '@/lib/speech';
 import { TtsUnavailableError } from '@/lib/speech/types';
 
+export const maxDuration = 30;
+
 export async function POST(request: Request) {
   const session = await auth();
   if (!session?.user?.id) {

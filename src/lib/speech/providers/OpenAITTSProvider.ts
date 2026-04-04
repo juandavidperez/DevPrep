@@ -33,13 +33,19 @@ export class OpenAITTSProvider implements TTSProvider {
         response_format: 'mp3',
       });
 
-      // The OpenAI SDK response body is a Web API ReadableStream
-      const body = response.body as ReadableStream<Uint8Array>;
-      if (!body) {
+      // Buffer fully before streaming — avoids Node.js/Web ReadableStream
+      // incompatibility in Vercel serverless on repeated calls.
+      const arrayBuffer = await response.arrayBuffer();
+      if (!arrayBuffer.byteLength) {
         throw new TtsUnavailableError('OpenAI TTS returned empty body');
       }
 
-      return body;
+      return new ReadableStream<Uint8Array>({
+        start(controller) {
+          controller.enqueue(new Uint8Array(arrayBuffer));
+          controller.close();
+        },
+      });
     } catch (err) {
       if (err instanceof TtsUnavailableError) throw err;
       throw new TtsUnavailableError(
