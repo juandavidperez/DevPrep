@@ -12,6 +12,9 @@ import "../globals.css";
 export const metadata = {
   title: "DevPrep | AI Interview Coach",
   description: "Master your software development interviews with AI-powered simulations.",
+  icons: {
+    icon: "/logo-icon.svg",
+  },
 };
 
 export default async function RootLayout({
