@@ -4,6 +4,8 @@ import { prisma } from '@/lib/db';
 import { getSTTProvider } from '@/lib/speech';
 import { SttUnavailableError } from '@/lib/speech/types';
 
+export const maxDuration = 30;
+
 export async function POST(request: Request) {
   const session = await auth();
   if (!session?.user?.id) {

@@ -1,4 +1,4 @@
-import OpenAI from 'openai';
+import OpenAI, { toFile } from 'openai';
 import { STTProvider, SttUnavailableError } from '../types';
 
 /**
@@ -17,8 +17,12 @@ export class WhisperAPIProvider implements STTProvider {
 
   async transcribe(audio: Blob, language: 'en' | 'es'): Promise<string> {
     try {
-      // OpenAI SDK expects a File-like object with a name and type
-      const file = new File([audio], 'recording.webm', { type: audio.type });
+      // Strip codec params (e.g. "audio/webm;codecs=opus" → "audio/webm")
+      // so the OpenAI API receives a clean MIME type it recognizes.
+      const mimeType = (audio.type || 'audio/webm').split(';')[0];
+      const ext = mimeType.includes('mp4') ? 'm4a' : 'webm';
+
+      const file = await toFile(audio, `recording.${ext}`, { type: mimeType });
 
       const response = await this.client.audio.transcriptions.create({
         file,
