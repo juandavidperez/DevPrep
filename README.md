@@ -25,7 +25,7 @@
 
 ## What is DevPrep?
 
-DevPrep simulates real software development interviews through a chat-based interface. An AI interviewer asks questions from a curated bank of 200 questions (or generates new ones dynamically), evaluates your free-text and code responses, and gives you a detailed score breakdown with actionable feedback.
+DevPrep simulates real software development interviews through a chat-based interface. An AI interviewer asks questions from a curated bank of 320 questions (or generates new ones dynamically), evaluates your free-text and code responses, and gives you a detailed score breakdown with actionable feedback.
 
 Unlike flashcard apps, DevPrep evaluates *how* you explain concepts — not just whether you picked the right answer.
 
@@ -56,15 +56,26 @@ AI:  Score: 82/100
 - Criteria vary by category: correctness/depth for technical, scalability/trade-offs for system design, STAR structure for behavioral
 - Detailed feedback + model answer after each response
 
+**Voice Interaction**
+- Hold-to-record mic button (+ spacebar shortcut) with live waveform visualizer
+- Editable transcript before sending — correct STT errors without retyping
+- Auto-plays AI evaluation + next question in sequence (audio chaining)
+- TTS speed control: 0.75× · 1× · 1.25× · 1.5×
+- Toggle text ↔ voice mid-session
+- Local providers (free): faster-whisper (STT) + Kokoro FastAPI (TTS)
+- Cloud providers: OpenAI Whisper (STT) + OpenAI TTS / ElevenLabs (TTS)
+
 **Question System**
-- 200 curated questions tailored to Angular, Java/Spring Boot, PostgreSQL, Docker, AWS
+- 320 curated questions — 200 English + 120 Spanish
+- English: 65 junior · 115 mid · 20 senior across Technical, Coding, System Design, Behavioral
+- Spanish: 42 junior · 56 mid · 22 senior (full stack in Spanish, including STAR behavioral)
 - Smart selection: spaced repetition queue → unseen from bank → AI-generated fallback
-- Distribution: 65 junior · 115 mid · 20 senior
 
 **Multi-Provider AI**
 - Swappable providers via env var: Ollama (local/free), Claude Haiku, Gemini Flash, GPT-4o Mini
-- Smart routing: auto-selects the best provider per question category
+- Smart routing: auto-selects the best provider per question category (`AI_ROUTING=smart`)
 - Develop fully offline with Ollama — zero API cost
+- Zod-validated AI responses — structured JSON with score, criteria, feedback, and model answer
 
 **App**
 - Google OAuth authentication (Auth.js v5)
@@ -123,7 +134,7 @@ Fill in `.env` (see [Environment Variables](#environment-variables) below).
 
 ```bash
 npx prisma generate
-npx prisma db seed        # Seeds 200 curated questions
+npx prisma db seed        # Seeds 320 curated questions
 ```
 
 > **Note:** `prisma migrate dev` hangs with Supabase's transaction pooler. Apply DDL via the Supabase dashboard or MCP, then run `npx prisma generate`.
@@ -136,7 +147,19 @@ ollama pull llama3.1:8b   # ~5 GB download
 ollama serve
 ```
 
-### 5. Run the dev server
+### 5. (Optional) Set up local speech services for voice mode
+
+```bash
+# STT — faster-whisper (free, runs on CPU)
+docker run --rm -p 8000:8000 fedirz/faster-whisper-server:latest-cpu
+
+# TTS — Kokoro FastAPI (free, runs on CPU)
+docker run --rm -p 8880:8880 ghcr.io/remsky/kokoro-fastapi-cpu:latest
+```
+
+Set `STT_PROVIDER=whisper-local` and `TTS_PROVIDER=kokoro` in `.env` to use them. Alternatively, use `STT_PROVIDER=whisper-api` and `TTS_PROVIDER=openai` with an OpenAI API key.
+
+### 6. Run the dev server
 
 ```bash
 npm run dev
@@ -176,6 +199,16 @@ GEMINI_MODEL="gemini-2.0-flash"
 
 # OpenAI (optional)
 OPENAI_API_KEY=""
+
+# Speech — STT
+STT_PROVIDER="whisper-local"   # "whisper-local" | "whisper-api"
+WHISPER_LOCAL_URL="http://localhost:8000"
+WHISPER_LOCAL_MODEL="Systran/faster-whisper-small"
+
+# Speech — TTS
+TTS_PROVIDER="kokoro"          # "kokoro" | "openai" | "elevenlabs"
+KOKORO_URL="http://localhost:8880"
+ELEVENLABS_API_KEY=""
 
 # App
 NEXT_PUBLIC_DEFAULT_LOCALE="en"
@@ -243,7 +276,7 @@ devprep/
 ├── prisma/
 │   ├── schema.prisma           # DB schema (devprep schema, Supabase)
 │   ├── seed.ts                 # Question bank seeder
-│   └── seeds/                  # technical.json, coding.json, system-design.json, behavioral.json
+│   └── seeds/                  # technical.json, coding.json, system-design.json, behavioral.json (EN + ES)
 ├── messages/
 │   ├── en.json                 # English translations
 │   └── es.json                 # Spanish translations
@@ -251,17 +284,20 @@ devprep/
     ├── app/
     │   ├── [locale]/           # All pages — dashboard, history, session/[id], settings, bookmarks
     │   │   └── */loading.tsx   # Skeleton loading states for every route
-    │   └── api/                # API routes — sessions, messages, settings, bookmarks
+    │   └── api/                # sessions, messages, settings, bookmarks, speech/stt, speech/tts
     ├── components/
-    │   ├── session/            # ChatContainer, MessageBubble, CodeEditor, ResultsView
+    │   ├── session/
+    │   │   ├── voice/          # MicButton, WaveformVisualizer, TranscriptDisplay, AudioPlayback, VoiceToggle
+    │   │   └── ...             # ChatContainer, MessageBubble, CodeEditor, ResultsView
     │   ├── history/            # HistoryFilters, SessionList
     │   ├── bookmarks/          # BookmarksClient
     │   ├── settings/           # SettingsForm
     │   └── ui/                 # Skeleton, shared primitives
     └── lib/
         ├── ai/                 # AIProvider interface + Ollama/Anthropic/Gemini/OpenAI adapters
+        ├── speech/             # Speech engine — STT/TTS provider adapters
         ├── questions/          # Smart selector (spaced repetition → bank → AI fallback)
-        ├── interaction/        # InteractionManager (input/output abstraction)
+        ├── interaction/        # InteractionManager — unified text/voice input/output abstraction
         ├── auth.ts             # Auth.js config + PrismaAdapter
         └── db.ts               # Prisma singleton
 ```
@@ -272,23 +308,28 @@ devprep/
 
 - [x] **Phase 1 — Text Chat MVP** ← done, deployed to Vercel
   - [x] Auth (NextAuth v5 + Google OAuth)
-  - [x] 200 curated questions seeded
+  - [x] 320 curated questions seeded (200 EN + 120 ES)
   - [x] Chat UI with Monaco code editor
-  - [x] AI evaluation — 4 providers
+  - [x] AI evaluation — 4 providers (Ollama, Claude, Gemini, OpenAI)
+  - [x] Zod-validated AI responses with structured scoring
+  - [x] Smart AI provider routing by question category
   - [x] Session history, bookmarks, dashboard analytics
-  - [x] Bilingual EN/ES
+  - [x] Bilingual EN/ES (UI and question bank)
   - [x] Obsidian Terminal design system
   - [x] Loading skeletons on every page
-  - [ ] Zod validation on AI responses
-  - [ ] Smart AI provider routing
-- [ ] **Phase 2 — Voice Interaction**
-  - [ ] Speech-to-text (Web Speech API → Whisper)
-  - [ ] Text-to-speech (Web Speech API → ElevenLabs)
-  - [ ] Modality switching mid-session
+- [x] **Phase 2 — Voice Interaction** ← done
+  - [x] Hold-to-record mic button + spacebar shortcut
+  - [x] Live waveform visualizer
+  - [x] Editable STT transcript before sending
+  - [x] Auto-play audio chaining (eval → next question)
+  - [x] TTS speed control (0.75× – 1.5×)
+  - [x] Text ↔ voice toggle mid-session
+  - [x] Local providers: faster-whisper (STT) + Kokoro (TTS)
+  - [x] Cloud providers: OpenAI Whisper + OpenAI TTS / ElevenLabs
 - [ ] **Phase 3 — Avatar Interviewer**
-  - [ ] Animated 2D character (Rive/Lottie)
+  - [ ] Animated 2D character (Rive)
   - [ ] Lip sync from TTS audio
-  - [ ] Emotion/gesture system from AI output
+  - [ ] Emotion/gesture state machine (isListening, isThinking, isTalking, isPositive, isConcerned)
 
 ---
 
