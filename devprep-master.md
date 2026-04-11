@@ -774,10 +774,10 @@ Full voice interview sessions working end-to-end. STT + TTS pipelines implemente
 
 | Week | Milestone |
 |------|-----------|
-| 13 | Fix eye component backgrounds → import 13 rigging sheet components into Rive → assemble character → create bones (Head, Chest, Brow_L/R, Eye_L/R, Mouth) → export `.riv` |
-| 14 | Animate 5 states (idle, listening, thinking, talking_positive, talking_concerned) → build state machine with boolean inputs (`isListening`, `isThinking`, `isTalking`, `isPositive`, `isConcerned`) → crossfade 300ms |
+| 13 | ~~Fix eye component backgrounds → import 13 rigging sheet components into Rive → assemble character → create bones (Head, Chest, Brow_L/R, Eye_L/R, Mouth) → export `.riv`~~ ✅ |
+| 14 | ~~`idle`, `listening`, `thinking` animations done~~ ✅ → `talking_positive` / `talking_concerned` animations → build state machine (`isListening`, `isThinking`, `isTalking`, `isPositive`, `isConcerned` + `mouthOpen`/`viseme` Number input) → wire transitions → export `.riv` |
 | 15 | Install `@rive-app/react-canvas` → build `AvatarCanvas.tsx` → build `useAvatarState` hook → connect `avatarDirective` from AI output to Rive inputs → split-screen layout |
-| 16 | Lip sync (TTS audio → viseme mapping → mouth shapes) → mobile fallback (avatar collapsed top) → graceful degradation if Rive fails → performance monitoring |
+| 16 | Lip sync via `wawa-lipsync` (Tier 1, amplitude) → upgrade to `rhubarb-lip-sync-wasm` (Tier 2, phonemes + dialog text hint) → mobile fallback → graceful degradation → performance monitoring |
 
 ### Phase 4 — Scale & Community (~weeks 17+)
 
@@ -793,27 +793,28 @@ Full voice interview sessions working end-to-end. STT + TTS pipelines implemente
 > Effort: **S** = few hours · **M** = half–full day · **L** = 1–2 days · **XL** = 2–3 days
 > Avatar character design, animation guide, and rigging sheet already generated — see Section 17.
 
-### Epic 7: Avatar Character — Rive Setup (Week 13) ⬜
+### Epic 7: Avatar Character — Rive Setup (Week 13) ✅
 
 | Task | Effort | Status |
 |------|--------|--------|
-| Fix eye components (4 & 5) — remove white background in Canva/Figma | S | ⬜ |
-| Import all 13 rigging sheet components into Rive as assets | M | ⬜ |
-| Assemble character on canvas — position each layer (torso, head, hair, eyes, eyebrows, mouth) | L | ⬜ |
-| Create bone structure: Head (pivot at neck), Chest (breathing), Brow_L/R, Eye_L/R, Mouth | L | ⬜ |
-| Bind each component to its bone | M | ⬜ |
-| Export `.riv` file and verify it loads in browser via `@rive-app/react-canvas` | S | ⬜ |
+| Fix eye components (4 & 5) — remove white background in Canva/Figma | S | ✅ |
+| Import all 13 rigging sheet components into Rive as assets | M | ✅ |
+| Assemble character on canvas — position each layer (torso, head, hair, eyes, eyebrows, mouth) | L | ✅ |
+| Create bone structure: Head (pivot at neck), Chest (breathing), Brow_L/R, Eye_L/R, Mouth | L | ✅ |
+| Bind each component to its bone | M | ✅ |
+| Export `.riv` file and verify it loads in browser via `@rive-app/react-canvas` | S | ✅ |
 
-### Epic 8: State Machine & Animations (Week 14) ⬜
+### Epic 8: State Machine & Animations (Week 14) 🔄
 
 | Task | Effort | Status |
 |------|--------|--------|
-| `idle` animation — breathing (chest), occasional blink, gentle head sway | M | ⬜ |
-| `listening` animation — head tilted forward, eyebrows raised, pupils wider | M | ⬜ |
-| `thinking` animation — eyes up-left (cognitive recall), slow blink, hand-to-chin | L | ⬜ |
+| `idle` animation — breathing (chest), occasional blink, gentle head sway | M | ✅ |
+| `listening` animation — head tilted forward, eyebrows raised, pupils wider | M | ✅ |
+| `thinking` animation — eyes up-left (cognitive recall), slow blink, hand-to-chin | L | ✅ |
 | `talking_positive` animation — mouth lip sync shapes (A/I, O/U, M/B/P, F/V), slight smile, head emphasis | L | ⬜ |
 | `talking_concerned` animation — same mouth shapes, furrowed brows, focused expression | L | ⬜ |
 | Build state machine with boolean inputs: `isListening`, `isThinking`, `isTalking`, `isPositive`, `isConcerned` | M | ⬜ |
+| Add `Number` input `mouthOpen` (0–1) for Tier 1 lip sync, or `viseme` (0–4) for Tier 2 | S | ⬜ |
 | Define transitions — all states return to idle when booleans are false, crossfade 300ms | M | ⬜ |
 | Test all state combinations manually in Rive editor | S | ⬜ |
 
@@ -831,9 +832,16 @@ Full voice interview sessions working end-to-end. STT + TTS pipelines implemente
 
 ### Epic 10: Lip Sync, Polish & Latency (Week 16) ⬜
 
+> **Lip sync strategy:** Two-tier approach. No ElevenLabs needed. OpenAI TTS has no timing output; Kokoro `/dev/captioned_speech` has word-level timestamps only. Both tiers are free and open source.
+>
+> - **Tier 1 — `wawa-lipsync` (MIT):** Connect `<audio>` to `LipSync` manager. Poll `lipsyncManager.viseme` in rAF loop. Set Rive `mouthOpen` (0–1). Zero latency, zero server changes. Ships first.
+> - **Tier 2 — `rhubarb-lip-sync-wasm` (MIT):** After audio blob received, run `getLipSync(pcmBuffer, dialogText)` passing AI response text as hint. Walk `mouthCues[]` against `audio.currentTime`. Set Rive `viseme` (0=Closed, 1=A/I, 2=O/U, 3=M/B/P, 4=F/V). Requires `next.config.js` WASM tweak.
+
 | Task | Effort | Status |
 |------|--------|--------|
-| Lip sync — map TTS audio to viseme sequence (A/I, O/U, M/B/P, F/V mouth shapes) | XL | ⬜ |
+| Tier 1: install `wawa-lipsync`, connect audio element, drive `mouthOpen` Rive input via rAF | M | ⬜ |
+| Tier 2: install `rhubarb-lip-sync-wasm`, run pre-analysis on audio blob with `dialogText` hint, walk cues in rAF | L | ⬜ |
+| Configure `next.config.js` for WASM binary loading (Tier 2 only) | S | ⬜ |
 | Measure round-trip latency: user stops speaking → avatar starts responding — target < 3s | M | ⬜ |
 | Optimize `.riv` file size (target < 500KB) | S | ⬜ |
 | Mobile layout — avatar collapsed to top strip, chat full screen below | L | ⬜ |
@@ -902,7 +910,7 @@ NEXT_PUBLIC_DEFAULT_LOCALE="en"
 | AI evaluation quality varies | High | Rubrics per question, Zod validation, log all evaluations with `aiLatencyMs` |
 | Inconsistent JSON from AI | High | Zod validation with retry logic, fallback to generic feedback |
 | Rive animation complexity | Medium | Start with simple bone animations, validate `.riv` loads in browser before animating |
-| Lip sync latency | Medium | Pre-generate viseme sequence while TTS is streaming; target < 3s round-trip |
+| Lip sync latency | Medium | Tier 1 (wawa-lipsync): 0ms real-time. Tier 2 (rhubarb-wasm): 0.5–2s pre-analysis client-side before playback; pass dialogText hint for accuracy |
 | Ollama slow on weak hardware | Medium | Loading state, use Phi-3 Mini as lighter alternative |
 | AI costs at scale | Low (personal) | Prompt caching cuts input costs 90% on Claude; ~$1–3/month personal use |
 
@@ -971,10 +979,13 @@ All assets generated via Google Gemini + Google Flow. Ready to import into Rive 
 | `isTalking` | Boolean | AI audio is playing back |
 | `isPositive` | Boolean | Evaluation score ≥ 70 (used with `isTalking`) |
 | `isConcerned` | Boolean | Evaluation score < 70 (used with `isTalking`) |
+| `mouthOpen` | Number (0–1) | Lip sync Tier 1 — amplitude/frequency drive via `wawa-lipsync` |
+| `viseme` | Number (0–4) | Lip sync Tier 2 — phoneme-accurate via `rhubarb-lip-sync-wasm` (0=Closed, 1=A/I, 2=O/U, 3=M/B/P, 4=F/V) |
 
-> **Idle** = all inputs false (default state)
+> **Idle** = all booleans false (default state)
 > **Talking Positive** = `isTalking + isPositive`
 > **Talking Concerned** = `isTalking + isConcerned`
+> **Lip sync inputs** are only active while `isTalking` is true; add either `mouthOpen` or `viseme` depending on chosen tier
 
 ### Viseme Mapping — Lip Sync
 
@@ -998,6 +1009,6 @@ All assets generated via Google Gemini + Google Flow. Ready to import into Rive 
 
 ---
 
-*Document version: 7.0*
+*Document version: 7.1*
 *Last updated: April 2026*
 *Author: Juan David Perez Vergara*

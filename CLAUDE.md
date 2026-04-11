@@ -217,13 +217,32 @@ Presets in voice mode UI: `0.75×` `1×` `1.25×` `1.5×`. State in `ChatContain
 
 ## Phase 3 — Avatar ⬜
 
-Technology: **Rive** (`@rive-app/react-canvas`). Avatar character design, animation guide, and rigging sheet already generated (see `devprep-master.md` Section 17). Rive work and Next.js integration not started.
+Technology: **Rive** (`@rive-app/react-canvas`). Avatar character design, animation guide, and rigging sheet already generated (see `devprep-master.md` Section 17).
+
+**Rive progress:**
+- `idle`, `listening`, `thinking` animations done ✅
+- State machine not yet built (pending: wire transitions + add numeric input for lip sync)
+- `talking` animation not yet created ⬜
+
+**Next step in Rive editor:** Create the state machine, add boolean inputs (`isListening`, `isThinking`, `isTalking`, `isPositive`, `isConcerned`), wire transitions (all → idle when booleans false), and add a `Number` input for lip sync (`mouthOpen` 0–1 for Tier 1, or `viseme` 0–4 for Tier 2). Export `.riv` free with Rive's free plan.
 
 **What I (Claude) can build:** All Next.js code — `AvatarCanvas.tsx`, `useAvatarState` hook, split-screen layout, lip sync algorithm, mobile fallback, Obsidian Terminal styling.
 
-**What requires manual work in Rive editor:** Character assembly, bone rigging, animations, state machine (Weeks 13–14).
+### Lip sync strategy (no ElevenLabs)
 
-State machine boolean inputs (to be created in Rive): `isListening`, `isThinking`, `isTalking`, `isPositive`, `isConcerned`.
+> **Key findings:** OpenAI TTS returns no timing/phoneme data. Kokoro `/dev/captioned_speech` returns word-level timestamps only (not phonemes).
+
+| Tier | Library | Quality | Latency | Changes |
+|------|---------|---------|---------|---------|
+| 1 (now) | `wawa-lipsync` (MIT) | Medium — frequency bands | 0ms real-time | None (client-side Web Audio API) |
+| 2 (after talking animation) | `rhubarb-lip-sync-wasm` (MIT) | High — real phonemes | 0.5–2s pre-analysis | `next.config.js` WASM tweak |
+
+**Tier 1 plan:** Connect `<audio>` element to `LipSync` manager from `wawa-lipsync`. Poll `lipsyncManager.viseme` in rAF loop (only when `isTalking`). Set Rive `Number` input `mouthOpen` (0–1).
+
+**Tier 2 plan:** After receiving audio blob, call `getLipSync(pcmBuffer, dialogText)` from `rhubarb-lip-sync-wasm` — pass the AI response text as hint for better accuracy. Walk the resulting `mouthCues[]` against `audio.currentTime` in rAF. Set Rive `Number` input `viseme` (0=Closed, 1=A/I, 2=O/U, 3=M/B/P, 4=F/V).
+
+State machine boolean inputs: `isListening`, `isThinking`, `isTalking`, `isPositive`, `isConcerned`.
+Lip sync numeric input: `mouthOpen` (Tier 1) or `viseme` (Tier 2).
 
 ---
 
