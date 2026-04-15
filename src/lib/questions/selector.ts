@@ -7,7 +7,7 @@ export interface SelectQuestionOptions {
   difficulty: Difficulty;
   stack: string[];
   language: "en" | "es";
-  userId: string;
+  userId?: string;
   existingQuestions?: string[];
 }
 
@@ -26,15 +26,17 @@ export async function selectNextQuestion(
 
   const { stack } = options;
 
-  // 1. Try spaced repetition queue (bookmarked questions due for review)
-  const fromRepetition = await selectFromSpacedRepetition(
-    userId,
-    category,
-    difficulty,
-    language,
-    existingQuestions
-  );
-  if (fromRepetition) return fromRepetition;
+  // 1. Try spaced repetition queue — skipped for demo/anonymous sessions
+  if (userId) {
+    const fromRepetition = await selectFromSpacedRepetition(
+      userId,
+      category,
+      difficulty,
+      language,
+      existingQuestions
+    );
+    if (fromRepetition) return fromRepetition;
+  }
 
   // 2a. Try question bank — stack-matched first
   const fromBankWithStack = await selectFromBank(

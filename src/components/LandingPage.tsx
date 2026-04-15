@@ -1,47 +1,151 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { Link } from "@/navigation";
+import { useState } from "react";
+import { useTranslations, useLocale } from "next-intl";
+import { useRouter, Link } from "@/navigation";
 import Image from "next/image";
-import { Terminal, Code, Bolt, ArrowRight } from "lucide-react";
+import { Terminal, Code, Bolt, ArrowRight, Zap } from "lucide-react";
 import { PublicNavbar } from "./PublicNavbar";
 import { Footer } from "./Footer";
 
-export function LandingPage() {
+interface SampleQuestion {
+  id: string;
+  category: string;
+  difficulty: string;
+  questionText: string;
+  tags: string[];
+}
+
+interface LandingPageProps {
+  stats: { questionCount: number; sessionCount: number };
+  sampleQuestions: SampleQuestion[];
+}
+
+const CATEGORY_COLOR: Record<string, string> = {
+  technical: "text-blue-400",
+  coding: "text-emerald-400",
+  system_design: "text-violet-400",
+  behavioral: "text-amber-400",
+};
+
+const CATEGORY_LABEL: Record<string, string> = {
+  technical: "Technical",
+  coding: "Coding",
+  system_design: "System Design",
+  behavioral: "Behavioral",
+};
+
+const DIFFICULTY_STYLE: Record<string, string> = {
+  junior: "bg-emerald-400/10 text-emerald-400",
+  mid: "bg-yellow-400/10 text-yellow-400",
+  senior: "bg-red-400/10 text-red-400",
+};
+
+function QuestionCard({ q }: { q: SampleQuestion }) {
+  return (
+    <div className="flex flex-col justify-between rounded-xl border border-white/10 bg-[#141414] p-5 transition-colors hover:border-primary/20">
+      <div className="mb-3 flex items-center justify-between">
+        <span className={`font-mono text-[10px] uppercase tracking-widest ${CATEGORY_COLOR[q.category] ?? "text-text-secondary"}`}>
+          {CATEGORY_LABEL[q.category] ?? q.category}
+        </span>
+        <span className={`rounded-full px-2 py-0.5 font-mono text-[10px] capitalize ${DIFFICULTY_STYLE[q.difficulty] ?? "text-text-secondary"}`}>
+          {q.difficulty}
+        </span>
+      </div>
+      <p className="line-clamp-3 text-sm leading-relaxed text-text-primary">
+        {q.questionText}
+      </p>
+    </div>
+  );
+}
+
+export function LandingPage({ stats, sampleQuestions }: LandingPageProps) {
   const t = useTranslations("HomePage");
+  const locale = useLocale();
+  const router = useRouter();
+  const [demoLoading, setDemoLoading] = useState(false);
+  const [demoError, setDemoError] = useState(false);
+
+  const handleTryDemo = async () => {
+    setDemoLoading(true);
+    setDemoError(false);
+    try {
+      const res = await fetch("/api/sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          isDemo: true,
+          category: "technical",
+          difficulty: "mid",
+          totalQuestions: 3,
+          language: locale,
+        }),
+      });
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      router.push(`/session/${data.sessionId}`);
+    } catch {
+      setDemoError(true);
+      setDemoLoading(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-background selection:bg-primary ">
+    <div className="min-h-screen bg-background selection:bg-primary">
       <PublicNavbar />
-      
+
       <main className="relative">
         {/* Hero Section */}
-        <section className="relative px-6 pb-12 pt-24 overflow-hidden">
-          {/* Radial glow behind heading */}
+        <section className="relative overflow-hidden px-6 pb-12 pt-24">
+          {/* Radial glow */}
           <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-center">
             <div className="h-[400px] w-[800px] rounded-full bg-primary/8 blur-[120px]" />
           </div>
+
           <div className="relative mx-auto max-w-4xl text-center">
+            {/* Social proof badge */}
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
+              <span className="font-mono text-xs text-text-secondary">
+                {t("socialProof", {
+                  questions: stats.questionCount,
+                  sessions: stats.sessionCount > 0 ? stats.sessionCount : "0",
+                })}
+              </span>
+            </div>
+
             <h1 className="font-headline mb-6 text-5xl font-black leading-[1.1] tracking-tight text-90 md:text-7xl">
               {t("title")}
             </h1>
             <p className="mx-auto mb-10 max-w-2xl text-lg font-medium text-60 md:text-xl">
               {t("subtitle")}
             </p>
-            
-            <div className="mb-20 flex flex-col items-center justify-center gap-4 sm:flex-row">
+
+            <div className="mb-4 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link
                 href="/auth/signin"
-                className="rounded-xl bg-primary-container px-8 py-4 text-lg font-bold text-white shadow-glow transition-all hover:bg-primary-container/80 hover:-translate-y-1 active:scale-95"
+                className="rounded-xl bg-primary-container px-8 py-4 text-lg font-bold text-white shadow-glow transition-all hover:-translate-y-1 hover:bg-primary-container/80 active:scale-95"
               >
                 {t("getStarted")}
               </Link>
-              <a
-                href="#features"
-                className="rounded-xl border border-white/10 px-8 py-4 text-lg font-bold text-white/90 transition-all hover:bg-surface-container"
+              <button
+                onClick={handleTryDemo}
+                disabled={demoLoading}
+                className="flex items-center gap-2 rounded-xl border border-primary/30 bg-primary/5 px-8 py-4 text-lg font-bold text-primary transition-all hover:bg-primary/10 active:scale-95 disabled:opacity-60"
               >
-                {t("viewDemo")}
-              </a>
+                <Zap className="h-5 w-5" />
+                {demoLoading ? t("demoLoading") : t("tryDemo")}
+              </button>
+            </div>
+
+            {/* Sub-CTA labels */}
+            <div className="mb-12 flex items-center justify-center gap-6">
+              {demoError && (
+                <span className="text-xs text-red-400">{t("demoError")}</span>
+              )}
+              {!demoError && (
+                <span className="text-xs text-text-secondary">{t("tryDemoSub")}</span>
+              )}
             </div>
 
             {/* Floating Terminal Visualization */}
@@ -95,6 +199,36 @@ export function LandingPage() {
           </div>
         </section>
 
+        {/* Sample Questions */}
+        {sampleQuestions.length > 0 && (
+          <section className="mx-auto max-w-7xl px-6 py-16">
+            <div className="mb-8">
+              <h2 className="font-headline mb-2 text-2xl font-bold text-90">
+                {t("sampleQuestionsTitle")}
+              </h2>
+              <p className="text-sm text-text-secondary">{t("sampleQuestionsSubtitle")}</p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {sampleQuestions.map((q) => (
+                <QuestionCard key={q.id} q={q} />
+              ))}
+            </div>
+
+            <div className="mt-6 text-center">
+              <button
+                onClick={handleTryDemo}
+                disabled={demoLoading}
+                className="inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 px-6 py-2.5 text-sm font-semibold text-primary transition hover:bg-primary/10 disabled:opacity-60"
+              >
+                <Zap className="h-4 w-4" />
+                {demoLoading ? t("demoLoading") : t("tryDemo")}
+              </button>
+              <p className="mt-2 text-xs text-text-secondary">{t("demoLimitNote")}</p>
+            </div>
+          </section>
+        )}
+
         {/* Features Bento Grid */}
         <section id="features" className="mx-auto max-w-7xl px-6 py-24">
           <div className="mb-16">
@@ -103,50 +237,41 @@ export function LandingPage() {
             </h2>
             <div className="h-1 w-12 bg-primary"></div>
           </div>
-          
+
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {/* Card 1 */}
             <div className="group flex flex-col justify-between rounded-xl border border-white/10 bg-[#141414] p-8 transition-colors hover:border-primary/30">
               <div>
                 <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-lg bg-surface-container transition-colors group-hover:bg-primary-container">
                   <Terminal className="h-6 w-6 text-primary group-hover:text-white" />
                 </div>
                 <h3 className="mb-3 text-xl font-bold text-white">{t("feature1Title")}</h3>
-                <p className="mb-6 text-sm leading-relaxed text-60">
-                  {t("feature1Desc")}
-                </p>
+                <p className="mb-6 text-sm leading-relaxed text-60">{t("feature1Desc")}</p>
               </div>
               <div className="border-t border-white/5 pt-4 font-mono text-[10px] uppercase tracking-widest text-primary/40">
                 {t("feature1Module")}
               </div>
             </div>
 
-            {/* Card 2 */}
             <div className="group flex flex-col justify-between rounded-xl border border-white/10 bg-[#141414] p-8 transition-colors hover:border-primary/30">
               <div>
                 <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-lg bg-surface-container transition-colors group-hover:bg-primary-container">
                   <Code className="h-6 w-6 text-primary group-hover:text-white" />
                 </div>
                 <h3 className="mb-3 text-xl font-bold text-white">{t("feature2Title")}</h3>
-                <p className="mb-6 text-sm leading-relaxed text-60">
-                  {t("feature2Desc")}
-                </p>
+                <p className="mb-6 text-sm leading-relaxed text-60">{t("feature2Desc")}</p>
               </div>
               <div className="border-t border-white/5 pt-4 font-mono text-[10px] uppercase tracking-widest text-primary/40">
                 {t("feature2Module")}
               </div>
             </div>
 
-            {/* Card 3 */}
             <div className="group flex flex-col justify-between rounded-xl border border-white/10 bg-[#141414] p-8 transition-colors hover:border-primary/30">
               <div>
                 <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-lg bg-surface-container transition-colors group-hover:bg-primary-container">
                   <Bolt className="h-6 w-6 text-primary group-hover:text-white" />
                 </div>
                 <h3 className="mb-3 text-xl font-bold text-white">{t("feature3Title")}</h3>
-                <p className="mb-6 text-sm leading-relaxed text-60">
-                  {t("feature3Desc")}
-                </p>
+                <p className="mb-6 text-sm leading-relaxed text-60">{t("feature3Desc")}</p>
               </div>
               <div className="border-t border-white/5 pt-4 font-mono text-[10px] uppercase tracking-widest text-primary/40">
                 {t("feature3Module")}
@@ -159,7 +284,7 @@ export function LandingPage() {
         <section id="simulators" className="mx-auto max-w-7xl px-6 pb-24">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-5">
             <div className="group relative overflow-hidden rounded-xl border border-white/10 bg-[#141414] md:col-span-3">
-              <Image 
+              <Image
                 className="absolute inset-0 h-full w-full object-cover opacity-30 grayscale-[50%] transition-transform duration-700 group-hover:scale-105 group-hover:opacity-40"
                 src="/staff_architecture_bento.png"
                 alt="Architecture Illustration"
@@ -170,9 +295,7 @@ export function LandingPage() {
                   FEATURED_METHODOLOGY
                 </div>
                 <h3 className="mb-4 text-3xl font-black text-white">{t("archTitle")}</h3>
-                <p className="mb-8 max-w-lg text-60">
-                  {t("archDesc")}
-                </p>
+                <p className="mb-8 max-w-lg text-60">{t("archDesc")}</p>
                 <Link
                   href="/auth/signin"
                   className="flex items-center gap-2 font-bold text-primary transition-all hover:gap-4"
@@ -181,7 +304,7 @@ export function LandingPage() {
                 </Link>
               </div>
             </div>
-            
+
             <div className="relative flex flex-col justify-center overflow-hidden rounded-xl border border-primary/20 bg-[#141414] p-8 text-center md:col-span-2">
               <div className="pointer-events-none absolute inset-0 bg-primary/5" />
               <div className="relative">
@@ -190,9 +313,7 @@ export function LandingPage() {
                   {t("statsLabel")}
                 </div>
                 <div className="mx-auto mb-6 h-px w-12 bg-primary/30" />
-                <p className="text-sm leading-relaxed text-60">
-                  {t("statsDesc")}
-                </p>
+                <p className="text-sm leading-relaxed text-60">{t("statsDesc")}</p>
               </div>
             </div>
           </div>

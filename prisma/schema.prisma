@@ -66,8 +66,9 @@ model UserSettings {
 
 model Session {
   id             String            @id @default(cuid())
-  userId         String
-  user           User              @relation(fields: [userId], references: [id])
+  userId         String?           // null for demo/anonymous sessions
+  user           User?             @relation(fields: [userId], references: [id])
+  isDemo         Boolean           @default(false)
   category       String            // "technical" | "coding" | "system_design" | "behavioral" | "mixed"
   difficulty     String
   targetStack    String[]

@@ -33,3 +33,11 @@ export function getAIProvider(category?: QuestionCategory): AIProvider {
   }
   return staticProvider();
 }
+
+/**
+ * Demo sessions always use Anthropic Haiku regardless of AI_ROUTING or AI_PROVIDER.
+ * Cheapest model, keeps demo costs minimal (~$0.002 for 3 evaluations).
+ */
+export function getDemoAIProvider(): AIProvider {
+  return new AnthropicProvider();
+}

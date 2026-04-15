@@ -8,33 +8,46 @@ const VALID_CATEGORIES = ["technical", "coding", "system_design", "behavioral", 
 const VALID_DIFFICULTIES = ["junior", "mid", "senior"];
 const MIN_QUESTIONS = 1;
 const MAX_QUESTIONS = 15;
+const DEMO_MAX_QUESTIONS = 3;
 
 export async function POST(request: Request) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const body: CreateSessionRequest & { isDemo?: boolean } = await request.json();
+  const { category, difficulty, totalQuestions, language = "en", feedbackMode = "live", targetStack, outputModality, isDemo = false } = body;
+
+  // Auth: required for regular sessions, skipped for demo
+  let userId: string | undefined;
+  if (!isDemo) {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    userId = session.user.id;
   }
 
-  const body: CreateSessionRequest = await request.json();
-  const { category, difficulty, totalQuestions, language = "en", feedbackMode = "live", targetStack, outputModality } = body;
+  const resolvedCategory = isDemo ? (VALID_CATEGORIES.includes(category) ? category : "technical") : category;
+  const resolvedDifficulty = isDemo ? (VALID_DIFFICULTIES.includes(difficulty) ? difficulty : "mid") : difficulty;
+  const resolvedQuestions = isDemo
+    ? Math.min(Number(totalQuestions) || DEMO_MAX_QUESTIONS, DEMO_MAX_QUESTIONS)
+    : totalQuestions;
 
-  if (!VALID_CATEGORIES.includes(category)) {
+  if (!VALID_CATEGORIES.includes(resolvedCategory)) {
     return NextResponse.json({ error: "Invalid category" }, { status: 400 });
   }
-  if (!VALID_DIFFICULTIES.includes(difficulty)) {
+  if (!VALID_DIFFICULTIES.includes(resolvedDifficulty)) {
     return NextResponse.json({ error: "Invalid difficulty" }, { status: 400 });
   }
-  if (!Number.isInteger(totalQuestions) || totalQuestions < MIN_QUESTIONS || totalQuestions > MAX_QUESTIONS) {
+  if (!Number.isInteger(resolvedQuestions) || resolvedQuestions < MIN_QUESTIONS || resolvedQuestions > MAX_QUESTIONS) {
     return NextResponse.json({ error: "Invalid question count" }, { status: 400 });
   }
 
   try {
     const interviewSession = await prisma.session.create({
       data: {
-        userId: session.user.id,
-        category,
-        difficulty,
-        totalQuestions,
+        ...(userId ? { userId } : {}),
+        isDemo,
+        category: resolvedCategory,
+        difficulty: resolvedDifficulty,
+        totalQuestions: resolvedQuestions,
         language,
         feedbackMode: ["live", "silent"].includes(feedbackMode) ? feedbackMode : "live",
         inputModality: outputModality === "voice" ? "voice" : "text",
@@ -43,11 +56,11 @@ export async function POST(request: Request) {
     });
 
     const firstQuestion = await selectNextQuestion({
-      category: category as Parameters<typeof selectNextQuestion>[0]["category"],
-      difficulty: difficulty as Parameters<typeof selectNextQuestion>[0]["difficulty"],
+      category: resolvedCategory as Parameters<typeof selectNextQuestion>[0]["category"],
+      difficulty: resolvedDifficulty as Parameters<typeof selectNextQuestion>[0]["difficulty"],
       stack: interviewSession.targetStack,
       language: language as "en" | "es",
-      userId: session.user.id,
+      userId,
     });
 
     await prisma.sessionMessage.create({

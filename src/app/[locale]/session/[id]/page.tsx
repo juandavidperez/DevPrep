@@ -9,11 +9,6 @@ export default async function SessionPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const session = await auth();
-
-  if (!session?.user?.id) {
-    redirect("/auth/signin");
-  }
 
   const interviewSession = await prisma.session.findUnique({
     where: { id },
@@ -25,8 +20,18 @@ export default async function SessionPage({
     },
   });
 
-  if (!interviewSession || interviewSession.userId !== session.user.id) {
+  if (!interviewSession) {
     redirect("/dashboard");
+  }
+
+  if (!interviewSession.isDemo) {
+    const session = await auth();
+    if (!session?.user?.id) {
+      redirect("/auth/signin");
+    }
+    if (interviewSession.userId !== session.user.id) {
+      redirect("/dashboard");
+    }
   }
 
   const sessionData = {

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { getAIProvider } from "@/lib/ai";
+import { getAIProvider, getDemoAIProvider } from "@/lib/ai";
 import { selectNextQuestion, updateQuestionBankScore } from "@/lib/questions";
 import type { Question } from "@/lib/ai/types";
 import type { SendMessageRequest } from "@/types/session";
@@ -10,11 +10,6 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   const { id } = await params;
   const body: SendMessageRequest = await request.json();
   const { content, codeContent, isClarification = false } = body;
@@ -33,8 +28,16 @@ export async function POST(
   if (!interviewSession) {
     return NextResponse.json({ error: "Session not found" }, { status: 404 });
   }
-  if (interviewSession.userId !== session.user.id) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  // Auth check: skipped for demo sessions, enforced for authenticated sessions
+  if (!interviewSession.isDemo) {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    if (interviewSession.userId !== session.user.id) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
   }
   if (interviewSession.completedAt) {
     return NextResponse.json({ error: "Session already completed" }, { status: 400 });
@@ -50,7 +53,9 @@ export async function POST(
     return NextResponse.json({ error: "No question found" }, { status: 400 });
   }
 
-  const ai = getAIProvider(interviewSession.category as Parameters<typeof getAIProvider>[0]);
+  const ai = interviewSession.isDemo
+    ? getDemoAIProvider()
+    : getAIProvider(interviewSession.category as Parameters<typeof getAIProvider>[0]);
 
   // ── Clarification path ─────────────────────────────────────────────────────
   if (isClarification) {
@@ -132,7 +137,7 @@ export async function POST(
         difficulty: interviewSession.difficulty as Parameters<typeof selectNextQuestion>[0]["difficulty"],
         stack: interviewSession.targetStack,
         language: interviewSession.language as "en" | "es",
-        userId: session.user.id,
+        userId: interviewSession.userId ?? undefined,
         existingQuestions: questionMessages.map((m) => m.content),
       });
 
@@ -298,7 +303,7 @@ export async function POST(
       difficulty: interviewSession.difficulty as Parameters<typeof selectNextQuestion>[0]["difficulty"],
       stack: interviewSession.targetStack,
       language: interviewSession.language as "en" | "es",
-      userId: session.user.id,
+      userId: interviewSession.userId ?? undefined,
       existingQuestions: questionMessages.map((m) => m.content),
     });
 
