@@ -4,9 +4,21 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/navigation";
 import { Bell, Plus } from "lucide-react";
 import { DashboardSearch } from "./DashboardSearch";
+import { useSearchParams } from "next/navigation";
 
 export function DashboardTopbar({ searchPlaceholder }: { searchPlaceholder: string }) {
   const t = useTranslations("Navbar");
+  const searchParams = useSearchParams();
+  const activeTab = searchParams.get("tab") ?? "overview";
+
+  // Build a URL that sets ?tab=X while preserving the ?q= search param
+  function tabHref(tab: string) {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", tab);
+    // Reset search when switching tabs so results don't bleed across
+    if (tab !== "overview") params.delete("q");
+    return `?${params.toString()}`;
+  }
 
   return (
     <div className="flex h-14 items-center justify-between border-b border-border-subtle bg-surface-container/60 px-6 backdrop-blur-lg">
@@ -14,12 +26,28 @@ export function DashboardTopbar({ searchPlaceholder }: { searchPlaceholder: stri
       <div className="flex items-center gap-6">
         <h2 className="text-base font-bold text-text-primary">{t("dashboard")}</h2>
         <nav className="flex items-center gap-1">
-          <button className="relative px-3 py-1 text-sm text-text-primary after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-primary">
+          <Link
+            href={tabHref("overview")}
+            replace
+            className={`relative px-3 py-1 text-sm transition ${
+              activeTab === "overview"
+                ? "text-text-primary after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-primary"
+                : "text-text-secondary hover:text-text-primary"
+            }`}
+          >
             {t("overview")}
-          </button>
-          <button className="px-3 py-1 text-sm text-text-secondary hover:text-text-primary transition">
+          </Link>
+          <Link
+            href={tabHref("analytics")}
+            replace
+            className={`relative px-3 py-1 text-sm transition ${
+              activeTab === "analytics"
+                ? "text-text-primary after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-primary"
+                : "text-text-secondary hover:text-text-primary"
+            }`}
+          >
             {t("analytics")}
-          </button>
+          </Link>
         </nav>
       </div>
 

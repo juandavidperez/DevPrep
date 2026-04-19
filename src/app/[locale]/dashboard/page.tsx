@@ -234,14 +234,15 @@ function ScoreColor({ score }: { score: number }) {
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; tab?: string }>;
 }) {
   const session = await auth();
   if (!session?.user?.id) redirect("/auth/signin");
 
   const t = await getTranslations("Dashboard");
-  const { q } = await searchParams;
+  const { q, tab } = await searchParams;
   const query = q?.toLowerCase().trim() ?? "";
+  const activeTab = tab === "analytics" ? "analytics" : "overview";
 
   const now = new Date();
   const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
@@ -341,165 +342,212 @@ export default async function DashboardPage({
           <p className="mt-2 text-sm text-text-secondary">{t("subtitle")}</p>
         </div>
 
-        {/* ── Stats — 4 columns ────────────────────────────────────────────── */}
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          <StatCard
-            label={t("stats.sessions")}
-            value={totalCount}
-            icon={Target}
-            delta={sessionsDelta ?? 0}
-            deltaLabel={(sessionsDelta ?? 0) >= 0 ? t("stats.deltaIncrease") : t("stats.deltaDecrease")}
-          />
-          <StatCard
-            label={t("stats.avgScore")}
-            value={avgScore > 0 ? `${Math.round(avgScore)}%` : "– –"}
-            icon={TrendingUp}
-            subtext={
-              scorePercentile !== null
-                ? t("stats.scoreSubtext", { percentile: scorePercentile })
-                : t("stats.scoreSubtext", { percentile: 0 })
-            }
-          />
-          <StatCard
-            label={t("stats.practiceTime")}
-            value={totalMinutes > 0 ? `${totalMinutes}m` : "– –"}
-            icon={Clock}
-            subtext={t("stats.timeSubtext", { count: currentMinutes })}
-          />
-          <StatCard
-            label={t("stats.streak")}
-            value={streak > 0 ? `${streak}d` : "– –"}
-            icon={Flame}
-            subtext={streak > 0 ? t("stats.streakActive") : t("stats.streakStart")}
-          />
-        </div>
-
-        {/* ── Analytics ────────────────────────────────────────────────────── */}
-        <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
-          {/* Score Trend */}
-          <div className="lg:col-span-2 rounded-xl border border-border-subtle bg-surface-container/70 p-5 shadow-[0_20px_40px_rgba(0,0,0,0.4)] backdrop-blur-[20px]">
-            <div className="mb-4 flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-widest text-text-secondary">
-                {t("analytics.scoreTrend")}
-              </span>
-              <span className="font-mono text-[10px] text-text-secondary">
-                {t("analytics.last", { count: trendSessions.filter((s) => s.completedAt).length })}
-              </span>
+        {activeTab === "overview" ? (
+          <>
+            {/* ── Stats — 4 columns ──────────────────────────────────────────── */}
+            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+              <StatCard
+                label={t("stats.sessions")}
+                value={totalCount}
+                icon={Target}
+                delta={sessionsDelta ?? 0}
+                deltaLabel={(sessionsDelta ?? 0) >= 0 ? t("stats.deltaIncrease") : t("stats.deltaDecrease")}
+              />
+              <StatCard
+                label={t("stats.avgScore")}
+                value={avgScore > 0 ? `${Math.round(avgScore)}%` : "– –"}
+                icon={TrendingUp}
+                subtext={
+                  scorePercentile !== null
+                    ? t("stats.scoreSubtext", { percentile: scorePercentile })
+                    : t("stats.scoreSubtext", { percentile: 0 })
+                }
+              />
+              <StatCard
+                label={t("stats.practiceTime")}
+                value={totalMinutes > 0 ? `${totalMinutes}m` : "– –"}
+                icon={Clock}
+                subtext={t("stats.timeSubtext", { count: currentMinutes })}
+              />
+              <StatCard
+                label={t("stats.streak")}
+                value={streak > 0 ? `${streak}d` : "– –"}
+                icon={Flame}
+                subtext={streak > 0 ? t("stats.streakActive") : t("stats.streakStart")}
+              />
             </div>
-            <ScoreTrendChart
-              sessions={trendSessions}
-              emptyLabel={t("analytics.noData")}
-            />
-          </div>
 
-          {/* Weak Areas */}
-          <div className="rounded-xl border border-border-subtle bg-surface-container/70 p-5 shadow-[0_20px_40px_rgba(0,0,0,0.4)] backdrop-blur-[20px]">
-            <span className="mb-4 block text-xs font-semibold uppercase tracking-widest text-text-secondary">
-              {t("analytics.weakAreas")}
-            </span>
-            <WeakAreasCard
-              stats={categoryStats}
-              emptyLabel={t("analytics.noData")}
-            />
-          </div>
-        </div>
-
-        {/* ── Recent Sessions — full width ─────────────────────────────────── */}
-        <div className="mt-8">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">{t("recentSessions")}</h2>
-            {sessions.length > 0 && (
-              <Link href="/history" className="text-sm text-primary hover:text-primary/80">
-                {t("viewAll")}
-              </Link>
-            )}
-          </div>
-
-          {filteredSessions.length === 0 ? (
-            <div className="mt-4 flex flex-col items-center justify-center rounded-xl border border-border-subtle bg-surface-container/70 py-14 text-center backdrop-blur-[20px]">
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-surface-highest">
-                <MonitorPlay className="h-6 w-6 text-text-secondary" />
+            {/* ── Recent Sessions — full width ───────────────────────────────── */}
+            <div className="mt-8">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold">{t("recentSessions")}</h2>
+                {sessions.length > 0 && (
+                  <Link href="/history" className="text-sm text-primary hover:text-primary/80">
+                    {t("viewAll")}
+                  </Link>
+                )}
               </div>
-              <p className="mt-4 text-sm text-text-secondary">
-                {query ? t("noResults") : t("noSessions")}
-              </p>
-              {!query && (
-                <Link
-                  href="/session/new"
-                  className="mt-4 flex items-center gap-2 rounded-lg border border-primary/40 bg-primary-container px-5 py-2.5 text-sm font-semibold text-text-primary transition hover:bg-primary-container/80 hover:shadow-glow"
-                >
-                  {t("startFirst")} <ArrowRight className="h-4 w-4" />
-                </Link>
+
+              {filteredSessions.length === 0 ? (
+                <div className="mt-4 flex flex-col items-center justify-center rounded-xl border border-border-subtle bg-surface-container/70 py-14 text-center backdrop-blur-[20px]">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-surface-highest">
+                    <MonitorPlay className="h-6 w-6 text-text-secondary" />
+                  </div>
+                  <p className="mt-4 text-sm text-text-secondary">
+                    {query ? t("noResults") : t("noSessions")}
+                  </p>
+                  {!query && (
+                    <Link
+                      href="/session/new"
+                      className="mt-4 flex items-center gap-2 rounded-lg border border-primary/40 bg-primary-container px-5 py-2.5 text-sm font-semibold text-text-primary transition hover:bg-primary-container/80 hover:shadow-glow"
+                    >
+                      {t("startFirst")} <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  )}
+                </div>
+              ) : (
+                <div className="mt-4 space-y-3">
+                  {filteredSessions.map((s) => (
+                    <Link
+                      key={s.id}
+                      href={`/session/${s.id}`}
+                      className="flex items-center justify-between rounded-xl border border-border-subtle bg-surface-container/70 px-5 py-3.5 backdrop-blur-[20px] transition hover:border-primary/30 hover:bg-surface-highest/50"
+                    >
+                      <div>
+                        <p className="text-sm font-medium capitalize">{s.category.replace("_", " ")}</p>
+                        <p className="text-xs text-text-secondary capitalize">
+                          {s.difficulty} · {t("questions", { count: s.totalQuestions })}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        {s.completedAt ? (
+                          <>
+                            <p className="font-mono text-sm font-semibold">
+                              <ScoreColor score={s.score ?? 0} />
+                              <span className="text-text-secondary">/100</span>
+                            </p>
+                            <p className="font-mono text-xs text-text-secondary">
+                              {new Date(s.completedAt).toLocaleDateString(locale)}
+                            </p>
+                          </>
+                        ) : (
+                          <span className="rounded-full bg-yellow-500/10 px-3 py-1 text-xs font-medium text-yellow-400">
+                            {t("inProgress")}
+                          </span>
+                        )}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
               )}
             </div>
-          ) : (
-            <div className="mt-4 space-y-3">
-              {filteredSessions.map((s) => (
-                <Link
-                  key={s.id}
-                  href={`/session/${s.id}`}
-                  className="flex items-center justify-between rounded-xl border border-border-subtle bg-surface-container/70 px-5 py-3.5 backdrop-blur-[20px] transition hover:border-primary/30 hover:bg-surface-highest/50"
-                >
-                  <div>
-                    <p className="text-sm font-medium capitalize">{s.category.replace("_", " ")}</p>
-                    <p className="text-xs text-text-secondary capitalize">
-                      {s.difficulty} · {t("questions", { count: s.totalQuestions })}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    {s.completedAt ? (
-                      <>
+
+            {/* ── Course cards ───────────────────────────────────────────────── */}
+            <div className="mt-8">
+              <h2 className="mb-4 text-lg font-semibold">{t("suggestedPractice")}</h2>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {COURSE_CARDS.map((card) => (
+                  <Link
+                    key={card.titleKey}
+                    href="/session/new"
+                    className="group relative flex h-48 flex-col justify-end overflow-hidden rounded-xl border border-border-subtle shadow-[0_20px_40px_rgba(0,0,0,0.4)] transition hover:border-primary/30"
+                  >
+                    <Image
+                      src={card.image}
+                      alt={t(card.titleKey)}
+                      fill
+                      className="object-cover transition duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                    <div className="relative z-10 p-4">
+                      <span className="rounded-full border border-white/20 bg-black/30 px-2 py-0.5 text-[10px] font-medium text-white/70 backdrop-blur-sm">
+                        {t(card.tagKey)}
+                      </span>
+                      <p className="mt-2 text-sm font-semibold text-white">{t(card.titleKey)}</p>
+                      <p className="mt-0.5 text-xs leading-relaxed text-white/60">{t(card.descKey)}</p>
+                      <div className="mt-2 flex items-center gap-1 text-xs text-primary opacity-0 transition group-hover:opacity-100">
+                        {t("practice")} <ArrowRight className="h-3 w-3" />
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </>
+        ) : (
+          /* ── Analytics tab ───────────────────────────────────────────────── */
+          <div className="space-y-6">
+            {/* Score Trend + Weak Areas — two-column */}
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+              {/* Score Trend */}
+              <div className="lg:col-span-2 rounded-xl border border-border-subtle bg-surface-container/70 p-5 shadow-[0_20px_40px_rgba(0,0,0,0.4)] backdrop-blur-[20px]">
+                <div className="mb-4 flex items-center justify-between">
+                  <span className="text-xs font-semibold uppercase tracking-widest text-text-secondary">
+                    {t("analytics.scoreTrend")}
+                  </span>
+                  <span className="font-mono text-[10px] text-text-secondary">
+                    {t("analytics.last", { count: trendSessions.filter((s) => s.completedAt).length })}
+                  </span>
+                </div>
+                <ScoreTrendChart
+                  sessions={trendSessions}
+                  emptyLabel={t("analytics.noData")}
+                />
+              </div>
+
+              {/* Weak Areas */}
+              <div className="rounded-xl border border-border-subtle bg-surface-container/70 p-5 shadow-[0_20px_40px_rgba(0,0,0,0.4)] backdrop-blur-[20px]">
+                <span className="mb-4 block text-xs font-semibold uppercase tracking-widest text-text-secondary">
+                  {t("analytics.weakAreas")}
+                </span>
+                <WeakAreasCard
+                  stats={categoryStats}
+                  emptyLabel={t("analytics.noData")}
+                />
+              </div>
+            </div>
+
+            {/* ── Per-session score history list ──────────────────────────── */}
+            <div className="rounded-xl border border-border-subtle bg-surface-container/70 p-5 shadow-[0_20px_40px_rgba(0,0,0,0.4)] backdrop-blur-[20px]">
+              <div className="mb-4 flex items-center justify-between">
+                <span className="text-xs font-semibold uppercase tracking-widest text-text-secondary">
+                  {t("recentSessions")}
+                </span>
+                {sessions.length > 0 && (
+                  <Link href="/history" className="text-xs text-primary hover:text-primary/80">
+                    {t("viewAll")}
+                  </Link>
+                )}
+              </div>
+              {sessions.filter((s) => s.completedAt).length === 0 ? (
+                <p className="py-6 text-center text-xs text-text-secondary">{t("analytics.noData")}</p>
+              ) : (
+                <div className="space-y-2">
+                  {sessions
+                    .filter((s) => s.completedAt)
+                    .map((s) => (
+                      <Link
+                        key={s.id}
+                        href={`/session/${s.id}`}
+                        className="flex items-center justify-between rounded-lg border border-border-subtle/60 bg-surface-highest/40 px-4 py-2.5 transition hover:border-primary/30 hover:bg-surface-highest/70"
+                      >
+                        <div>
+                          <p className="text-sm font-medium capitalize">{s.category.replace("_", " ")}</p>
+                          <p className="font-mono text-xs text-text-secondary">
+                            {new Date(s.completedAt!).toLocaleDateString(locale)} · {s.difficulty}
+                          </p>
+                        </div>
                         <p className="font-mono text-sm font-semibold">
                           <ScoreColor score={s.score ?? 0} />
                           <span className="text-text-secondary">/100</span>
                         </p>
-                        <p className="font-mono text-xs text-text-secondary">
-                          {new Date(s.completedAt).toLocaleDateString(locale)}
-                        </p>
-                      </>
-                    ) : (
-                      <span className="rounded-full bg-yellow-500/10 px-3 py-1 text-xs font-medium text-yellow-400">
-                        {t("inProgress")}
-                      </span>
-                    )}
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* ── Course cards ─────────────────────────────────────────────────── */}
-        <div className="mt-8">
-          <h2 className="mb-4 text-lg font-semibold">{t("suggestedPractice")}</h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {COURSE_CARDS.map((card) => (
-              <Link
-                key={card.titleKey}
-                href="/session/new"
-                className="group relative flex h-48 flex-col justify-end overflow-hidden rounded-xl border border-border-subtle shadow-[0_20px_40px_rgba(0,0,0,0.4)] transition hover:border-primary/30"
-              >
-                <Image
-                  src={card.image}
-                  alt={t(card.titleKey)}
-                  fill
-                  className="object-cover transition duration-300 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                <div className="relative z-10 p-4">
-                  <span className="rounded-full border border-white/20 bg-black/30 px-2 py-0.5 text-[10px] font-medium text-white/70 backdrop-blur-sm">
-                    {t(card.tagKey)}
-                  </span>
-                  <p className="mt-2 text-sm font-semibold text-white">{t(card.titleKey)}</p>
-                  <p className="mt-0.5 text-xs leading-relaxed text-white/60">{t(card.descKey)}</p>
-                  <div className="mt-2 flex items-center gap-1 text-xs text-primary opacity-0 transition group-hover:opacity-100">
-                    {t("practice")} <ArrowRight className="h-3 w-3" />
-                  </div>
+                      </Link>
+                    ))}
                 </div>
-              </Link>
-            ))}
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
       </main>
     </div>
