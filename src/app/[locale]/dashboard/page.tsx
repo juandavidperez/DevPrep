@@ -3,9 +3,11 @@ import { Link } from "@/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import Image from "next/image";
-import { Clock, Target, TrendingUp, TrendingDown, ArrowRight, MonitorPlay, Flame } from "lucide-react";
+import { Clock, Target, TrendingUp, TrendingDown, ArrowRight, MonitorPlay, Flame, Bookmark } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
 import { DashboardTopbar } from "@/components/DashboardTopbar";
+import { StatCard, DeltaBadge } from "@/components/StatCard";
+import { DashboardStats } from "@/components/DashboardStats";
 
 // ── Course cards ───────────────────────────────────────────────────────────────
 const COURSE_CARDS = [
@@ -25,60 +27,6 @@ const COURSE_CARDS = [
   },
 ] as const;
 
-// ── Sub-components ─────────────────────────────────────────────────────────────
-
-function DeltaBadge({ value, label }: { value: number | null; label: string }) {
-  if (value === null) return null;
-  const isPositive = value >= 0;
-  return (
-    <span
-      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-mono text-xs ${
-        isPositive
-          ? "bg-emerald-400/10 text-emerald-400"
-          : "bg-red-400/10 text-red-400"
-      }`}
-    >
-      {isPositive ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
-      {isPositive ? "+" : ""}
-      {value}% {label}
-    </span>
-  );
-}
-
-function StatCard({
-  label,
-  value,
-  icon: Icon,
-  delta,
-  deltaLabel,
-  subtext,
-}: {
-  label: string;
-  value: string | number;
-  icon: React.ElementType;
-  delta?: number | null;
-  deltaLabel?: string;
-  subtext?: string;
-}) {
-  return (
-    <div className="rounded-xl border border-border-subtle bg-surface-container/70 p-5 shadow-[0_20px_40px_rgba(0,0,0,0.4)] backdrop-blur-[20px]">
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold uppercase tracking-widest text-text-secondary">
-          {label}
-        </span>
-        <Icon className="h-4 w-4 text-text-secondary" />
-      </div>
-      <p className="mt-4 font-mono text-4xl font-bold text-text-primary">{value}</p>
-      <div className="mt-3 min-h-[20px]">
-        {delta !== undefined && delta !== null ? (
-          <DeltaBadge value={delta} label={deltaLabel ?? ""} />
-        ) : subtext ? (
-          <p className="text-xs text-text-secondary">{subtext}</p>
-        ) : null}
-      </div>
-    </div>
-  );
-}
 
 // ── Analytics sub-components ──────────────────────────────────────────────────
 
@@ -105,7 +53,7 @@ function ScoreTrendChart({
 }) {
   const data = sessions
     .filter((s) => s.completedAt && s.score !== null)
-    .slice(0, 8)
+    .slice(0, 10)
     .reverse();
 
   if (data.length === 0) {
@@ -248,7 +196,7 @@ export default async function DashboardPage({
   const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
   const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
 
-  const [sessions, totalCount, currentPeriodSessions, prevPeriodSessions, categoryStats, allDates] =
+  const [sessions, totalCount, currentPeriodSessions, prevPeriodSessions, categoryStats, allDates, globalStats, trendSessions, dueBookmarksCount] =
     await Promise.all([
       prisma.session.findMany({
         where: { userId: session.user.id },
@@ -286,6 +234,23 @@ export default async function DashboardPage({
         orderBy: { createdAt: "desc" },
         take: 120,
       }),
+      prisma.session.aggregate({
+        where: { userId: session.user.id, completedAt: { not: null } },
+        _avg: { score: true },
+        _sum: { duration: true },
+      }),
+      prisma.session.findMany({
+        where: { userId: session.user.id, completedAt: { not: null }, score: { not: null } },
+        orderBy: { createdAt: "desc" },
+        take: 10,
+        select: { score: true, category: true, completedAt: true },
+      }),
+      prisma.bookmark.count({
+        where: {
+          userId: session.user.id,
+          OR: [{ nextReviewAt: null }, { nextReviewAt: { lte: now } }],
+        },
+      }),
     ]);
 
   const filteredSessions = query
@@ -296,14 +261,8 @@ export default async function DashboardPage({
       )
     : sessions;
 
-  const completedSessions = sessions.filter((s) => s.completedAt);
-  const avgScore =
-    completedSessions.length > 0
-      ? completedSessions.reduce((sum, s) => sum + (s.score ?? 0), 0) / completedSessions.length
-      : 0;
-  const totalMinutes = Math.round(
-    completedSessions.reduce((sum, s) => sum + (s.duration ?? 0), 0) / 60,
-  );
+  const avgScore = globalStats._avg.score ?? 0;
+  const totalMinutes = Math.round((globalStats._sum.duration ?? 0) / 60);
 
   const calcDelta = (current: number, prev: number): number | null => {
     if (prev === 0) return null;
@@ -321,7 +280,6 @@ export default async function DashboardPage({
     avgScore > 0 ? Math.max(1, Math.round((1 - avgScore / 100) * 100)) : null;
 
   const streak = calculateStreak(allDates.map((s) => s.createdAt));
-  const trendSessions = sessions.slice(0, 8);
 
   const locale = await getLocale();
 
@@ -342,40 +300,43 @@ export default async function DashboardPage({
           <p className="mt-2 text-sm text-text-secondary">{t("subtitle")}</p>
         </div>
 
+        {/* Pending Bookmarks Notification */}
+        {dueBookmarksCount > 0 && (
+          <div className="mb-8 flex flex-col items-start justify-between gap-4 rounded-xl border border-primary/20 bg-primary/5 px-6 py-5 backdrop-blur-md sm:flex-row sm:items-center">
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/20 text-primary shadow-[0_0_15px_rgba(var(--primary-rgb),0.1)]">
+                <Bookmark className="h-6 w-6" />
+              </div>
+              <div>
+                <p className="text-base font-bold text-text-primary">
+                  {t("dueBookmarks", { count: dueBookmarksCount })}
+                </p>
+                <p className="text-xs text-text-secondary">
+                   Usa el sistema de repetición espaciada para retener lo aprendido.
+                </p>
+              </div>
+            </div>
+            <Link
+              href="/bookmarks?due=true"
+              className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-black uppercase tracking-widest text-white shadow-[0_0_20px_rgba(var(--primary-rgb),0.2)] transition hover:bg-primary/90 hover:shadow-glow active:scale-95 sm:w-auto"
+            >
+              {t("dueBookmarksLink")}
+            </Link>
+          </div>
+        )}
+
         {activeTab === "overview" ? (
           <>
             {/* ── Stats — 4 columns ──────────────────────────────────────────── */}
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-              <StatCard
-                label={t("stats.sessions")}
-                value={totalCount}
-                icon={Target}
-                delta={sessionsDelta ?? 0}
-                deltaLabel={(sessionsDelta ?? 0) >= 0 ? t("stats.deltaIncrease") : t("stats.deltaDecrease")}
-              />
-              <StatCard
-                label={t("stats.avgScore")}
-                value={avgScore > 0 ? `${Math.round(avgScore)}%` : "– –"}
-                icon={TrendingUp}
-                subtext={
-                  scorePercentile !== null
-                    ? t("stats.scoreSubtext", { percentile: scorePercentile })
-                    : t("stats.scoreSubtext", { percentile: 0 })
-                }
-              />
-              <StatCard
-                label={t("stats.practiceTime")}
-                value={totalMinutes > 0 ? `${totalMinutes}m` : "– –"}
-                icon={Clock}
-                subtext={t("stats.timeSubtext", { count: currentMinutes })}
-              />
-              <StatCard
-                label={t("stats.streak")}
-                value={streak > 0 ? `${streak}d` : "– –"}
-                icon={Flame}
-                subtext={streak > 0 ? t("stats.streakActive") : t("stats.streakStart")}
-              />
-            </div>
+            <DashboardStats 
+              totalCount={totalCount}
+              sessionsDelta={sessionsDelta ?? 0}
+              avgScore={avgScore}
+              scorePercentile={scorePercentile}
+              totalMinutes={totalMinutes}
+              currentMinutes={currentMinutes}
+              streak={streak}
+            />
 
             {/* ── Recent Sessions — full width ───────────────────────────────── */}
             <div className="mt-8">
@@ -410,7 +371,7 @@ export default async function DashboardPage({
                   {filteredSessions.map((s) => (
                     <Link
                       key={s.id}
-                      href={`/session/${s.id}`}
+                      href={s.completedAt ? `/session/${s.id}/results` : `/session/${s.id}`}
                       className="flex items-center justify-between rounded-xl border border-border-subtle bg-surface-container/70 px-5 py-3.5 backdrop-blur-[20px] transition hover:border-primary/30 hover:bg-surface-highest/50"
                     >
                       <div>
@@ -528,7 +489,7 @@ export default async function DashboardPage({
                     .map((s) => (
                       <Link
                         key={s.id}
-                        href={`/session/${s.id}`}
+                        href={s.completedAt ? `/session/${s.id}/results` : `/session/${s.id}`}
                         className="flex items-center justify-between rounded-lg border border-border-subtle/60 bg-surface-highest/40 px-4 py-2.5 transition hover:border-primary/30 hover:bg-surface-highest/70"
                       >
                         <div>

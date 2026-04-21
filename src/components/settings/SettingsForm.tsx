@@ -37,19 +37,19 @@ const CATEGORIES = [
 ];
 
 const STACK_OPTIONS = [
-  { value: "react", label: "React" },
-  { value: "next.js", label: "Next.js" },
+  { value: "angular", label: "Angular" },
+  { value: "spring_boot", label: "Spring Boot" },
+  { value: "postgresql", label: "PostgreSQL" },
   { value: "typescript", label: "TypeScript" },
   { value: "node.js", label: "Node.js" },
-  { value: "angular", label: "Angular" },
-  { value: "vue", label: "Vue" },
-  { value: "spring_boot", label: "Spring Boot" },
+  { value: "react", label: "React" },
+  { value: "next.js", label: "Next.js" },
+  { value: "java", label: "Java" },
+  { value: "docker", label: "Docker/K8s" },
+  { value: "aws", label: "AWS" },
   { value: "python", label: "Python/Django" },
   { value: "go", label: "Go" },
   { value: "rust", label: "Rust" },
-  { value: "aws", label: "AWS" },
-  { value: "docker", label: "Docker/K8s" },
-  { value: "postgresql", label: "PostgreSQL" },
   { value: "flutter", label: "Flutter" },
   { value: "swift", label: "Swift/iOS" },
   { value: "kotlin", label: "Kotlin/Android" },
@@ -71,11 +71,15 @@ export function SettingsForm({
   initialSettings,
   userName,
   userImage,
+  totalSessions,
+  avgScore,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   initialSettings: any;
   userName: string;
   userImage: string | null;
+  totalSessions: number;
+  avgScore: number;
 }) {
   const t = useTranslations("Settings");
   const [settings, setSettings] = useState<SettingsData>({
@@ -148,12 +152,12 @@ export function SettingsForm({
         
         <div className="w-full pt-6 border-t border-border-subtle/50 flex gap-1 justify-around">
           <div className="flex flex-col items-center">
-            <span className="text-text-primary text-xl font-bold font-mono">24</span>
+            <span className="text-text-primary text-xl font-bold font-mono">{totalSessions}</span>
             <span className="text-[10px] text-text-secondary/70 uppercase font-bold tracking-widest">{t("sessionsCount")}</span>
           </div>
           <div className="h-10 w-[1px] bg-surface-highest/30 mx-2" />
           <div className="flex flex-col items-center">
-            <span className="text-primary text-xl font-bold font-mono">88%</span>
+            <span className="text-primary text-xl font-bold font-mono">{Math.round(avgScore)}%</span>
             <span className="text-[10px] text-text-secondary/70 uppercase font-bold tracking-widest">{t("avgScore")}</span>
           </div>
         </div>

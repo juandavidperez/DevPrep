@@ -6,6 +6,8 @@ import { selectNextQuestion, updateQuestionBankScore } from "@/lib/questions";
 import type { Question } from "@/lib/ai/types";
 import type { SendMessageRequest } from "@/types/session";
 
+export const maxDuration = 60; // seconds — allows AI to complete evaluation and DB updates
+
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -14,7 +16,7 @@ export async function POST(
   const body: SendMessageRequest = await request.json();
   const { content, codeContent, isClarification = false } = body;
 
-  if (!content?.trim()) {
+  if (!content?.trim() && !codeContent?.trim()) {
     return NextResponse.json({ error: "Content is required" }, { status: 400 });
   }
 
@@ -91,10 +93,11 @@ export async function POST(
       });
     } catch (error) {
       console.error("Failed to process clarification:", error);
-      return NextResponse.json(
-        { error: "Failed to process clarification. Is the AI provider running?" },
-        { status: 500 }
-      );
+      const message =
+        error instanceof Error && error.message
+          ? `Failed to process clarification: ${error.message}`
+          : "Failed to process clarification. Please try again.";
+      return NextResponse.json({ error: message }, { status: 500 });
     }
   }
 
@@ -212,16 +215,25 @@ export async function POST(
 
       const validEvals = evalMessages.filter(Boolean);
       const scores = evaluations.filter(Boolean).map((r) => r!.evaluation.score);
-      const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+      const avgScore = scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
+      const finalScore = isNaN(avgScore) ? 0 : Math.round(avgScore);
 
       const firstMessage = interviewSession.messages[0];
       const durationStart = firstMessage?.createdAt.getTime() ?? interviewSession.createdAt.getTime();
       const duration = Math.floor((Date.now() - durationStart) / 1000);
 
+      console.log(`[Session Completion] ID: ${id}, Scores: ${scores}, Avg: ${avgScore}, Final: ${finalScore}, Duration: ${duration}`);
+
       await prisma.session.update({
         where: { id },
-        data: { completedAt: new Date(), score: avgScore, duration },
+        data: { 
+          completedAt: new Date(), 
+          score: finalScore, 
+          duration 
+        },
       });
+
+      console.log(`[Session Completion] Successfully updated session ${id}`);
 
       // Update question bank scores (fire and forget)
       evaluations.forEach((result, i) => {
@@ -280,21 +292,30 @@ export async function POST(
         .filter((m) => m.score !== null)
         .map((m) => m.score as number);
       allScores.push(evaluation.score);
-      const avgScore = allScores.reduce((a, b) => a + b, 0) / allScores.length;
+      const avgScore = allScores.length > 0 ? allScores.reduce((a, b) => a + b, 0) / allScores.length : 0;
+      const finalScore = isNaN(avgScore) ? 0 : Math.round(avgScore);
 
       const firstMessage = interviewSession.messages[0];
       const durationStart = firstMessage?.createdAt.getTime() ?? interviewSession.createdAt.getTime();
       const duration = Math.floor((Date.now() - durationStart) / 1000);
 
+      console.log(`[Session Completion] ID: ${id}, AllScores: ${allScores}, Avg: ${avgScore}, Final: ${finalScore}, Duration: ${duration}`);
+
       await prisma.session.update({
         where: { id },
-        data: { completedAt: new Date(), score: avgScore, duration },
+        data: { 
+          completedAt: new Date(), 
+          score: finalScore, 
+          duration 
+        },
       });
+
+      console.log(`[Session Completion] Successfully updated session ${id}`);
 
       return NextResponse.json({
         messages: newMessages,
         isComplete: true,
-        finalScore: Math.round(avgScore),
+        finalScore,
       });
     }
 
@@ -322,9 +343,10 @@ export async function POST(
     return NextResponse.json({ messages: newMessages, isComplete: false });
   } catch (error) {
     console.error("Failed to process message:", error);
-    return NextResponse.json(
-      { error: "Failed to process message. Is the AI provider running?" },
-      { status: 500 }
-    );
+    const message =
+      error instanceof Error && error.message
+        ? `Failed to process message: ${error.message}`
+        : "Failed to process message. Please try again.";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

@@ -12,6 +12,8 @@ import {
   TrendingUp,
   TrendingDown,
   RotateCcw,
+  Bookmark,
+  BookmarkCheck,
 } from "lucide-react";
 import type { ResultsData, QuestionResult } from "@/types/session";
 
@@ -37,33 +39,96 @@ function formatDuration(seconds: number | null): string {
 function QuestionCard({ question }: { question: QuestionResult }) {
   const [expanded, setExpanded] = useState(false);
   const [showModelAnswer, setShowModelAnswer] = useState(false);
+  const [bookmarkId, setBookmarkId] = useState<string | null>(question.bookmarkId);
+  const [isToggling, setIsToggling] = useState(false);
+
+  const toggleBookmark = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isToggling || !question.evaluationMessageId) return;
+
+    setIsToggling(true);
+    try {
+      if (bookmarkId) {
+        const res = await fetch(`/api/bookmarks/${bookmarkId}`, { method: "DELETE" });
+        if (res.ok) setBookmarkId(null);
+      } else {
+        const res = await fetch("/api/bookmarks", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messageId: question.evaluationMessageId }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setBookmarkId(data.id);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to toggle bookmark", err);
+    } finally {
+      setIsToggling(false);
+    }
+  };
 
   return (
     <div className="overflow-hidden rounded-xl border border-border-subtle bg-surface-container/80">
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="flex w-full items-center justify-between px-4 py-3 text-left transition hover:bg-surface-highest/30"
-      >
-        <div className="flex min-w-0 items-center gap-3">
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-surface-highest font-mono text-xs font-bold text-text-secondary">
-            {question.questionIndex}
-          </span>
-          <p className="truncate text-sm text-text-primary">
-            {question.questionText.slice(0, 100)}
-            {question.questionText.length > 100 && "…"}
-          </p>
-        </div>
-        <div className="ml-3 flex shrink-0 items-center gap-3">
-          {question.score !== null ? (
-            <span className={clsx("inline-flex items-center rounded-full border px-2.5 py-0.5 font-mono text-sm font-bold", scoreBadge(question.score))}>
-              {question.score}
+      <div className="flex items-center">
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="flex flex-1 items-center justify-between px-4 py-3 text-left transition hover:bg-surface-highest/30"
+        >
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-surface-highest font-mono text-xs font-bold text-text-secondary">
+              {question.questionIndex}
             </span>
-          ) : (
-            <span className="text-xs text-text-secondary">N/A</span>
-          )}
-          <ChevronDown className={clsx("h-4 w-4 text-text-secondary transition-transform", expanded && "rotate-180")} />
+            <p className="truncate text-sm text-text-primary">
+              {question.questionText.slice(0, 100)}
+              {question.questionText.length > 100 && "…"}
+            </p>
+          </div>
+          <div className="ml-3 flex shrink-0 items-center gap-3">
+            {question.score !== null ? (
+              <span className={clsx("inline-flex items-center rounded-full border px-2.5 py-0.5 font-mono text-sm font-bold", scoreBadge(question.score))}>
+                {question.score}
+              </span>
+            ) : (
+              <span className="text-xs text-text-secondary">N/A</span>
+            )}
+            <ChevronDown className={clsx("h-4 w-4 text-text-secondary transition-transform", expanded && "rotate-180")} />
+          </div>
+        </button>
+
+        {/* Bookmark Toggle */}
+        <div className="pr-4">
+          <button
+            onClick={toggleBookmark}
+            disabled={isToggling || !question.evaluationMessageId}
+            className={clsx(
+              "group relative flex items-center gap-2 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all duration-300",
+              bookmarkId
+                ? "border-primary/40 bg-primary/10 text-primary shadow-[0_0_10px_rgba(var(--primary-rgb),0.15)] hover:bg-primary/20"
+                : "border-border-subtle bg-transparent text-text-secondary hover:border-text-secondary/40 hover:bg-surface-highest/50"
+            )}
+            title={bookmarkId ? "Quitar de repaso" : "Agregar a repaso"}
+          >
+            {bookmarkId ? (
+              <>
+                <BookmarkCheck className="h-3.5 w-3.5 fill-current" />
+                <span>En Repaso</span>
+              </>
+            ) : (
+              <>
+                <Bookmark className="h-3.5 w-3.5" />
+                <span>Repasar</span>
+              </>
+            )}
+            {isToggling && (
+              <div className="absolute inset-0 flex items-center justify-center bg-inherit">
+                 <div className="h-3 w-3 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              </div>
+            )}
+          </button>
         </div>
-      </button>
+      </div>
 
       {expanded && (
         <div className="space-y-4 border-t border-border-subtle px-4 py-4">
@@ -98,6 +163,11 @@ function QuestionCard({ question }: { question: QuestionResult }) {
                 <span className={clsx("inline-flex items-center rounded-full border px-3 py-1 font-mono text-lg font-bold", scoreBadge(question.score))}>
                   {question.score}/100
                 </span>
+                {question.score < 70 && (
+                  <span className="ml-2 text-[0.65rem] font-bold uppercase tracking-wider text-red-400/80">
+                    Auto-marcada para repaso
+                  </span>
+                )}
               </div>
 
               {question.criteria && (

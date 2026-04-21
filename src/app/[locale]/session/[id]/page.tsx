@@ -34,6 +34,11 @@ export default async function SessionPage({
     }
   }
 
+  // Redirect to results if already completed
+  if (interviewSession.completedAt) {
+    redirect(`/session/${id}/results`);
+  }
+
   const sessionData = {
     id: interviewSession.id,
     category: interviewSession.category,

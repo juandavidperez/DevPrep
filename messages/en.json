@@ -62,6 +62,8 @@
       "streakActive": "Keep it up!",
       "streakStart": "Start today"
     },
+    "dueBookmarks": "{count, plural, one {# question} other {# questions}} due for review today",
+    "dueBookmarksLink": "Review now →",
     "analytics": {
       "scoreTrend": "Score Trend",
       "last": "Last {count} sessions",
@@ -89,6 +91,41 @@
         "desc": "Scale your knowledge with architecture trade-offs and distributed systems.",
         "tag": "Architecture"
       }
+    }
+  },
+  "Analytics": {
+    "title": "Analytics",
+    "subtitle": "Insights based on your last {count} sessions",
+    "breadcrumb": "Dashboard",
+    "scoreTrend": "Score Trend",
+    "scoreTrendSub": "Global average over time",
+    "categories": "Categories",
+    "categoriesSub": "Performance breakdown",
+    "needsWork": "Needs Work",
+    "needsWorkSub": "Focus on these areas to improve your score",
+    "strongestAreas": "Strongest Areas",
+    "strongestAreasSub": "Topics where you excel",
+    "noWeakAreas": "No weak areas identified yet",
+    "noStrongAreas": "Keep practicing to establish your strengths",
+    "practiceAgain": "Practice Again",
+    "basedOn": "Based on {count} responses",
+    "streak": "Current Streak",
+    "days": "{count} days",
+    "keepGoing": "Keep it up!",
+    "startToday": "Start today",
+    "globalAverage": "Global Average",
+    "totalSessions": "Total Sessions",
+    "strongestArea": "Strongest Area",
+    "focusArea": "Focus Area",
+    "completeSessions": "Complete sessions to see",
+    "vsPrior": "vs prior",
+    "noDataTitle": "No session data found",
+    "noDataDesc": "Complete at least one interview session to unlock your progress tracking and performance insights.",
+    "category": {
+      "technical": "Technical",
+      "coding": "Coding",
+      "system_design": "System Design",
+      "behavioral": "Behavioral"
     }
   },
   "Login": {
@@ -156,7 +193,19 @@
     "modeBehavioral": "Behavioral",
     "modeSystemDesign": "System Design",
     "modeLiveCoding": "Live Coding",
-    "comingSoon": "Coming soon"
+    "modeMixed": "Mixed",
+    "comingSoon": "Coming soon",
+    "roadmapLabel": "Quick Start — Roadmap",
+    "roadmapAngularLabel": "Advanced Angular",
+    "roadmapAngularTag": "Signals · RxJS · NgRx · Junior",
+    "roadmapSpringLabel": "Spring Boot + Kotlin",
+    "roadmapSpringTag": "JPA · Security · Kotlin · Mid",
+    "roadmapPatternsLabel": "Design Patterns",
+    "roadmapPatternsTag": "Architecture · Senior",
+    "roadmapAlgorithmsLabel": "JS Algorithms",
+    "roadmapAlgorithmsTag": "Live Coding · JS · Senior",
+    "roadmapFridayLabel": "Full Simulation",
+    "roadmapFridayTag": "Mixed · EN · 10q · Senior"
   },
   "Settings": {
     "title": "Account Configuration",

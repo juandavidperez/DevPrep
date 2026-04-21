@@ -28,6 +28,12 @@ prisma/generated/
 # debug
 npm-debug.log*
 
+# gsd planning docs (local only)
+.planning/
+
 # ide
 .vscode/
 .idea/
+
+# claude
+.claude

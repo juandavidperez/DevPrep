@@ -6,7 +6,9 @@ import { Link } from "@/navigation";
 import { MessageBubble } from "./MessageBubble";
 import { ChatInput } from "./ChatInput";
 import { VoiceToggle } from "./voice/VoiceToggle";
+import { EndSessionModal } from "./EndSessionModal";
 import { transcribeAudio, synthesizeAudio } from "@/lib/interaction";
+import { useRouter } from "@/navigation";
 import type { SessionMessageDTO, SendMessageResponse } from "@/types/session";
 
 interface SessionData {
@@ -33,25 +35,27 @@ function formatTime(seconds: number): string {
 }
 
 export function ChatContainer({ initialSession, initialMessages }: ChatContainerProps) {
+  const router = useRouter();
   const [messages, setMessages] = useState<SessionMessageDTO[]>(initialMessages);
   const [isLoading, setIsLoading] = useState(false);
   const [isComplete, setIsComplete] = useState(!!initialSession.completedAt);
   const [finalScore, setFinalScore] = useState<number | null>(initialSession.score);
   const [error, setError] = useState<string | null>(null);
+  const [lastAttempt, setLastAttempt] = useState<{ content: string; isClarification: boolean; code?: string } | null>(null);
   const [elapsed, setElapsed] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Modal & Exit state
+  const [isEndModalOpen, setIsEndModalOpen] = useState(false);
+  const [isFinishing, setIsFinishing] = useState(false);
+
   // Phase 2: voice state
-  const [inputModality, setInputModality] = useState<"text" | "voice">(
-    initialSession.inputModality === "voice" ? "voice" : "text"
-  );
+  const [inputModality, setInputModality] = useState<"text" | "voice">("text");
+
   const [pendingTranscript, setPendingTranscript] = useState<string | null>(null);
   const [voiceError, setVoiceError] = useState<string | null>(null);
-  // Map messageId → Blob URL for TTS audio (in-memory only, not stored in DB)
   const [audioUrls, setAudioUrls] = useState<Map<string, string>>(new Map());
-  // TTS speed: 0.75 | 1 | 1.25 | 1.5
   const [ttsSpeed, setTtsSpeed] = useState<number>(1);
-  // Audio chaining: evaluation ends → next question auto-plays
   const [lastEvalId, setLastEvalId] = useState<string | null>(null);
   const [chainPlayId, setChainPlayId] = useState<string | null>(null);
 
@@ -65,6 +69,19 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
     return () => clearInterval(interval);
   }, [isComplete]);
 
+  // Prevent accidental exit
+  useEffect(() => {
+    if (isComplete) return;
+    
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [isComplete]);
+
   // Auto-scroll
   useEffect(() => {
     if (scrollRef.current) {
@@ -72,8 +89,47 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
     }
   }, [messages, isLoading]);
 
+  const handleFinish = async () => {
+    setIsFinishing(true);
+    try {
+      const res = await fetch(`/api/sessions/${initialSession.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "finish" }),
+      });
+      if (res.ok) {
+        setIsComplete(true);
+        router.push(`/session/${initialSession.id}/results`);
+      }
+    } catch (err) {
+      setError("Error al finalizar sesión");
+    } finally {
+      setIsFinishing(false);
+      setIsEndModalOpen(false);
+    }
+  };
+
+  const handleDiscard = async () => {
+    setIsFinishing(true);
+    try {
+      const res = await fetch(`/api/sessions/${initialSession.id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        router.push("/dashboard");
+      }
+    } catch (err) {
+      setError("Error al descartar sesión");
+    } finally {
+      setIsFinishing(false);
+      setIsEndModalOpen(false);
+    }
+  };
+
   const handleSend = async (content: string, isClarification = false, code?: string) => {
+    // ... [existing handleSend logic]
     setError(null);
+    setLastAttempt({ content, isClarification, code });
     setIsLoading(true);
 
     const optimisticMsg: SessionMessageDTO = {
@@ -111,15 +167,13 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
         ...data.messages,
       ]);
 
-      // Phase 2: synthesize TTS for new AI messages in voice mode
       if (inputModality === "voice") {
-        // Track the new evaluation and next question for chaining
         const newEval = data.messages.find((m) => m.messageType === "evaluation");
         const newQuestion = data.messages.find(
           (m) => m.role === "interviewer" && m.messageType === "question"
         );
         if (newEval) setLastEvalId(newEval.id);
-        setChainPlayId(null); // reset chain until evaluation ends
+        setChainPlayId(null);
 
         for (const msg of data.messages) {
           if (msg.role === "interviewer") {
@@ -141,7 +195,6 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
     }
   };
 
-  // Phase 2: handle recording complete → STT via InteractionManager
   const handleVoiceRecordingComplete = async (blob: Blob) => {
     setVoiceError(null);
     setIsLoading(true);
@@ -158,7 +211,6 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
     }
   };
 
-  // Phase 2: TTS via InteractionManager — stores blob URL keyed by messageId
   const synthesizeTTS = async (messageId: string, text: string, _nextQuestionId: string | null = null) => {
     const url = await synthesizeAudio(text, {
       language: (initialSession.language || "en") as "en" | "es",
@@ -174,12 +226,15 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
       {/* Header */}
       <header className="flex shrink-0 items-center justify-between border-b border-border-subtle bg-surface-container/80 px-4 py-3 backdrop-blur-lg">
         <div className="flex items-center gap-3">
-          <Link
-            href="/dashboard"
+          <button
+            onClick={() => {
+              if (isComplete) router.push("/dashboard");
+              else setIsEndModalOpen(true);
+            }}
             className="flex h-8 w-8 items-center justify-center rounded-lg text-text-secondary transition hover:bg-surface-highest hover:text-text-primary"
           >
             <ArrowLeft className="h-4 w-4" />
-          </Link>
+          </button>
           <div>
             <h1 className="text-sm font-semibold capitalize text-text-primary">
               {initialSession.category.replace(/_/g, " ")} Interview
@@ -191,6 +246,16 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
         </div>
 
         <div className="flex items-center gap-3">
+          {/* Terminar Button */}
+          {!isComplete && (
+            <button
+              onClick={() => setIsEndModalOpen(true)}
+              className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-1.5 text-[0.65rem] font-black uppercase tracking-widest text-red-400 transition-all hover:bg-red-500 hover:text-white hover:shadow-[0_0_15px_rgba(239,68,68,0.3)] active:scale-95"
+            >
+              Terminar Sesión
+            </button>
+          )}
+
           {/* Voice/Text toggle */}
           <VoiceToggle
             inputModality={inputModality}
@@ -209,17 +274,26 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
             {formatTime(elapsed)}
           </div>
 
-          {/* Progress */}
-          <div className="text-right">
-            <span className="font-mono text-sm font-medium text-text-primary">
-              {currentQuestion}
-              <span className="text-text-secondary">/{initialSession.totalQuestions}</span>
-            </span>
-            <div className="mt-1 h-1 w-20 overflow-hidden rounded-full bg-surface-highest">
+          {/* Progress Indicator */}
+          <div className="flex flex-col items-end gap-1.5 min-w-[120px]">
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[0.6rem] font-bold tracking-[0.1em] text-text-secondary uppercase">
+                Progreso
+              </span>
+              <span className="font-mono text-[0.7rem] font-black tracking-tighter text-text-primary">
+                {currentQuestion} / {initialSession.totalQuestions}
+              </span>
+            </div>
+            
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-highest/40 ring-1 ring-white/5 relative">
               <div
-                className="h-full rounded-full bg-primary transition-all duration-500"
+                className="h-full rounded-full bg-primary shadow-[0_0_12px_rgba(var(--primary-rgb),0.5)] transition-all duration-700 ease-out relative z-10"
                 style={{ width: `${progress}%` }}
               />
+              {/* Subtle background pulse if loading */}
+              {isLoading && (
+                <div className="absolute inset-0 bg-primary/20 animate-pulse z-0" />
+              )}
             </div>
           </div>
         </div>
@@ -242,7 +316,6 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
               onAudioEnded={
                 msg.id === lastEvalId
                   ? () => {
-                      // Find the question that comes right after this evaluation
                       const evalIdx = messages.findIndex((m) => m.id === lastEvalId);
                       const nextQ = messages.slice(evalIdx + 1).find(
                         (m) => m.role === "interviewer" && m.messageType === "question"
@@ -254,36 +327,49 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
             />
           ))}
 
-          {/* AI thinking indicator */}
           {isLoading && (
             <div className="flex gap-3">
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-container">
                 <Loader2 className="h-4 w-4 animate-spin text-white" />
               </div>
-              <div className="rounded-2xl rounded-tl-sm border border-border-subtle bg-surface-container px-4 py-3">
-                <div className="flex gap-1">
-                  <span className="h-2 w-2 animate-bounce rounded-full bg-zinc-500/60" style={{ animationDelay: "0ms" }} />
-                  <span className="h-2 w-2 animate-bounce rounded-full bg-zinc-500/60" style={{ animationDelay: "150ms" }} />
-                  <span className="h-2 w-2 animate-bounce rounded-full bg-zinc-500/60" style={{ animationDelay: "300ms" }} />
+              <div className="rounded-2xl rounded-tl-sm border border-primary/20 bg-surface-container px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-1">
+                    <span className="h-2 w-2 animate-bounce rounded-full bg-primary/60" style={{ animationDelay: "0ms" }} />
+                    <span className="h-2 w-2 animate-bounce rounded-full bg-primary/60" style={{ animationDelay: "150ms" }} />
+                    <span className="h-2 w-2 animate-bounce rounded-full bg-primary/60" style={{ animationDelay: "300ms" }} />
+                  </div>
+                  <span className="animate-pulse text-xs text-text-secondary">Analyzing your answer…</span>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Error */}
           {error && (
             <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400">
-              {error}
-              <button
-                onClick={() => setError(null)}
-                className="ml-2 underline hover:text-red-300"
-              >
-                Dismiss
-              </button>
+              <p>{error}</p>
+              <div className="mt-2 flex items-center gap-3">
+                {lastAttempt && (
+                  <button
+                    onClick={() => {
+                      setError(null);
+                      handleSend(lastAttempt.content, lastAttempt.isClarification, lastAttempt.code);
+                    }}
+                    className="rounded-md bg-red-500/20 px-3 py-1 text-xs font-medium text-red-300 transition hover:bg-red-500/30"
+                  >
+                    Retry
+                  </button>
+                )}
+                <button
+                  onClick={() => setError(null)}
+                  className="text-xs text-red-400/60 underline hover:text-red-300"
+                >
+                  Dismiss
+                </button>
+              </div>
             </div>
           )}
 
-          {/* Voice error toast */}
           {voiceError && (
             <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-400">
               {voiceError}
@@ -296,7 +382,6 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
             </div>
           )}
 
-          {/* Completion card */}
           {isComplete && (
             <div className="rounded-xl border border-primary/20 bg-primary/5 p-6 text-center backdrop-blur-sm">
               <h2 className="text-lg font-semibold text-primary">Session Complete</h2>
@@ -334,6 +419,7 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
         isSilentMode={initialSession.feedbackMode === "silent"}
         isCodeSession={initialSession.category === "coding"}
         inputModality={inputModality}
+        onModalityChange={setInputModality}
         onVoiceRecordingComplete={handleVoiceRecordingComplete}
         onMicError={(msg) => {
           setVoiceError(msg);
@@ -345,6 +431,15 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
         ttsSpeed={ttsSpeed}
         onTtsSpeedChange={setTtsSpeed}
       />
+
+      <EndSessionModal
+        isOpen={isEndModalOpen}
+        onClose={() => setIsEndModalOpen(false)}
+        onFinish={handleFinish}
+        onDiscard={handleDiscard}
+        isLoading={isFinishing}
+      />
     </div>
   );
 }
+

@@ -62,6 +62,8 @@
       "streakActive": "¡Sigue así!",
       "streakStart": "Empieza hoy"
     },
+    "dueBookmarks": "{count, plural, one {# pregunta} other {# preguntas}} por repasar hoy",
+    "dueBookmarksLink": "Ir a repasar →",
     "analytics": {
       "scoreTrend": "Tendencia de Puntaje",
       "last": "Últimas {count} sesiones",
@@ -89,6 +91,41 @@
         "desc": "Escala tu conocimiento con trade-offs de arquitectura y sistemas distribuidos.",
         "tag": "Arquitectura"
       }
+    }
+  },
+  "Analytics": {
+    "title": "Analíticas",
+    "subtitle": "Información basada en tus últimas {count} sesiones",
+    "breadcrumb": "Dashboard",
+    "scoreTrend": "Tendencia de Puntaje",
+    "scoreTrendSub": "Promedio global a lo largo del tiempo",
+    "categories": "Categorías",
+    "categoriesSub": "Desglose de rendimiento",
+    "needsWork": "Refuerzo Necesario",
+    "needsWorkSub": "Enfócate en estas áreas para mejorar tu puntaje",
+    "strongestAreas": "Tus Fortalezas",
+    "strongestAreasSub": "Temas en los que destacas",
+    "noWeakAreas": "No se han identificado áreas débiles aún",
+    "noStrongAreas": "Sigue practicando para establecer tus fortalezas",
+    "practiceAgain": "Practicar de Nuevo",
+    "basedOn": "Basado en {count} respuestas",
+    "streak": "Racha Actual",
+    "days": "{count} días",
+    "keepGoing": "¡Sigue así!",
+    "startToday": "Empieza hoy",
+    "globalAverage": "Promedio Global",
+    "totalSessions": "Sesiones Totales",
+    "strongestArea": "Mejor Área",
+    "focusArea": "Área de Enfoque",
+    "completeSessions": "Completa sesiones para ver",
+    "vsPrior": "vs periodo anterior",
+    "noDataTitle": "No se encontraron datos",
+    "noDataDesc": "Completa al menos una sesión de entrevista para desbloquear el seguimiento de tu progreso.",
+    "category": {
+      "technical": "Técnica",
+      "coding": "Programación",
+      "system_design": "Diseño de Sistemas",
+      "behavioral": "Comportamental"
     }
   },
   "Login": {
@@ -156,7 +193,19 @@
     "modeBehavioral": "Comportamental",
     "modeSystemDesign": "Diseño de Sistemas",
     "modeLiveCoding": "Live Coding",
-    "comingSoon": "Próximamente"
+    "modeMixed": "Mixto",
+    "comingSoon": "Próximamente",
+    "roadmapLabel": "Acceso Rápido — Roadmap",
+    "roadmapAngularLabel": "Angular Avanzado",
+    "roadmapAngularTag": "Señales · RxJS · NgRx · Junior",
+    "roadmapSpringLabel": "Spring Boot + Kotlin",
+    "roadmapSpringTag": "JPA · Security · Kotlin · Mid",
+    "roadmapPatternsLabel": "Patrones de Diseño",
+    "roadmapPatternsTag": "Arquitectura · Senior",
+    "roadmapAlgorithmsLabel": "Algoritmos JS",
+    "roadmapAlgorithmsTag": "Live Coding · JS · Senior",
+    "roadmapFridayLabel": "Simulación Completa",
+    "roadmapFridayTag": "Mixed · EN · 10q · Senior"
   },
   "Settings": {
     "title": "Configuración de la Cuenta",

@@ -77,6 +77,13 @@ export default async function HistoryPage({ searchParams }: Props) {
           orderBy: { createdAt: "asc" },
           select: { content: true },
         },
+        _count: {
+          select: {
+            messages: {
+              where: { messageType: "evaluation" },
+            },
+          },
+        },
       },
     }),
     prisma.session.count({ where }),
@@ -94,6 +101,7 @@ export default async function HistoryPage({ searchParams }: Props) {
     createdAt: s.createdAt.toISOString(),
     duration: s.duration,
     snippet: s.messages[0]?.content ?? null,
+    answeredQuestions: s._count.messages,
   }));
 
   return (
@@ -127,14 +135,6 @@ export default async function HistoryPage({ searchParams }: Props) {
           status={status}
           sort={sort}
         />
-      </div>
-
-      {/* Floating Sync Badge */}
-      <div className="fixed bottom-8 right-8 bg-[#0e0e0e]/80 backdrop-blur-md ghost-border rounded-full py-2 px-4 hidden lg:flex items-center gap-3">
-        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-        <span className="text-[0.6875rem] font-mono text-white/60 tracking-widest uppercase">
-          Syncing with Mainframe
-        </span>
       </div>
     </main>
   );

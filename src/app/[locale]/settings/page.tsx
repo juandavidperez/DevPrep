@@ -12,11 +12,21 @@ export default async function SettingsPage() {
 
   const t = await getTranslations("Settings");
 
-  const settings = await prisma.userSettings.upsert({
-    where: { userId: session.user.id },
-    create: { userId: session.user.id },
-    update: {},
-  });
+  const [settings, stats] = await Promise.all([
+    prisma.userSettings.upsert({
+      where: { userId: session.user.id },
+      create: { userId: session.user.id },
+      update: {},
+    }),
+    prisma.session.aggregate({
+      where: { userId: session.user.id },
+      _count: { _all: true },
+      _avg: { score: true },
+    }),
+  ]);
+
+  const totalSessions = stats._count._all;
+  const avgScore = stats._avg.score ?? 0;
 
   return (
     <main className="min-h-screen bg-background text-text-primary relative overflow-hidden pb-20">
@@ -52,6 +62,8 @@ export default async function SettingsPage() {
         <SettingsForm
           userName={session.user.name || "Developer"}
           userImage={session.user.image || null}
+          totalSessions={totalSessions}
+          avgScore={avgScore}
           initialSettings={{
             uiLanguage: settings.uiLanguage,
             questionLanguage: settings.questionLanguage,

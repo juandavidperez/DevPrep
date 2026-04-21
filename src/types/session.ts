@@ -51,6 +51,8 @@ export interface QuestionResult {
   criteria: Record<string, number> | null;
   feedback: string | null;
   modelAnswer: string | null;
+  evaluationMessageId: string | null;
+  bookmarkId: string | null;
 }
 
 export interface CriterionScore {

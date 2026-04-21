@@ -15,11 +15,13 @@ function buildQuestionResults(
     criteria: unknown;
     feedback: string | null;
     modelAnswer: string | null;
+    id: string;
+    bookmark: { id: string } | null;
   }[]
 ): QuestionResult[] {
   const grouped = new Map<
     number,
-    { question?: string; answer?: string; code?: string | null; score?: number | null; criteria?: Record<string, number> | null; feedback?: string | null; modelAnswer?: string | null }
+    { question?: string; answer?: string; code?: string | null; score?: number | null; criteria?: Record<string, number> | null; feedback?: string | null; modelAnswer?: string | null; evalId?: string; bookmarkId?: string | null }
   >();
 
   for (const m of messages) {
@@ -36,6 +38,8 @@ function buildQuestionResults(
       entry.criteria = m.criteria as Record<string, number> | null;
       entry.feedback = m.feedback;
       entry.modelAnswer = m.modelAnswer;
+      entry.evalId = m.id;
+      entry.bookmarkId = m.bookmark?.id ?? null;
     }
 
     grouped.set(m.questionIndex, entry);
@@ -52,6 +56,8 @@ function buildQuestionResults(
       criteria: data.criteria ?? null,
       feedback: data.feedback ?? null,
       modelAnswer: data.modelAnswer ?? null,
+      evaluationMessageId: data.evalId ?? null,
+      bookmarkId: data.bookmarkId ?? null,
     }));
 }
 
@@ -109,7 +115,10 @@ export default async function ResultsPage({
   const interviewSession = await prisma.session.findUnique({
     where: { id },
     include: {
-      messages: { orderBy: { createdAt: "asc" } },
+      messages: { 
+        orderBy: { createdAt: "asc" },
+        include: { bookmark: { select: { id: true } } }
+      },
     },
   });
 

@@ -19,14 +19,18 @@ import {
   GitBranch,
   Server,
   Network,
+  Braces,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { clsx } from "clsx";
 
-const TECHNOLOGIES: { id: string; category: string; icon: LucideIcon }[] = [
+type TechItem = { id: string; category: string; icon: LucideIcon };
+
+const TECHNOLOGIES: TechItem[] = [
   { id: "React", category: "technical", icon: Atom },
-  { id: "Java", category: "technical", icon: Coffee },
   { id: "Angular", category: "technical", icon: Layers },
+  { id: "Java", category: "technical", icon: Coffee },
+  { id: "JavaScript", category: "technical", icon: Braces },
   { id: "Python", category: "technical", icon: Code },
   { id: "AWS", category: "technical", icon: Cloud },
   { id: "CI/CD", category: "technical", icon: GitBranch },
@@ -51,15 +55,14 @@ const DURATIONS = [
   { minutes: 30, label: "30 min", subKey: "duration30" },
 ];
 
-// Maps interviewMode → the API category sent to the backend
 const MODE_TO_CATEGORY: Record<string, string> = {
   technical:    "technical",
   behavioral:   "behavioral",
   system_design: "system_design",
   live_coding:  "coding",
+  mixed:        "mixed",
 };
 
-// Estimated minutes to answer one question per category + difficulty
 const MINUTES_PER_QUESTION: Record<string, Record<string, number>> = {
   technical:     { junior: 3, mid: 4, senior: 5 },
   coding:        { junior: 6, mid: 8, senior: 10 },
@@ -79,7 +82,68 @@ const INTERVIEW_MODES = [
   { value: "behavioral", labelKey: "modeBehavioral" },
   { value: "system_design", labelKey: "modeSystemDesign" },
   { value: "live_coding", labelKey: "modeLiveCoding" },
+  { value: "mixed", labelKey: "modeMixed" },
 ];
+
+interface RoadmapConfig {
+  tech: string | null;
+  interviewMode: string;
+  difficulty: string;
+  language: string;
+  durationMinutes: number;
+  questionCountOverride?: number;
+}
+
+const ROADMAPS: {
+  id: string;
+  emoji: string;
+  labelKey: string;
+  tagKey: string;
+  color: string;
+  config: RoadmapConfig;
+}[] = [
+  {
+    id: "angular",
+    emoji: "⚡",
+    labelKey: "roadmapAngularLabel",
+    tagKey: "roadmapAngularTag",
+    color: "from-[#DD0031]/10 to-transparent",
+    config: { tech: "Angular", interviewMode: "technical", difficulty: "junior", language: "es", durationMinutes: 15 },
+  },
+  {
+    id: "spring",
+    emoji: "☕",
+    labelKey: "roadmapSpringLabel",
+    tagKey: "roadmapSpringTag",
+    color: "from-[#6DB33F]/10 to-transparent",
+    config: { tech: "Java", interviewMode: "technical", difficulty: "mid", language: "es", durationMinutes: 15 },
+  },
+  {
+    id: "patterns",
+    emoji: "🔷",
+    labelKey: "roadmapPatternsLabel",
+    tagKey: "roadmapPatternsTag",
+    color: "from-[#007ACC]/10 to-transparent",
+    config: { tech: "System Design", interviewMode: "system_design", difficulty: "mid", language: "es", durationMinutes: 30 },
+  },
+  {
+    id: "algorithms",
+    emoji: "🧮",
+    labelKey: "roadmapAlgorithmsLabel",
+    tagKey: "roadmapAlgorithmsTag",
+    color: "from-[#F7DF1E]/10 to-transparent",
+    config: { tech: "JavaScript", interviewMode: "live_coding", difficulty: "mid", language: "es", durationMinutes: 30 },
+  },
+  {
+    id: "friday",
+    emoji: "🎯",
+    labelKey: "roadmapFridayLabel",
+    tagKey: "roadmapFridayTag",
+    color: "from-[#7C3AED]/10 to-transparent",
+    config: { tech: null, interviewMode: "mixed", difficulty: "mid", language: "en", durationMinutes: 30, questionCountOverride: 10 },
+  },
+];
+
 
 function calcQuestions(interviewMode: string, difficulty: string, minutes: number): number {
   const category = MODE_TO_CATEGORY[interviewMode] ?? interviewMode;
@@ -87,19 +151,53 @@ function calcQuestions(interviewMode: string, difficulty: string, minutes: numbe
   return Math.max(1, Math.min(15, Math.floor(minutes / minsPerQ)));
 }
 
-export function SessionConfigForm() {
+interface SessionConfigFormProps {
+  settings?: {
+    defaultDifficulty?: string;
+    questionLanguage?: string;
+    outputModality?: string;
+    targetStack?: string[];
+  } | null;
+}
+
+export function SessionConfigForm({ settings }: SessionConfigFormProps) {
   const router = useRouter();
   const t = useTranslations("SessionConfig");
-  const [selectedTech, setSelectedTech] = useState(TECHNOLOGIES[0]);
-  const [difficulty, setDifficulty] = useState("senior");
-  const [language, setLanguage] = useState("es");
-  const [durationMinutes, setDurationMinutes] = useState(15);
-  const [outputModality, setOutputModality] = useState("text");
-  const [interviewMode, setInterviewMode] = useState("technical");
 
-  const estimatedQuestions = calcQuestions(interviewMode, difficulty, durationMinutes);
+  const initialTech = settings?.targetStack?.length
+    ? TECHNOLOGIES.find((t) =>
+        settings.targetStack?.some((s) => s.toLowerCase() === t.id.toLowerCase())
+      ) || TECHNOLOGIES[0]
+    : TECHNOLOGIES[0];
+
+  const [selectedTech, setSelectedTech] = useState<TechItem | null>(initialTech);
+  const [difficulty, setDifficulty] = useState(settings?.defaultDifficulty || "mid");
+  const [language, setLanguage] = useState(settings?.questionLanguage || "es");
+  const [durationMinutes, setDurationMinutes] = useState(15);
+  const [outputModality, setOutputModality] = useState(settings?.outputModality || "text");
+  const [interviewMode, setInterviewMode] = useState("technical");
+  const [activeRoadmap, setActiveRoadmap] = useState<string | null>(null);
+  const [questionCountOverride, setQuestionCountOverride] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const estimatedQuestions = questionCountOverride ?? calcQuestions(interviewMode, difficulty, durationMinutes);
+
+  const applyRoadmap = (roadmap: typeof ROADMAPS[number]) => {
+    const { tech, interviewMode: mode, difficulty: diff, language: lang, durationMinutes: dur, questionCountOverride: qOverride } = roadmap.config;
+    setSelectedTech(tech ? TECHNOLOGIES.find((t) => t.id === tech) ?? null : null);
+    setInterviewMode(mode);
+    setDifficulty(diff);
+    setLanguage(lang);
+    setDurationMinutes(dur);
+    setActiveRoadmap(roadmap.id);
+    setQuestionCountOverride(qOverride ?? null);
+  };
+
+  const clearRoadmap = () => {
+    setActiveRoadmap(null);
+    setQuestionCountOverride(null);
+  };
 
   const handleSubmit = async () => {
     setError(null);
@@ -115,7 +213,7 @@ export function SessionConfigForm() {
           totalQuestions: estimatedQuestions,
           language,
           outputModality,
-          targetStack: [selectedTech.id.toLowerCase().replace(".", "")]
+          targetStack: selectedTech ? [selectedTech.id.toLowerCase().replace(".", "")] : [],
         }),
       });
 
@@ -155,15 +253,54 @@ export function SessionConfigForm() {
 
       <div className="p-8 md:p-12 max-w-6xl w-full mx-auto flex-1 h-full">
         {/* Subtitle */}
-        <div className="mb-10">
+        <div className="mb-8">
           <p className="text-text-secondary text-base max-w-2xl font-medium leading-relaxed">
             {t("subtitle")}
           </p>
         </div>
 
+        {/* Roadmap Quick-Start */}
+        <div className="mb-10">
+          <p className="text-[10px] font-mono uppercase tracking-widest text-white/30 mb-3">
+            {t("roadmapLabel")}
+          </p>
+          <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1">
+            {ROADMAPS.map((r) => (
+              <button
+                key={r.id}
+                type="button"
+                onClick={() => applyRoadmap(r)}
+                className={clsx(
+                  "flex-none flex flex-col gap-1.5 px-4 py-3.5 rounded-xl border transition-all text-left min-w-[170px] relative overflow-hidden group",
+                  activeRoadmap === r.id
+                    ? "bg-surface-highest border-primary/50 shadow-[0_0_25px_rgba(210,187,255,0.12)] -translate-y-1"
+                    : "bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10 hover:-translate-y-0.5"
+                )}
+              >
+                {/* Visual Accent Gradient */}
+                <div className={clsx(
+                  "absolute inset-0 bg-gradient-to-br transition-opacity duration-500 pointer-events-none",
+                  r.color,
+                  activeRoadmap === r.id ? "opacity-100" : "opacity-0 group-hover:opacity-60"
+                )}></div>
+
+                <span className="text-xl leading-none relative z-10 drop-shadow-sm">{r.emoji}</span>
+                <span className={clsx(
+                  "text-xs font-bold leading-tight mt-1 relative z-10",
+                  activeRoadmap === r.id ? "text-primary" : "text-white/80"
+                )}>
+                  {t(r.labelKey)}
+                </span>
+                <span className="text-[10px] font-mono text-white/30 leading-tight relative z-10 font-medium">{t(r.tagKey)}</span>
+              </button>
+            ))}
+
+          </div>
+        </div>
+
         {/* Bento Grid Configuration */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 pb-32">
-          
+
           {/* Card 1: Technical Area */}
           <div className="md:col-span-7 bg-surface-container p-7 rounded-xl ghost-border flex flex-col group hover:bg-surface-highest transition-colors duration-300">
             <div className="flex items-center gap-3 mb-6">
@@ -175,7 +312,7 @@ export function SessionConfigForm() {
                 <p className="text-xs text-white/40 font-mono uppercase tracking-tighter font-bold">{t("techAreaSub")}</p>
               </div>
             </div>
-            
+
             <div className="flex flex-wrap gap-2 mb-8">
               {TECHNOLOGIES.map((tech) => {
                 const Icon = tech.icon;
@@ -183,10 +320,10 @@ export function SessionConfigForm() {
                   <button
                     key={tech.id}
                     type="button"
-                    onClick={() => setSelectedTech(tech)}
+                    onClick={() => { setSelectedTech(tech); clearRoadmap(); }}
                     className={clsx(
                       "flex items-center gap-2 px-4 py-2 rounded-full ghost-border font-mono text-sm transition-all",
-                      selectedTech.id === tech.id
+                      selectedTech?.id === tech.id
                         ? "bg-primary/20 text-primary border-primary/30"
                         : "bg-white/5 text-white/70 hover:bg-white/10"
                     )}
@@ -220,7 +357,7 @@ export function SessionConfigForm() {
               {DIFFICULTIES.map(({ id, label, level }) => (
                 <div
                   key={id}
-                  onClick={() => setDifficulty(id)}
+                  onClick={() => { setDifficulty(id); clearRoadmap(); }}
                   className={clsx(
                     "flex items-center justify-between p-3 rounded-lg border transition-all cursor-pointer",
                     difficulty === id
@@ -265,7 +402,7 @@ export function SessionConfigForm() {
               {LANGUAGES.map((lang) => (
                 <div
                   key={lang.id}
-                  onClick={() => setLanguage(lang.id)}
+                  onClick={() => { setLanguage(lang.id); clearRoadmap(); }}
                   className={clsx(
                     "flex flex-col items-center gap-2 p-3 rounded-lg border transition-all cursor-pointer",
                     language === lang.id
@@ -306,7 +443,7 @@ export function SessionConfigForm() {
               {DURATIONS.map(({ minutes, label, subKey }) => (
                 <div
                   key={minutes}
-                  onClick={() => setDurationMinutes(minutes)}
+                  onClick={() => { setDurationMinutes(minutes); setQuestionCountOverride(null); clearRoadmap(); }}
                   className={clsx(
                     "flex items-center justify-between p-3 rounded-lg border transition-all cursor-pointer",
                     durationMinutes === minutes
@@ -327,7 +464,7 @@ export function SessionConfigForm() {
                     <CheckCircle2 className="h-4 w-4 text-primary" />
                   ) : (
                     <span className="font-mono text-[10px] text-white/20">
-                      ~{calcQuestions(selectedTech.category, difficulty, minutes)}q
+                      ~{calcQuestions(interviewMode, difficulty, minutes)}q
                     </span>
                   )}
                 </div>
@@ -408,7 +545,7 @@ export function SessionConfigForm() {
                 <button
                   key={mode.value}
                   type="button"
-                  onClick={() => setInterviewMode(mode.value)}
+                  onClick={() => { setInterviewMode(mode.value); clearRoadmap(); }}
                   className={clsx(
                     "p-4 rounded-xl border transition-all flex flex-col items-start gap-2 text-left relative overflow-hidden",
                     interviewMode === mode.value
@@ -448,11 +585,12 @@ export function SessionConfigForm() {
         )}
       </div>
 
-      {/* Action Bar (Bottom Footer) — sticky instead of fixed to respect sidebar width */}
+      {/* Action Bar (Bottom Footer) */}
       <footer className="sticky bottom-0 h-20 bg-surface-container/90 backdrop-blur-2xl border-t border-border-subtle px-8 md:px-12 flex items-center justify-between z-30">
-        {/* Config summary */}
         <div className="hidden sm:flex items-center gap-3 text-[11px] text-text-secondary">
-          <span className="rounded-md bg-white/5 px-2.5 py-1 font-mono font-semibold text-text-primary">{selectedTech.id}</span>
+          <span className="rounded-md bg-white/5 px-2.5 py-1 font-mono font-semibold text-text-primary">
+            {selectedTech?.id ?? "—"}
+          </span>
           <span className="text-white/20">/</span>
           <span className="rounded-md bg-white/5 px-2.5 py-1 capitalize">{difficulty}</span>
           <span className="text-white/20">/</span>

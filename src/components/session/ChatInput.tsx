@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { Send, HelpCircle, X, Code2 } from "lucide-react";
+import { Send, HelpCircle, X, Code2, Keyboard, Mic } from "lucide-react";
 import { clsx } from "clsx";
 import { CodeEditor } from "./CodeEditor";
 import { MicButton } from "./voice/MicButton";
@@ -22,6 +22,7 @@ interface ChatInputProps {
   isCodeSession?: boolean;
   // Phase 2
   inputModality?: "text" | "voice";
+  onModalityChange?: (modality: "text" | "voice") => void;
   onVoiceRecordingComplete?: (blob: Blob) => void;
   onMicError?: (message: string) => void;
   pendingTranscript?: string | null;
@@ -38,6 +39,7 @@ export function ChatInput({
   isSilentMode = false,
   isCodeSession = false,
   inputModality = "text",
+  onModalityChange,
   onVoiceRecordingComplete,
   onMicError,
   pendingTranscript,
@@ -54,8 +56,14 @@ export function ChatInput({
 
   const handleSubmit = useCallback(() => {
     const trimmed = value.trim();
-    if (!trimmed || disabled) return;
-    onSend(trimmed, isClarifying, showEditor && codeValue.trim() ? codeValue : undefined);
+    const hasCode = showEditor && codeValue.trim();
+    
+    if (disabled || (!trimmed && !hasCode)) return;
+
+    // Use a placeholder if content is empty but code is present (to satisfy backend/AI)
+    const finalContent = trimmed || (hasCode ? "[Code Submission]" : "");
+    
+    onSend(finalContent, isClarifying, hasCode ? codeValue : undefined);
     setValue("");
     setIsClarifying(false);
     if (textareaRef.current) {
@@ -122,11 +130,23 @@ export function ChatInput({
           {/* Mic button + TTS speed — hidden when transcript is ready */}
           {!pendingTranscript && (
             <div className="flex flex-col items-center gap-3">
-              <MicButton
-                onRecordingComplete={onVoiceRecordingComplete ?? (() => {})}
-                onError={onMicError ?? (() => {})}
-                disabled={disabled || isLoading}
-              />
+              <div className="flex items-center gap-6">
+                <div className="w-10" /> {/* Spacer to balance keyboard icon */}
+                <MicButton
+                  onRecordingComplete={onVoiceRecordingComplete ?? (() => {})}
+                  onError={onMicError ?? (() => {})}
+                  disabled={disabled || isLoading}
+                />
+                <button
+                  type="button"
+                  onClick={() => onModalityChange?.("text")}
+                  title="Cambiar a modo texto"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-border-subtle bg-surface-highest/50 text-text-secondary transition hover:bg-surface-highest hover:text-text-primary active:scale-95"
+                >
+                  <Keyboard className="h-5 w-5" />
+                </button>
+              </div>
+              
               {/* TTS speed selector */}
               {onTtsSpeedChange && (
                 <div className="flex items-center gap-1">
@@ -214,6 +234,17 @@ export function ChatInput({
       )}
 
       <div className="flex items-end gap-2">
+        {/* Modality toggle (Mic icon) */}
+        <button
+          type="button"
+          onClick={() => onModalityChange?.("voice")}
+          disabled={disabled}
+          title="Cambiar a modo voz"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border-subtle bg-surface-highest text-text-secondary transition hover:bg-surface-highest hover:text-text-primary active:scale-95 disabled:opacity-40"
+        >
+          <Mic className="h-4 w-4" />
+        </button>
+
         {/* Clarification toggle */}
         <button
           type="button"
@@ -272,7 +303,7 @@ export function ChatInput({
 
         <button
           onClick={handleSubmit}
-          disabled={disabled || !value.trim()}
+          disabled={disabled || (!value.trim() && !(showEditor && codeValue.trim()))}
           className={clsx(
             "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white transition hover:opacity-90 disabled:opacity-40",
             isClarifying ? "bg-primary/70" : "bg-primary-container"

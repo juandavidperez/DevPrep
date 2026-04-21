@@ -76,9 +76,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ sessionId: interviewSession.id }, { status: 201 });
   } catch (error) {
     console.error("Failed to create session:", error);
-    return NextResponse.json(
-      { error: "Failed to create session. Is the AI provider running?" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to create session. Please try again." }, { status: 500 });
   }
 }

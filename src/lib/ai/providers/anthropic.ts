@@ -18,6 +18,8 @@ export class AnthropicProvider implements AIProvider {
   constructor() {
     this.client = new Anthropic({
       apiKey: process.env.ANTHROPIC_API_KEY,
+      timeout: 25_000,  // 25s — fits within Vercel's maxDuration = 30
+      maxRetries: 2,
     });
     this.model = process.env.ANTHROPIC_MODEL || DEFAULT_MODEL;
   }
@@ -78,22 +80,21 @@ export class AnthropicProvider implements AIProvider {
     responseText: string,
     code?: string
   ): Promise<Evaluation> {
-    const prompt = buildEvaluationPrompt(question, responseText, code);
-    const content = await this.chat(prompt);
-
     try {
-      return parseEvaluation(content);
-    } catch (firstError) {
-      console.warn('[AnthropicProvider] First parse failed, retrying with strict prompt:', firstError);
+      const prompt = buildEvaluationPrompt(question, responseText, code);
+      const content = await this.chat(prompt);
 
       try {
+        return parseEvaluation(content);
+      } catch (parseError) {
+        console.warn('[AnthropicProvider] First parse failed, retrying with strict prompt:', parseError);
         const retryPrompt = buildStrictEvaluationPrompt(question, responseText, code);
         const retryContent = await this.chat(retryPrompt);
         return parseEvaluation(retryContent);
-      } catch (retryError) {
-        console.error('[AnthropicProvider] Retry also failed:', retryError);
-        return FALLBACK_EVALUATION;
       }
+    } catch (error) {
+      console.error('[AnthropicProvider] evaluateResponse failed, returning fallback:', error);
+      return FALLBACK_EVALUATION;
     }
   }
 }

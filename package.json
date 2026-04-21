@@ -30,6 +30,7 @@
     "openai": "^6.33.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
+    "recharts": "^3.8.1",
     "tailwind-merge": "latest",
     "zod": "^4.3.6"
   },

@@ -18,6 +18,7 @@ interface SessionItem {
   createdAt: string;
   duration: number | null;
   snippet: string | null;
+  answeredQuestions: number;
 }
 
 interface Props {
@@ -78,6 +79,7 @@ export function SessionList({
       <div className="space-y-4">
         {sessions.map((s) => {
           const isComplete = !!s.completedAt;
+          const progressPercent = Math.min(100, Math.round((s.answeredQuestions / s.totalQuestions) * 100));
 
           return (
             <div
@@ -114,18 +116,31 @@ export function SessionList({
                   </span>
                   {isComplete ? (
                     <div className="flex items-baseline gap-2">
-                      <span className="font-mono text-5xl font-bold text-primary-container">
+                      <span className="font-mono text-5xl font-bold text-primary shadow-[0_0_20px_rgba(var(--primary-rgb),0.15)] transition-all group-hover:shadow-[0_0_30px_rgba(var(--primary-rgb),0.25)]">
                         {s.score !== null ? Math.round(s.score) : "--"}
                       </span>
-                      <span className="font-mono text-xl text-white/20">{t("scoreLabel")}</span>
+                      <span className="font-mono text-xl font-bold text-text-secondary/40">{t("scoreLabel")}</span>
                     </div>
                   ) : (
-                    <div className="space-y-1.5">
-                      <div className="font-mono text-sm text-white/50">
-                        {t("questionsCount", { count: s.totalQuestions })}
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-xl font-black text-emerald-400">
+                            {s.answeredQuestions} / {s.totalQuestions}
+                          </span>
+                          <span className="font-mono text-[9px] uppercase tracking-widest text-white/30 font-bold">
+                            Pasos
+                          </span>
+                        </div>
+                        <span className="font-mono text-sm font-bold text-emerald-400/80">
+                          {progressPercent}%
+                        </span>
                       </div>
-                      <div className="h-1.5 w-32 overflow-hidden rounded-full bg-surface-highest">
-                        <div className="h-full rounded-full bg-emerald-500/60" style={{ width: "40%" }} />
+                      <div className="h-2 w-full max-w-[200px] overflow-hidden rounded-full bg-surface-highest/50 ring-1 ring-white/5">
+                        <div 
+                          className="h-full rounded-full bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.4)] transition-all duration-700 ease-out" 
+                          style={{ width: `${progressPercent}%` }} 
+                        />
                       </div>
                     </div>
                   )}
