@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { SettingsForm } from "@/components/settings/SettingsForm";
 import { getTranslations } from "next-intl/server";
+import { getGlobalStats } from "@/lib/analytics";
 
 export default async function SettingsPage() {
   const session = await auth();
@@ -12,21 +13,16 @@ export default async function SettingsPage() {
 
   const t = await getTranslations("Settings");
 
-  const [settings, stats] = await Promise.all([
+  const [settings, globalStats] = await Promise.all([
     prisma.userSettings.upsert({
       where: { userId: session.user.id },
       create: { userId: session.user.id },
       update: {},
     }),
-    prisma.session.aggregate({
-      where: { userId: session.user.id },
-      _count: { _all: true },
-      _avg: { score: true },
-    }),
+    getGlobalStats(session.user.id),
   ]);
 
-  const totalSessions = stats._count._all;
-  const avgScore = stats._avg.score ?? 0;
+  const { totalSessions, avgScore } = globalStats;
 
   return (
     <main className="min-h-screen bg-background text-text-primary relative overflow-hidden pb-20">

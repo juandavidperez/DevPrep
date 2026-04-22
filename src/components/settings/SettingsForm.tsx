@@ -13,7 +13,9 @@ import {
   EyeOff,
   Layers,
   Sparkles,
-  Zap
+  Zap,
+  AlertTriangle,
+  RotateCcw
 } from "lucide-react";
 
 interface SettingsData {
@@ -90,6 +92,8 @@ export function SettingsForm({
   });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [resetConfirm, setResetConfirm] = useState(false);
+  const [resetting, setResetting] = useState(false);
 
   const toggleArrayItem = (
     field: "defaultCategories" | "targetStack",
@@ -120,6 +124,23 @@ export function SettingsForm({
       console.error("Error saving settings:", error);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleReset = async () => {
+    setResetting(true);
+    try {
+      const res = await fetch("/api/settings/reset", { method: "POST" });
+      if (res.ok) {
+        window.location.reload();
+      } else {
+        alert("Failed to reset stats");
+      }
+    } catch (error) {
+      console.error("Error resetting stats:", error);
+    } finally {
+      setResetting(false);
+      setResetConfirm(false);
     }
   };
 
@@ -446,6 +467,66 @@ export function SettingsForm({
           </div>
         </div>
       </div>
+
+      {/* 6. Danger Zone */}
+      <div className="md:col-span-12 mt-12 pt-12 border-t border-red-500/20">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center border border-red-500/20">
+            <AlertTriangle className="w-5 h-5 text-red-500" />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-red-500 tracking-tight">Zona de Peligro</h3>
+            <p className="text-[10px] text-red-500/50 font-mono uppercase tracking-widest">Acciones irreversibles</p>
+          </div>
+        </div>
+
+        <div className="bg-red-500/5 rounded-xl border border-red-500/10 p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="max-w-xl">
+            <h4 className="text-sm font-bold text-white mb-1">Reiniciar todas las estadísticas</h4>
+            <p className="text-[11px] text-white/40 leading-relaxed">Se borrarán todas tus sesiones, mensajes y marcadores. Tu progreso se pondrá a cero y no podrás recuperar estos datos.</p>
+          </div>
+          
+          <button
+            onClick={() => setResetConfirm(true)}
+            className="whitespace-nowrap px-6 py-2.5 rounded-lg bg-red-500/10 border border-red-500/30 text-red-500 text-xs font-bold transition-all hover:bg-red-500 hover:text-white"
+          >
+            Limpiar Base de Datos
+          </button>
+        </div>
+      </div>
+
+      {/* Reset Confirmation Modal */}
+      {resetConfirm && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/90 backdrop-blur-md">
+          <div className="w-full max-w-md rounded-2xl border border-red-500/30 bg-surface-container p-8 shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-6">
+              <AlertTriangle className="w-8 h-8 text-red-500" />
+            </div>
+            <h3 className="text-xl font-bold text-white text-center mb-2">¿Estás absolutamente seguro?</h3>
+            <p className="text-sm text-white/50 text-center mb-8">Esta acción eliminará permanentemente todo tu historial de entrevistas y análisis. No hay vuelta atrás.</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setResetConfirm(false)}
+                className="flex-1 rounded-xl border border-white/10 px-4 py-3 text-sm font-bold text-white/80 transition-all hover:bg-white/5"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleReset}
+                disabled={resetting}
+                className="flex-1 rounded-xl bg-red-500 px-4 py-3 text-sm font-bold text-white transition-all hover:bg-red-600 disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {resetting ? (
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <RotateCcw className="w-4 h-4" />
+                )}
+                Confirmar Reinicio
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Floating Save Action */}
       <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-6">
