@@ -14,8 +14,10 @@ import {
   RotateCcw,
   Bookmark,
   BookmarkCheck,
+  Download,
 } from "lucide-react";
 import type { ResultsData, QuestionResult } from "@/types/session";
+import { generateSessionMarkdown, downloadFile } from "@/lib/export";
 
 function scoreColor(score: number) {
   if (score >= 70) return "text-emerald-400";
@@ -27,6 +29,30 @@ function scoreBadge(score: number) {
   if (score >= 70) return "border-emerald-400/30 bg-emerald-400/10 text-emerald-400";
   if (score >= 40) return "border-yellow-400/30 bg-yellow-400/10 text-yellow-400";
   return "border-red-400/30 bg-red-400/10 text-red-400";
+}
+
+function CriterionBar({ label, value, compact = false }: { label: string; value: number; compact?: boolean }) {
+  const colorClass = value >= 70 ? "bg-emerald-400" : value >= 40 ? "bg-yellow-400" : "bg-red-400";
+  const bgClass = value >= 70 ? "bg-emerald-400/10" : value >= 40 ? "bg-yellow-400/10" : "bg-red-400/10";
+  
+  return (
+    <div className={clsx("flex flex-col gap-1.5", compact ? "w-full" : "w-full")}>
+      <div className="flex justify-between items-center px-0.5">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-text-secondary capitalize">
+          {label.replace(/_/g, " ")}
+        </span>
+        <span className={clsx("font-mono text-[10px] font-bold", value >= 70 ? "text-emerald-400" : value >= 40 ? "text-yellow-400" : "text-red-400")}>
+          {Math.round(value)}%
+        </span>
+      </div>
+      <div className={clsx("h-1.5 w-full rounded-full overflow-hidden", bgClass)}>
+        <div 
+          className={clsx("h-full rounded-full transition-all duration-500", colorClass)}
+          style={{ width: `${value}%` }}
+        />
+      </div>
+    </div>
+  );
 }
 
 function formatDuration(seconds: number | null): string {
@@ -171,12 +197,9 @@ function QuestionCard({ question }: { question: QuestionResult }) {
               </div>
 
               {question.criteria && (
-                <div className="mt-2 grid grid-cols-2 gap-2">
+                <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
                   {Object.entries(question.criteria).map(([key, value]) => (
-                    <div key={key} className="flex justify-between rounded-lg bg-surface-highest/50 px-3 py-1.5 text-xs">
-                      <span className="capitalize text-text-secondary">{key.replace(/_/g, " ")}</span>
-                      <span className="font-mono font-medium text-text-primary">{String(value)}</span>
-                    </div>
+                    <CriterionBar key={key} label={key} value={Number(value)} />
                   ))}
                 </div>
               )}
@@ -236,6 +259,16 @@ export function ResultsView({ data }: { data: ResultsData }) {
               {data.difficulty} level · {new Date(data.completedAt).toLocaleDateString()}
             </p>
           </div>
+          <button
+            onClick={() => {
+              const md = generateSessionMarkdown(data);
+              downloadFile(md, `devprep-session-${data.id.slice(0, 8)}.md`);
+            }}
+            className="ml-auto flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-4 py-2 text-xs font-bold text-primary transition hover:bg-primary/10"
+          >
+            <Download className="h-4 w-4" />
+            Exportar .MD
+          </button>
         </div>
 
         {/* Summary cards */}
@@ -270,6 +303,20 @@ export function ResultsView({ data }: { data: ResultsData }) {
             </p>
           </div>
         </div>
+
+        {/* Global Criteria Breakdown */}
+        {Object.keys(data.criteriaAverages).length > 0 && (
+          <div className="mt-8 rounded-xl border border-border-subtle bg-surface-container/80 p-6 shadow-glow-sm">
+            <h3 className="text-xs font-bold uppercase tracking-widest text-text-secondary mb-6">
+              Diagnóstico de Criterios (Promedio Sesión)
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-6">
+              {Object.entries(data.criteriaAverages).map(([key, value]) => (
+                <CriterionBar key={key} label={key} value={value} />
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Strengths & Weaknesses */}
         {(data.strengths.length > 0 || data.weaknesses.length > 0) && (
@@ -328,6 +375,16 @@ export function ResultsView({ data }: { data: ResultsData }) {
             <RotateCcw className="h-4 w-4" />
             New Session
           </Link>
+          <button
+            onClick={() => {
+              const md = generateSessionMarkdown(data);
+              downloadFile(md, `devprep-session-${data.id.slice(0, 8)}.md`);
+            }}
+            className="flex items-center gap-2 rounded-xl border border-border-subtle bg-surface-highest/50 px-5 py-2.5 text-sm font-medium text-text-primary transition hover:bg-surface-highest"
+          >
+            <Download className="h-4 w-4" />
+            Exportar MD
+          </button>
           <Link href="/dashboard" className="text-sm text-text-secondary transition hover:text-text-primary">
             Dashboard
           </Link>

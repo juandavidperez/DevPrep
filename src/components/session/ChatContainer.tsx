@@ -19,6 +19,7 @@ interface SessionData {
   completedAt: string | null;
   score: number | null;
   feedbackMode: string;
+  timerEnabled: boolean;
   inputModality: string;
   language: string;
 }
@@ -43,6 +44,7 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
   const [error, setError] = useState<string | null>(null);
   const [lastAttempt, setLastAttempt] = useState<{ content: string; isClarification: boolean; code?: string } | null>(null);
   const [elapsed, setElapsed] = useState(0);
+  const [questionElapsed, setQuestionElapsed] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Modal & Exit state
@@ -62,12 +64,19 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
   const currentQuestion = messages.filter((m) => m.messageType === "question").length;
   const progress = Math.round((currentQuestion / initialSession.totalQuestions) * 100);
 
-  // Timer
   useEffect(() => {
     if (isComplete) return;
-    const interval = setInterval(() => setElapsed((s) => s + 1), 1000);
+    const interval = setInterval(() => {
+      setElapsed((s) => s + 1);
+      setQuestionElapsed((s) => s + 1);
+    }, 1000);
     return () => clearInterval(interval);
   }, [isComplete]);
+
+  // Reset question timer when currentQuestion changes
+  useEffect(() => {
+    setQuestionElapsed(0);
+  }, [currentQuestion]);
 
   // Prevent accidental exit
   useEffect(() => {
@@ -101,7 +110,7 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
         setIsComplete(true);
         router.push(`/session/${initialSession.id}/results`);
       }
-    } catch (err) {
+    } catch {
       setError("Error al finalizar sesión");
     } finally {
       setIsFinishing(false);
@@ -118,7 +127,7 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
       if (res.ok) {
         router.push("/dashboard");
       }
-    } catch (err) {
+    } catch {
       setError("Error al descartar sesión");
     } finally {
       setIsFinishing(false);
@@ -273,6 +282,21 @@ export function ChatContainer({ initialSession, initialMessages }: ChatContainer
             <Clock className="h-3.5 w-3.5" />
             {formatTime(elapsed)}
           </div>
+
+          {/* Per-Question Timer */}
+          {initialSession.timerEnabled && !isComplete && (
+            <div className={clsx(
+              "flex flex-col items-center justify-center rounded-lg border px-3 py-1 transition-all",
+              (messages.findLast(m => m.messageType === 'question')?.timeEstimate || 180) - questionElapsed < 30
+                ? "border-red-500/50 bg-red-500/10 text-red-400 animate-pulse"
+                : "border-border-subtle bg-surface-highest/50 text-text-primary"
+            )}>
+              <span className="text-[0.6rem] font-bold uppercase tracking-tighter opacity-60">Tiempo Pregunta</span>
+              <span className="font-mono text-sm font-black">
+                {formatTime(Math.max(0, (messages.findLast(m => m.messageType === 'question')?.timeEstimate || 180) - questionElapsed))}
+              </span>
+            </div>
+          )}
 
           {/* Progress Indicator */}
           <div className="flex flex-col items-end gap-1.5 min-w-[120px]">

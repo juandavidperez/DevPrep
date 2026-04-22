@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { clsx } from "clsx";
+import { MINUTES_PER_QUESTION } from "@/lib/questions/constants";
 
 type TechItem = { id: string; category: string; icon: LucideIcon };
 
@@ -61,14 +62,6 @@ const MODE_TO_CATEGORY: Record<string, string> = {
   system_design: "system_design",
   live_coding:  "coding",
   mixed:        "mixed",
-};
-
-const MINUTES_PER_QUESTION: Record<string, Record<string, number>> = {
-  technical:     { junior: 3, mid: 4, senior: 5 },
-  coding:        { junior: 6, mid: 8, senior: 10 },
-  system_design: { junior: 8, mid: 10, senior: 12 },
-  behavioral:    { junior: 2, mid: 3, senior: 3 },
-  mixed:         { junior: 4, mid: 5, senior: 6 },
 };
 
 const MODALITIES = [
@@ -140,7 +133,7 @@ const ROADMAPS: {
     labelKey: "roadmapFridayLabel",
     tagKey: "roadmapFridayTag",
     color: "from-[#7C3AED]/10 to-transparent",
-    config: { tech: null, interviewMode: "mixed", difficulty: "mid", language: "en", durationMinutes: 30, questionCountOverride: 10 },
+    config: { tech: null, interviewMode: "mixed", difficulty: "mid", language: "en", durationMinutes: 30, questionCountOverride: 10, feedbackMode: "silent", timerEnabled: true },
   },
 ];
 
@@ -178,6 +171,8 @@ export function SessionConfigForm({ settings }: SessionConfigFormProps) {
   const [interviewMode, setInterviewMode] = useState("technical");
   const [activeRoadmap, setActiveRoadmap] = useState<string | null>(null);
   const [questionCountOverride, setQuestionCountOverride] = useState<number | null>(null);
+  const [feedbackMode, setFeedbackMode] = useState("live");
+  const [timerEnabled, setTimerEnabled] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -192,6 +187,8 @@ export function SessionConfigForm({ settings }: SessionConfigFormProps) {
     setDurationMinutes(dur);
     setActiveRoadmap(roadmap.id);
     setQuestionCountOverride(qOverride ?? null);
+    if (roadmap.config.feedbackMode) setFeedbackMode(roadmap.config.feedbackMode);
+    if (roadmap.config.timerEnabled !== undefined) setTimerEnabled(roadmap.config.timerEnabled);
   };
 
   const clearRoadmap = () => {
@@ -213,6 +210,8 @@ export function SessionConfigForm({ settings }: SessionConfigFormProps) {
           totalQuestions: estimatedQuestions,
           language,
           outputModality,
+          feedbackMode,
+          timerEnabled,
           targetStack: selectedTech ? [selectedTech.id.toLowerCase().replace(".", "")] : [],
         }),
       });
@@ -525,6 +524,57 @@ export function SessionConfigForm({ settings }: SessionConfigFormProps) {
               <p className="text-xs text-text-secondary leading-relaxed opacity-60 font-medium italic">
                 {t("engineSub")}
               </p>
+            </div>
+          </div>
+
+          {/* Card 5.1: Simulation & Timer (New) */}
+          <div className="md:col-span-12 bg-surface-container p-7 rounded-xl ghost-border flex flex-col md:flex-row gap-8 group hover:bg-surface-highest transition-colors duration-300">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center">
+                  <CheckCircle2 className="h-5 w-5 text-primary" />
+                </div>
+                <h3 className="text-lg font-bold text-white tracking-tight">Modo de Evaluación</h3>
+              </div>
+              <div className="flex flex-wrap gap-4">
+                <button
+                  type="button"
+                  onClick={() => setFeedbackMode(feedbackMode === "silent" ? "live" : "silent")}
+                  className={clsx(
+                    "flex flex-1 items-center justify-between p-4 rounded-xl border transition-all text-left",
+                    feedbackMode === "silent"
+                      ? "bg-primary/10 border-primary/50 shadow-[0_0_20px_rgba(210,187,255,0.1)]"
+                      : "bg-white/5 border-white/5 hover:bg-white/10"
+                  )}
+                >
+                  <div className="flex flex-col">
+                    <span className={clsx("text-sm font-bold", feedbackMode === "silent" ? "text-primary" : "text-white/70")}>Modo Simulación (Silencioso)</span>
+                    <span className="text-[10px] text-white/30">Sin feedback hasta el final de la sesión</span>
+                  </div>
+                  <div className={clsx("h-5 w-5 rounded-md border flex items-center justify-center transition-all", feedbackMode === "silent" ? "bg-primary border-primary" : "border-white/20")}>
+                    {feedbackMode === "silent" && <CheckCircle2 className="h-3 w-3 text-white" />}
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setTimerEnabled(!timerEnabled)}
+                  className={clsx(
+                    "flex flex-1 items-center justify-between p-4 rounded-xl border transition-all text-left",
+                    timerEnabled
+                      ? "bg-primary/10 border-primary/50 shadow-[0_0_20px_rgba(210,187,255,0.1)]"
+                      : "bg-white/5 border-white/5 hover:bg-white/10"
+                  )}
+                >
+                  <div className="flex flex-col">
+                    <span className={clsx("text-sm font-bold", timerEnabled ? "text-primary" : "text-white/70")}>Timer por Pregunta</span>
+                    <span className="text-[10px] text-white/30">Presión de tiempo realista según nivel</span>
+                  </div>
+                  <div className={clsx("h-5 w-5 rounded-md border flex items-center justify-center transition-all", timerEnabled ? "bg-primary border-primary" : "border-white/20")}>
+                    {timerEnabled && <CheckCircle2 className="h-3 w-3 text-white" />}
+                  </div>
+                </button>
+              </div>
             </div>
           </div>
 

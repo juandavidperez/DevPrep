@@ -47,6 +47,7 @@ export default async function SessionPage({
     completedAt: interviewSession.completedAt?.toISOString() ?? null,
     score: interviewSession.score,
     feedbackMode: interviewSession.feedbackMode,
+    timerEnabled: interviewSession.timerEnabled,
     inputModality: interviewSession.inputModality ?? "text",
     language: interviewSession.language ?? "en",
   };
@@ -64,6 +65,7 @@ export default async function SessionPage({
     modelAnswer: m.modelAnswer,
     createdAt: m.createdAt.toISOString(),
     bookmarkId: bookmark?.id ?? null,
+    timeEstimate: m.timeEstimate,
   }));
 
   return <ChatContainer initialSession={sessionData} initialMessages={messages} />;
