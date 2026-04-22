@@ -1,5 +1,5 @@
 // src/types/analytics.ts
-export const VALID_RANGES = ["5s", "10s", "20s", "7d", "30d", "90d", "all"] as const;
+export const VALID_RANGES = ["2s", "5s", "10s", "20s", "7d", "30d", "90d", "all"] as const;
 export type AnalyticsRange = typeof VALID_RANGES[number];
 
 export interface AnalyticsData {

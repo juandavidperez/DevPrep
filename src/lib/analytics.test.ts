@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Mock prisma before importing the module under test
@@ -16,7 +17,7 @@ import { getAnalyticsData } from "./analytics";
 import { prisma } from "@/lib/db";
 import { subDays } from "date-fns";
 
-const mockPrisma = vi.mocked(prisma);
+const mockPrisma = prisma as any;
 
 describe("getAnalyticsData", () => {
   const userId = "test-user-123";

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 // Mock prisma before importing the module under test
@@ -23,7 +24,7 @@ vi.mock('@/lib/ai', () => ({
 import { updateQuestionBankScore, selectNextQuestion } from '../selector'
 import { prisma } from '@/lib/db'
 
-const mockPrisma = vi.mocked(prisma)
+const mockPrisma = prisma as any;
 
 // ── updateQuestionBankScore ────────────────────────────────────────────────────
 
