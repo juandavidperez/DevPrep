@@ -26,7 +26,15 @@ Users must be able to see if they're actually improving — score trends and cat
 
 ### Active
 
-- [ ] *No active requirements — Milestone 1.1 Complete*
+- [ ] **M5**: Pantalla de resultados con desglose por criterio (correctness, depth, etc.)
+- [ ] **M6**: Resumen de criterios más débiles en dashboard (agregación semanal)
+- [ ] **M7**: Funcionalidad para descartar o archivar sesiones incompletas del historial
+- [ ] **M8**: Timer opcional por pregunta visible durante la respuesta
+- [ ] **N1**: Exportación de sesión a Markdown para NotebookLM
+- [ ] **N2**: Modo "Examen Silencioso" más prominente en la configuración de sesión
+- [ ] **N3**: Corrección de lógica de racha (streak) basada en sesiones completadas
+- [ ] **N4**: Inclusión de tecnología/stack en cards de sesiones recientes
+- [ ] **N5**: Feedback visual y claridad en la búsqueda de sesiones
 
 ### Out of Scope
 
