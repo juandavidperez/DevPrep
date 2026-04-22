@@ -43,10 +43,11 @@ describe("getAnalyticsData", () => {
       .mockResolvedValueOnce([
         { id: "s1", createdAt: today, completedAt: today, score: 80, category: "technical", isDemo: false },
         { id: "s2", createdAt: today, completedAt: today, score: 80, category: "coding", isDemo: false },
-        { id: "s3", createdAt: tenDaysAgo, completedAt: tenDaysAgo, score: 50, category: "technical", isDemo: false },
       ] as unknown)
       .mockResolvedValueOnce([
-        { completedAt: today },
+        { id: "s1", createdAt: today, completedAt: today, score: 80, category: "technical", isDemo: false },
+        { id: "s2", createdAt: today, completedAt: today, score: 80, category: "technical", isDemo: false },
+        { id: "s3", createdAt: tenDaysAgo, completedAt: tenDaysAgo, score: 80, category: "technical", isDemo: false },
       ] as unknown);
 
     mockPrisma.sessionMessage.findMany.mockResolvedValue([
@@ -62,7 +63,7 @@ describe("getAnalyticsData", () => {
       }
     ] as unknown);
 
-    const result = await getAnalyticsData(userId, "7d");
+    const result = await getAnalyticsData(userId, "2s");
 
     expect(result.overview.totalSessions).toBe(2);
     expect(result.overview.totalSessionsDelta).toBe(100);
@@ -76,16 +77,17 @@ describe("getAnalyticsData", () => {
   });
 
   it("calculates current streak correctly", async () => {
-    const today = new Date();
+    const today = new Date("2024-04-22T12:00:00Z");
+    vi.setSystemTime(today);
+
     const yesterday = subDays(today, 1);
     const twoDaysAgo = subDays(today, 2);
 
     mockPrisma.session.findMany
-      .mockResolvedValueOnce([])
       .mockResolvedValueOnce([
-        { completedAt: today },
-        { completedAt: yesterday },
-        { completedAt: twoDaysAgo },
+        { id: "s1", createdAt: today, completedAt: today, score: 80, category: "technical", isDemo: false },
+        { id: "s2", createdAt: yesterday, completedAt: yesterday, score: 80, category: "technical", isDemo: false },
+        { id: "s3", createdAt: twoDaysAgo, completedAt: twoDaysAgo, score: 80, category: "technical", isDemo: false },
       ] as unknown);
 
     mockPrisma.sessionMessage.findMany.mockResolvedValue([]);
@@ -101,11 +103,11 @@ describe("getAnalyticsData", () => {
       .mockResolvedValueOnce([
         { id: "s1", createdAt: today, completedAt: today, score: 80, category: "technical", isDemo: false },
         { id: "s2", createdAt: seventyDaysAgo, completedAt: seventyDaysAgo, score: 60, category: "technical", isDemo: false },
-      ] as unknown)
-      .mockResolvedValueOnce([]);
+      ] as unknown);
 
     mockPrisma.sessionMessage.findMany.mockResolvedValue([]);
     const result = await getAnalyticsData(userId, "all");
+    vi.useRealTimers();
     expect(result.trend.length).toBeGreaterThanOrEqual(1);
   });
 });

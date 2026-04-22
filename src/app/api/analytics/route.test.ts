@@ -48,7 +48,7 @@ describe("Analytics API Route (GET /api/analytics)", () => {
   it("returns 400 if range is invalid", async () => {
     vi.mocked(auth).mockResolvedValue({ user: { id: userId } } as unknown as Session);
 
-    const req = createRequest("http://localhost/api/analytics?range=90d");
+    const req = createRequest("http://localhost/api/analytics?range=99d");
     const response = await GET(req);
 
     expect(response.status).toBe(400);

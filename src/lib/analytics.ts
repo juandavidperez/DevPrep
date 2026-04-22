@@ -5,7 +5,8 @@ import {
   differenceInDays, 
   startOfWeek, 
   startOfMonth,
-  startOfDay
+  startOfDay,
+  subDays
 } from "date-fns";
 
 export function calculateStreak(dates: Date[]): number {
@@ -130,8 +131,13 @@ export async function getGlobalStats(userId: string) {
 export async function getAnalyticsData(userId: string, range: AnalyticsRange): Promise<AnalyticsData> {
   const now = new Date();
   let limit: number | undefined;
+  let startDate: Date | undefined;
+
   if (range.endsWith("s")) {
     limit = parseInt(range.slice(0, -1));
+  } else if (range.endsWith("d")) {
+    const days = parseInt(range.slice(0, -1));
+    startDate = subDays(now, days);
   }
 
   // 1. Fetch Sessions
@@ -141,6 +147,7 @@ export async function getAnalyticsData(userId: string, range: AnalyticsRange): P
       isDemo: false,
       completedAt: { not: null },
       score: { not: null },
+      ...(startDate ? { createdAt: { gte: startDate } } : {}),
     },
     orderBy: { createdAt: "desc" },
     take: limit,
