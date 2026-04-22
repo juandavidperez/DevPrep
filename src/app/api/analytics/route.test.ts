@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { GET } from "./route";
 import { auth } from "@/lib/auth";
 import { getAnalyticsData } from "@/lib/analytics";
-import { NextResponse } from "next/server";
+import type { Session } from "next-auth";
 
 // Mock auth
 vi.mock("@/lib/auth", () => ({
@@ -35,7 +35,7 @@ describe("Analytics API Route (GET /api/analytics)", () => {
   });
 
   it("returns 400 if range is missing", async () => {
-    vi.mocked(auth).mockResolvedValue({ user: { id: userId } } as any);
+    vi.mocked(auth).mockResolvedValue({ user: { id: userId } } as unknown as Session);
 
     const req = createRequest("http://localhost/api/analytics");
     const response = await GET(req);
@@ -46,7 +46,7 @@ describe("Analytics API Route (GET /api/analytics)", () => {
   });
 
   it("returns 400 if range is invalid", async () => {
-    vi.mocked(auth).mockResolvedValue({ user: { id: userId } } as any);
+    vi.mocked(auth).mockResolvedValue({ user: { id: userId } } as unknown as Session);
 
     const req = createRequest("http://localhost/api/analytics?range=90d");
     const response = await GET(req);
@@ -58,8 +58,8 @@ describe("Analytics API Route (GET /api/analytics)", () => {
 
   it("returns 200 and data if authenticated and range is valid", async () => {
     const mockData = { overview: { totalSessions: 5 }, trend: [], topics: {}, byCategory: [] };
-    vi.mocked(auth).mockResolvedValue({ user: { id: userId } } as any);
-    vi.mocked(getAnalyticsData).mockResolvedValue(mockData as any);
+    vi.mocked(auth).mockResolvedValue({ user: { id: userId } } as unknown as Session);
+    vi.mocked(getAnalyticsData).mockResolvedValue(mockData as unknown);
 
     const req = createRequest("http://localhost/api/analytics?range=30d");
     const response = await GET(req);
@@ -71,7 +71,7 @@ describe("Analytics API Route (GET /api/analytics)", () => {
   });
 
   it("returns 500 if data fetching fails", async () => {
-    vi.mocked(auth).mockResolvedValue({ user: { id: userId } } as any);
+    vi.mocked(auth).mockResolvedValue({ user: { id: userId } } as unknown as Session);
     vi.mocked(getAnalyticsData).mockRejectedValue(new Error("DB error"));
 
     const req = createRequest("http://localhost/api/analytics?range=all");

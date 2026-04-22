@@ -10,14 +10,14 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { format, parseISO } from "date-fns";
+import { parseISO } from "date-fns";
 import { useFormatter } from "next-intl";
 
 interface ScoreTrendChartProps {
   data: { date: string; avgScore: number | null }[];
 }
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: { value: number }[]; label?: string }) => {
   const format = useFormatter();
   
   if (active && payload && payload.length) {

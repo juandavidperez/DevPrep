@@ -7,7 +7,6 @@ import { AnalyticsKPIs } from "@/components/analytics/AnalyticsKPIs";
 import { AnalyticsSkeleton } from "@/components/analytics/AnalyticsSkeleton";
 import { DashboardTopbar } from "@/components/DashboardTopbar";
 import { AnalyticsRange } from "@/types/analytics";
-import { getTranslations } from "next-intl/server";
 
 export default async function AnalyticsPage({
   searchParams,
@@ -19,7 +18,6 @@ export default async function AnalyticsPage({
 
   const { range } = await searchParams;
   const validatedRange = (range as AnalyticsRange) || "10s";
-  const t = await getTranslations("Navbar");
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-text-primary">

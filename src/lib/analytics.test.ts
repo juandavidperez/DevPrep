@@ -44,10 +44,10 @@ describe("getAnalyticsData", () => {
         { id: "s1", createdAt: today, completedAt: today, score: 80, category: "technical", isDemo: false },
         { id: "s2", createdAt: today, completedAt: today, score: 80, category: "coding", isDemo: false },
         { id: "s3", createdAt: tenDaysAgo, completedAt: tenDaysAgo, score: 50, category: "technical", isDemo: false },
-      ] as any)
+      ] as unknown)
       .mockResolvedValueOnce([
         { completedAt: today },
-      ] as any);
+      ] as unknown);
 
     mockPrisma.sessionMessage.findMany.mockResolvedValue([
       { 
@@ -60,7 +60,7 @@ describe("getAnalyticsData", () => {
         score: 30,
         session: { category: "coding" }
       }
-    ] as any);
+    ] as unknown);
 
     const result = await getAnalyticsData(userId, "7d");
 
@@ -86,7 +86,7 @@ describe("getAnalyticsData", () => {
         { completedAt: today },
         { completedAt: yesterday },
         { completedAt: twoDaysAgo },
-      ] as any);
+      ] as unknown);
 
     mockPrisma.sessionMessage.findMany.mockResolvedValue([]);
     const result = await getAnalyticsData(userId, "30d");
@@ -101,7 +101,7 @@ describe("getAnalyticsData", () => {
       .mockResolvedValueOnce([
         { id: "s1", createdAt: today, completedAt: today, score: 80, category: "technical", isDemo: false },
         { id: "s2", createdAt: seventyDaysAgo, completedAt: seventyDaysAgo, score: 60, category: "technical", isDemo: false },
-      ] as any)
+      ] as unknown)
       .mockResolvedValueOnce([]);
 
     mockPrisma.sessionMessage.findMany.mockResolvedValue([]);
