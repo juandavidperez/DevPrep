@@ -272,21 +272,21 @@ export function SessionList({
       {isConfirming && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
           <div className="w-full max-w-sm rounded-xl border border-white/10 bg-surface-container p-6 shadow-2xl">
-            <h3 className="text-lg font-bold text-white mb-2">¿Eliminar sesión?</h3>
-            <p className="text-sm text-white/60 mb-6">Esta acción no se puede deshacer. Se borrarán todos los mensajes y feedback de esta sesión.</p>
+            <h3 className="text-lg font-bold text-white mb-2">{t("deleteConfirmTitle")}</h3>
+            <p className="text-sm text-white/60 mb-6">{t("deleteConfirmDesc")}</p>
             <div className="flex gap-3">
               <button
                 onClick={() => setIsConfirming(null)}
                 className="flex-1 rounded-lg border border-white/10 px-4 py-2 text-sm font-bold text-white/80 transition-all hover:bg-white/5"
               >
-                Cancelar
+                {t("deleteCancel")}
               </button>
               <button
                 onClick={() => handleDelete(isConfirming)}
                 disabled={isDeleting === isConfirming}
                 className="flex-1 rounded-lg bg-red-500 px-4 py-2 text-sm font-bold text-white transition-all hover:bg-red-600 disabled:opacity-50"
               >
-                {isDeleting === isConfirming ? "Eliminando..." : "Eliminar"}
+                {isDeleting === isConfirming ? t("deleting") : t("deleteConfirm")}
               </button>
             </div>
           </div>
