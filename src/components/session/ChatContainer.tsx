@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { clsx } from "clsx";
 import { Loader2, ArrowLeft, Clock } from "lucide-react";
 import { Link } from "@/navigation";
 import { MessageBubble } from "./MessageBubble";

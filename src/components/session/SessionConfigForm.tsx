@@ -85,6 +85,8 @@ interface RoadmapConfig {
   language: string;
   durationMinutes: number;
   questionCountOverride?: number;
+  feedbackMode?: string;
+  timerEnabled?: boolean;
 }
 
 const ROADMAPS: {

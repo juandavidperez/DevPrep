@@ -24,7 +24,7 @@ const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?:
     let dateLabel = label;
     try {
       // Use next-intl formatter for localized date
-      dateLabel = format.dateTime(parseISO(label), {
+      dateLabel = format.dateTime(parseISO(label || ""), {
         month: "short",
         day: "numeric",
         year: "numeric",

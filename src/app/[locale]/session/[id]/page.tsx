@@ -44,7 +44,7 @@ export default async function SessionPage({
     category: interviewSession.category,
     difficulty: interviewSession.difficulty,
     totalQuestions: interviewSession.totalQuestions,
-    completedAt: interviewSession.completedAt?.toISOString() ?? null,
+    completedAt: null,
     score: interviewSession.score,
     feedbackMode: interviewSession.feedbackMode,
     timerEnabled: interviewSession.timerEnabled,

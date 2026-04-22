@@ -326,6 +326,7 @@ export async function getAnalyticsData(userId: string, range: AnalyticsRange): P
   const weak = allTopics.filter((t) => t.avgScore < 60 && t.sampleCount >= 2).sort((a, b) => a.avgScore - b.avgScore);
   const strong = allTopics.filter((t) => t.avgScore >= 75 && t.sampleCount >= 2).sort((a, b) => b.avgScore - a.avgScore);
 
+  const uniqueDates = sessions.map((s) => s.completedAt as Date);
   overview.currentStreak = calculateStreak(uniqueDates);
 
   return {
