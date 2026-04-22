@@ -11,22 +11,94 @@ import { DashboardTopbar } from "@/components/DashboardTopbar";
 import { DashboardStats } from "@/components/DashboardStats";
 
 // ── Course cards ───────────────────────────────────────────────────────────────
-const COURSE_CARDS = [
+// ── Course mapping ─────────────────────────────────────────────────────────────
+const CRITERIA_PRACTICE_MAP: Record<string, { title: string, desc: string, tag: string, image: string }> = {
+  // Technical
+  correctness: {
+    title: "Fundamentos Técnicos",
+    desc: "Refuerza los conceptos base y evita errores conceptuales comunes.",
+    tag: "FUNDAMENTOS",
+    image: "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800&auto=format&fit=crop"
+  },
+  depth: {
+    title: "Profundidad Técnica",
+    desc: "Domina el 'bajo el capó' y el 'por qué' de las tecnologías que usas.",
+    tag: "AVANZADO",
+    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop"
+  },
+  practical_examples: {
+    title: "Aplicación Real",
+    desc: "Aprende a conectar teoría con escenarios reales y casos de uso.",
+    tag: "ESCENARIOS",
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop"
+  },
+  clarity: {
+    title: "Comunicación Técnica",
+    desc: "Estructura tus explicaciones para que sean claras y profesionales.",
+    tag: "SOFT SKILLS",
+    image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&auto=format&fit=crop"
+  },
+  // Coding
+  time_complexity: {
+    title: "Algoritmos y Eficiencia",
+    desc: "Mejora tu análisis de Big O y optimiza el rendimiento de tu código.",
+    tag: "LÓGICA",
+    image: "https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=800&auto=format&fit=crop"
+  },
+  readability: {
+    title: "Clean Code",
+    desc: "Escribe código que otros puedan entender fácilmente.",
+    tag: "MEJORES PRÁCTICAS",
+    image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&auto=format&fit=crop"
+  },
+  edge_cases: {
+    title: "Robustez de Código",
+    desc: "Identifica y maneja casos borde antes de que rompan tu app.",
+    tag: "CALIDAD",
+    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&auto=format&fit=crop"
+  },
+  // System Design
+  scalability: {
+    title: "Escalabilidad Masiva",
+    desc: "Diseña sistemas que aguanten millones de usuarios sin colapsar.",
+    tag: "ARQUITECTURA",
+    image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&auto=format&fit=crop"
+  },
+  trade_offs: {
+    title: "Toma de Decisiones",
+    desc: "Entiende los compromisos entre diferentes arquitecturas.",
+    tag: "ESTRATEGIA",
+    image: "https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?w=800&auto=format&fit=crop"
+  },
+  // Behavioral
+  star_structure: {
+    title: "Método STAR",
+    desc: "Domina la estructura Situación, Tarea, Acción y Resultado.",
+    tag: "NARRATIVA",
+    image: "https://images.unsplash.com/photo-1454165833767-027ffea7025c?w=800&auto=format&fit=crop"
+  },
+  self_awareness: {
+    title: "Autoconciencia",
+    desc: "Demuestra cómo aprendes de tus errores y evolucionas.",
+    tag: "MINDSET",
+    image: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&auto=format&fit=crop"
+  },
+};
+
+const DEFAULT_PRACTICE = [
   {
-    titleKey: "course.sql.title",
-    descKey: "course.sql.desc",
-    tagKey: "course.sql.tag",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCApMWdIT50_qgBenziFXqNtiZX1M6hJ6yzTlz7QSMB2Kish6YwDsbmDT4VGbgWWo_COEmLVq3YZbLE3zCYVqNLtFhgFqRguOOn_IUIZYkfo6T_5ooHNgUFVtUKz3E84k_BrXtscOraeJbiwHNJwA4O4ep2V-K4UJiWjZwXD3ZEdhMMI6n6JG20ObtErFSjZp0jN-YziUMuMpEl1RIni-2Ua20_VHhwmgcS-guyTgsUj2awlzRc9KzMIAivstlYnI9QqrlI4NlGVUIq",
+    title: "Preparación SQL Avanzado",
+    desc: "Domina queries complejas, optimización y diseño de esquemas.",
+    tag: "DATABASES",
+    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCApMWdIT50_qgBenziFXqNtiZX1M6hJ6yzTlz7QSMB2Kish6YwDsbmDT4VGbgWWo_COEmLVq3YZbLE3zCYVqNLtFhgFqRguOOn_IUIZYkfo6T_5ooHNgUFVtUKz3E84k_BrXtscOraeJbiwHNJwA4O4ep2V-K4UJiWjZwXD3ZEdhMMI6n6JG20ObtErFSjZp0jN-YziUMuMpEl1RIni-2Ua20_VHhwmgcS-guyTgsUj2awlzRc9KzMIAivstlYnI9QqrlI4NlGVUIq",
   },
   {
-    titleKey: "course.design.title",
-    descKey: "course.design.desc",
-    tagKey: "course.design.tag",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCdsUfheqNX1VLjaxcUZvsAnJtvJmcnLjPKf-thLbLHeN5R5pw1cWs0ThwMKRygMBUaLvsxvvY8do33HqTiVPX_g6hi9DFBhI_hIjM3N-oQwskCGlThbWHvfEOHaiDGhx3-nOiEOuRC9h_2qTIybhuox6a4NiYQSuNUYWHEG5gQRachODGd1DCtJadv4RsSC3WMEkdsCuJZdifY6VNQcXunkE2P_7w1DJboqeSR_TVUYWCWiy2FAdcMlLAADohXE6lW5bAVIaaLbJiN",
+    title: "Diseño de Sistemas",
+    desc: "Aprende a diseñar arquitecturas escalables y resilientes.",
+    tag: "ARQUITECTURA",
+    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCdsUfheqNX1VLjaxcUZvsAnJtvJmcnLjPKf-thLbLHeN5R5pw1cWs0ThwMKRygMBUaLvsxvvY8do33HqTiVPX_g6hi9DFBhI_hIjM3N-oQwskCGlThbWHvfEOHaiDGhx3-nOiEOuRC9h_2qTIybhuox6a4NiYQSuNUYWHEG5gQRachODGd1DCtJadv4RsSC3WMEkdsCuJZdifY6VNQcXunkE2P_7w1DJboqeSR_TVUYWCWiy2FAdcMlLAADohXE6lW5bAVIaaLbJiN",
   },
-] as const;
+];
 
 
 // ── Analytics sub-components ──────────────────────────────────────────────────
@@ -48,9 +120,11 @@ const CATEGORY_LABEL: Record<string, string> = {
 function ScoreTrendChart({
   sessions,
   emptyLabel,
+  locale,
 }: {
   sessions: Array<{ score: number | null; category: string; completedAt: Date | string | null }>;
   emptyLabel: string;
+  locale: string;
 }) {
   const data = sessions
     .filter((s) => s.completedAt && s.score !== null)
@@ -84,8 +158,8 @@ function ScoreTrendChart({
               style={{ height: `${Math.max(score, 4)}%` }}
               className={`w-full rounded-t-sm transition-colors ${barColor}`}
             />
-            <span className="text-[9px] text-text-secondary">
-              {CATEGORY_SHORT[s.category] ?? "?"}
+            <span className="text-[10px] text-text-secondary font-mono mt-1">
+              {new Date(s.completedAt!).toLocaleDateString(locale === "es" ? "es-ES" : "en-US", { day: "numeric", month: "short" })}
             </span>
           </div>
         );
@@ -381,29 +455,34 @@ export default async function DashboardPage({
               )}
             </div>
 
-            {/* ── Course cards ───────────────────────────────────────────────── */}
+            {/* ── Dynamic Suggested Practice ───────────────────────────────────────── */}
             <div className="mt-8">
               <h2 className="mb-4 text-lg font-semibold">{t("suggestedPractice")}</h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {COURSE_CARDS.map((card) => (
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {(weakCriteria && weakCriteria.length > 0
+                  ? weakCriteria
+                      .map((c: { key: string }) => CRITERIA_PRACTICE_MAP[c.key])
+                      .filter(Boolean)
+                  : DEFAULT_PRACTICE
+                ).map((card, idx) => (
                   <Link
-                    key={card.titleKey}
+                    key={`${card.title}-${idx}`}
                     href="/session/new"
                     className="group relative flex h-48 flex-col justify-end overflow-hidden rounded-xl border border-border-subtle shadow-[0_20px_40px_rgba(0,0,0,0.4)] transition hover:border-primary/30"
                   >
                     <Image
                       src={card.image}
-                      alt={t(card.titleKey)}
+                      alt={card.title}
                       fill
                       className="object-cover transition duration-300 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
                     <div className="relative z-10 p-4">
                       <span className="rounded-full border border-white/20 bg-black/30 px-2 py-0.5 text-[10px] font-medium text-white/70 backdrop-blur-sm">
-                        {t(card.tagKey)}
+                        {card.tag}
                       </span>
-                      <p className="mt-2 text-sm font-semibold text-white">{t(card.titleKey)}</p>
-                      <p className="mt-0.5 text-xs leading-relaxed text-white/60">{t(card.descKey)}</p>
+                      <p className="mt-2 text-sm font-semibold text-white">{card.title}</p>
+                      <p className="mt-0.5 text-xs leading-relaxed text-white/60">{card.desc}</p>
                       <div className="mt-2 flex items-center gap-1 text-xs text-primary opacity-0 transition group-hover:opacity-100">
                         {t("practice")} <ArrowRight className="h-3 w-3" />
                       </div>
@@ -431,6 +510,7 @@ export default async function DashboardPage({
                 <ScoreTrendChart
                   sessions={trendSessions}
                   emptyLabel={t("analytics.noData")}
+                  locale={locale}
                 />
               </div>
 

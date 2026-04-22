@@ -112,7 +112,6 @@ export async function getGlobalStats(userId: string) {
       key,
       avg: Math.round(data.total / data.count)
     }))
-    .filter(c => c.avg < 70) // only include weak ones
     .sort((a, b) => a.avg - b.avg)
     .slice(0, 3);
 
