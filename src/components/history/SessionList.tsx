@@ -3,10 +3,11 @@
 import { Link } from "@/navigation";
 import { useTranslations } from "next-intl";
 import { clsx } from "clsx";
-import { Clock, PlayCircle } from "lucide-react";
+import { Clock, PlayCircle, Trash2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { es, enUS } from "date-fns/locale";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 
 interface SessionItem {
   id: string;
@@ -17,6 +18,7 @@ interface SessionItem {
   completedAt: string | null;
   createdAt: string;
   duration: number | null;
+  targetStack: string[];
   snippet: string | null;
   answeredQuestions: number;
 }
@@ -56,6 +58,9 @@ export function SessionList({
 }: Props) {
   const t = useTranslations("History");
   const { locale } = useParams();
+  const router = useRouter();
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const [isConfirming, setIsConfirming] = useState<string | null>(null);
   const filters = { category, difficulty, status, sort };
   const dateLocale = locale === "es" ? es : enUS;
 
@@ -73,6 +78,23 @@ export function SessionList({
       </div>
     );
   }
+
+  const handleDelete = async (id: string) => {
+    setIsDeleting(id);
+    try {
+      const res = await fetch(`/api/sessions/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        router.refresh();
+      } else {
+        alert("Failed to delete session");
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsDeleting(null);
+      setIsConfirming(null);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -93,7 +115,9 @@ export function SessionList({
               <div className="flex items-start justify-between z-10">
                 <div className="flex items-center gap-2">
                   <span className="rounded-sm border border-white/5 bg-surface-highest px-2 py-1 font-mono text-[0.6875rem] font-bold uppercase tracking-widest text-primary">
-                    {s.category.replace(/_/g, " ")} — {s.difficulty}
+                    {s.category.replace(/_/g, " ")} 
+                    {s.targetStack.length > 0 && ` · ${s.targetStack.join(", ")}`} 
+                    — {s.difficulty}
                   </span>
                   {!isComplete && (
                     <span className="flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 font-mono text-[0.625rem] font-bold uppercase tracking-widest text-emerald-400">
@@ -105,6 +129,16 @@ export function SessionList({
                 <span className="font-mono text-[0.6875rem] font-bold uppercase tracking-tighter text-white/40">
                   {formatDistanceToNow(new Date(s.createdAt), { addSuffix: true, locale: dateLocale })}
                 </span>
+                
+                {/* Delete button (only visible on hover or mobile) */}
+                <button
+                  onClick={() => setIsConfirming(s.id)}
+                  disabled={isDeleting === s.id}
+                  className="p-2 text-white/20 transition-all hover:text-red-400 disabled:opacity-50"
+                  title={t("deleteSession")}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
               </div>
 
               {/* Bottom row: score | meta + snippet | CTA */}
@@ -233,6 +267,30 @@ export function SessionList({
             )}
           </div>
         </section>
+      )}
+      {/* Delete Confirmation Modal */}
+      {isConfirming && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-xl border border-white/10 bg-surface-container p-6 shadow-2xl">
+            <h3 className="text-lg font-bold text-white mb-2">¿Eliminar sesión?</h3>
+            <p className="text-sm text-white/60 mb-6">Esta acción no se puede deshacer. Se borrarán todos los mensajes y feedback de esta sesión.</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setIsConfirming(null)}
+                className="flex-1 rounded-lg border border-white/10 px-4 py-2 text-sm font-bold text-white/80 transition-all hover:bg-white/5"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => handleDelete(isConfirming)}
+                disabled={isDeleting === isConfirming}
+                className="flex-1 rounded-lg bg-red-500 px-4 py-2 text-sm font-bold text-white transition-all hover:bg-red-600 disabled:opacity-50"
+              >
+                {isDeleting === isConfirming ? "Eliminando..." : "Eliminar"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { clsx } from "clsx";
+import { Search } from "lucide-react";
 
 const CATEGORIES = [
   { value: "all", tKey: "all" },
@@ -39,9 +40,10 @@ interface Props {
   difficulty: string;
   status: string;
   sort: string;
+  query: string;
 }
 
-export function HistoryFilters({ category, difficulty, status, sort }: Props) {
+export function HistoryFilters({ category, difficulty, status, sort, query }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const t = useTranslations("History");
@@ -61,8 +63,33 @@ export function HistoryFilters({ category, difficulty, status, sort }: Props) {
     [router, searchParams]
   );
 
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const q = formData.get("query") as string;
+    updateParam("query", q || "all");
+  };
+
   return (
     <div className="space-y-4">
+      {/* Search Bar */}
+      <form onSubmit={handleSearch} className="relative w-full">
+        <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/30" />
+        <input
+          name="query"
+          type="text"
+          defaultValue={query === "all" ? "" : query}
+          placeholder={t("searchPlaceholder")}
+          className="w-full rounded-xl border border-white/5 bg-surface-highest/30 py-3 pl-11 pr-4 text-sm font-medium text-white outline-none transition-all placeholder:text-white/20 focus:border-primary/50 focus:bg-surface-highest/50"
+        />
+        <button
+          type="submit"
+          className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg bg-surface-highest px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-white/40 transition-all hover:bg-primary/20 hover:text-primary"
+        >
+          {t("searchButton")}
+        </button>
+      </form>
+
       {/* Category Row */}
       <div className="flex flex-wrap items-center gap-3">
         <span className="text-[0.6875rem] font-mono font-medium text-white/40 uppercase tracking-widest w-20">

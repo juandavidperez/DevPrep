@@ -15,6 +15,7 @@ interface Props {
     status?: string;
     sort?: string;
     page?: string;
+    query?: string;
   }>;
 }
 
@@ -32,6 +33,7 @@ export default async function HistoryPage({ searchParams }: Props) {
   const difficulty = params.difficulty || "all";
   const status = params.status || "all";
   const sort = params.sort || "newest";
+  const query = params.query || "all";
 
   // Build where clause
   const where: Prisma.SessionWhereInput = { userId: session.user.id };
@@ -39,6 +41,14 @@ export default async function HistoryPage({ searchParams }: Props) {
   if (difficulty !== "all") where.difficulty = difficulty;
   if (status === "completed") where.completedAt = { not: null };
   else if (status === "in_progress") where.completedAt = null;
+  
+  if (query !== "all") {
+    where.OR = [
+      { category: { contains: query, mode: "insensitive" } },
+      { targetStack: { hasSome: [query.toLowerCase()] } },
+      { messages: { some: { content: { contains: query, mode: "insensitive" } } } }
+    ];
+  }
 
   // Build orderBy
   let orderBy: Prisma.SessionOrderByWithRelationInput;
@@ -71,6 +81,7 @@ export default async function HistoryPage({ searchParams }: Props) {
         completedAt: true,
         createdAt: true,
         duration: true,
+        targetStack: true,
         messages: {
           where: { messageType: "question" },
           take: 1,
@@ -100,6 +111,7 @@ export default async function HistoryPage({ searchParams }: Props) {
     completedAt: s.completedAt?.toISOString() ?? null,
     createdAt: s.createdAt.toISOString(),
     duration: s.duration,
+    targetStack: s.targetStack,
     snippet: s.messages[0]?.content ?? null,
     answeredQuestions: s._count.messages,
   }));
@@ -123,6 +135,7 @@ export default async function HistoryPage({ searchParams }: Props) {
           difficulty={difficulty}
           status={status}
           sort={sort}
+          query={query}
         />
 
         {/* List Section */}
