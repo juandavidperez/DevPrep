@@ -3,10 +3,11 @@ import { Link } from "@/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import Image from "next/image";
-import { Clock, Target, TrendingUp, TrendingDown, ArrowRight, MonitorPlay, Flame, Bookmark } from "lucide-react";
+import { TrendingDown, ArrowRight, MonitorPlay, Bookmark } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
+import { getGlobalStats } from "@/lib/analytics";
 import { DashboardTopbar } from "@/components/DashboardTopbar";
-import { StatCard, DeltaBadge } from "@/components/StatCard";
+// import { StatCard, DeltaBadge } from "@/components/StatCard";
 import { DashboardStats } from "@/components/DashboardStats";
 
 // ── Course cards ───────────────────────────────────────────────────────────────
@@ -144,30 +145,6 @@ function WeakAreasCard({
   );
 }
 
-function calculateStreak(dates: Date[]): number {
-  if (dates.length === 0) return 0;
-
-  const dayKey = (d: Date) =>
-    `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-
-  const uniqueDays = new Set(dates.map((d) => dayKey(new Date(d))));
-  const now = new Date();
-  const todayKey = dayKey(now);
-
-  const cursor = new Date(now);
-  if (!uniqueDays.has(todayKey)) {
-    cursor.setDate(cursor.getDate() - 1);
-    if (!uniqueDays.has(dayKey(cursor))) return 0;
-  }
-
-  let streak = 0;
-  const check = new Date(cursor);
-  while (uniqueDays.has(dayKey(check))) {
-    streak++;
-    check.setDate(check.getDate() - 1);
-  }
-  return streak;
-}
 
 // ──────────────────────────────────────────────────────────────────────────────
 
@@ -189,69 +166,55 @@ export default async function DashboardPage({
 
   const t = await getTranslations("Dashboard");
   const { q, tab } = await searchParams;
+  const now = new Date();
   const query = q?.toLowerCase().trim() ?? "";
   const activeTab = tab === "analytics" ? "analytics" : "overview";
 
-  const now = new Date();
-  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-  const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
+  const [
+    globalStats,
+    sessions, 
+    categoryStats, 
+    trendSessions, 
+    dueBookmarksCount
+  ] = await Promise.all([
+    getGlobalStats(session.user.id),
+    prisma.session.findMany({
+      where: { userId: session.user.id },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+      select: {
+        id: true,
+        category: true,
+        difficulty: true,
+        totalQuestions: true,
+        score: true,
+        completedAt: true,
+        createdAt: true,
+        duration: true,
+        targetStack: true,
+      },
+    }),
+    prisma.session.groupBy({
+      by: ["category"],
+      where: { userId: session.user.id, completedAt: { not: null }, score: { not: null } },
+      _avg: { score: true },
+      _count: { _all: true },
+    }),
+    prisma.session.findMany({
+      where: { userId: session.user.id, completedAt: { not: null }, score: { not: null } },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+      select: { score: true, category: true, completedAt: true },
+    }),
+    prisma.bookmark.count({
+      where: {
+        userId: session.user.id,
+        OR: [{ nextReviewAt: null }, { nextReviewAt: { lte: now } }],
+      },
+    }),
+  ]);
 
-  const [sessions, totalCount, currentPeriodSessions, prevPeriodSessions, categoryStats, allDates, globalStats, trendSessions, dueBookmarksCount] =
-    await Promise.all([
-      prisma.session.findMany({
-        where: { userId: session.user.id },
-        orderBy: { createdAt: "desc" },
-        take: 10,
-        select: {
-          id: true,
-          category: true,
-          difficulty: true,
-          totalQuestions: true,
-          score: true,
-          completedAt: true,
-          createdAt: true,
-          duration: true,
-        },
-      }),
-      prisma.session.count({ where: { userId: session.user.id } }),
-      prisma.session.findMany({
-        where: { userId: session.user.id, createdAt: { gte: thirtyDaysAgo } },
-        select: { score: true, completedAt: true, duration: true },
-      }),
-      prisma.session.findMany({
-        where: { userId: session.user.id, createdAt: { gte: sixtyDaysAgo, lt: thirtyDaysAgo } },
-        select: { score: true, completedAt: true, duration: true },
-      }),
-      prisma.session.groupBy({
-        by: ["category"],
-        where: { userId: session.user.id, completedAt: { not: null }, score: { not: null } },
-        _avg: { score: true },
-        _count: { _all: true },
-      }),
-      prisma.session.findMany({
-        where: { userId: session.user.id },
-        select: { createdAt: true },
-        orderBy: { createdAt: "desc" },
-        take: 120,
-      }),
-      prisma.session.aggregate({
-        where: { userId: session.user.id, completedAt: { not: null } },
-        _avg: { score: true },
-        _sum: { duration: true },
-      }),
-      prisma.session.findMany({
-        where: { userId: session.user.id, completedAt: { not: null }, score: { not: null } },
-        orderBy: { createdAt: "desc" },
-        take: 10,
-        select: { score: true, category: true, completedAt: true },
-      }),
-      prisma.bookmark.count({
-        where: {
-          userId: session.user.id,
-          OR: [{ nextReviewAt: null }, { nextReviewAt: { lte: now } }],
-        },
-      }),
-    ]);
+  const { totalSessions, sessionsDelta, avgScore, scorePercentile, totalMinutes, currentMinutes, streak, weakCriteria } = globalStats;
 
   const filteredSessions = query
     ? sessions.filter(
@@ -261,25 +224,6 @@ export default async function DashboardPage({
       )
     : sessions;
 
-  const avgScore = globalStats._avg.score ?? 0;
-  const totalMinutes = Math.round((globalStats._sum.duration ?? 0) / 60);
-
-  const calcDelta = (current: number, prev: number): number | null => {
-    if (prev === 0) return null;
-    return Math.round(((current - prev) / prev) * 100);
-  };
-
-  const sessionsDelta = calcDelta(currentPeriodSessions.length, prevPeriodSessions.length);
-
-  const currentCompleted = currentPeriodSessions.filter((s) => s.completedAt);
-  const currentMinutes = Math.round(
-    currentCompleted.reduce((sum, s) => sum + (s.duration ?? 0), 0) / 60,
-  );
-
-  const scorePercentile =
-    avgScore > 0 ? Math.max(1, Math.round((1 - avgScore / 100) * 100)) : null;
-
-  const streak = calculateStreak(allDates.map((s) => s.createdAt));
 
   const locale = await getLocale();
 
@@ -329,14 +273,45 @@ export default async function DashboardPage({
           <>
             {/* ── Stats — 4 columns ──────────────────────────────────────────── */}
             <DashboardStats 
-              totalCount={totalCount}
-              sessionsDelta={sessionsDelta ?? 0}
+              totalCount={totalSessions}
+              sessionsDelta={sessionsDelta}
               avgScore={avgScore}
               scorePercentile={scorePercentile}
               totalMinutes={totalMinutes}
               currentMinutes={currentMinutes}
               streak={streak}
             />
+
+            {/* ── Weak Criteria Summary ────────────────────────────────────────── */}
+            {weakCriteria && weakCriteria.length > 0 && (
+              <div className="mt-8 rounded-xl border border-red-500/20 bg-red-500/5 p-6 backdrop-blur-md">
+                <div className="mb-6 flex items-center justify-between">
+                  <div>
+                    <h2 className="text-lg font-bold text-text-primary">Tus criterios más débiles esta semana</h2>
+                    <p className="text-xs text-text-secondary">Basado en tus últimas 10 sesiones. Enfócate en mejorar estos puntos.</p>
+                  </div>
+                  <TrendingDown className="h-5 w-5 text-red-400" />
+                </div>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                  {weakCriteria.map((c: { key: string, avg: number }) => (
+                    <div key={c.key} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold uppercase tracking-wider text-text-secondary">
+                          {c.key.replace(/_/g, " ")}
+                        </span>
+                        <span className="font-mono text-sm font-black text-red-400">{c.avg}%</span>
+                      </div>
+                      <div className="h-1.5 w-full overflow-hidden rounded-full bg-red-500/10">
+                        <div 
+                          className="h-full rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.3)] transition-all duration-1000" 
+                          style={{ width: `${c.avg}%` }} 
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* ── Recent Sessions — full width ───────────────────────────────── */}
             <div className="mt-8">
@@ -375,7 +350,10 @@ export default async function DashboardPage({
                       className="flex items-center justify-between rounded-xl border border-border-subtle bg-surface-container/70 px-5 py-3.5 backdrop-blur-[20px] transition hover:border-primary/30 hover:bg-surface-highest/50"
                     >
                       <div>
-                        <p className="text-sm font-medium capitalize">{s.category.replace("_", " ")}</p>
+                        <p className="text-sm font-medium capitalize">
+                          {s.category.replace("_", " ")}
+                          {s.targetStack.length > 0 && ` · ${s.targetStack.join(", ")}`}
+                        </p>
                         <p className="text-xs text-text-secondary capitalize">
                           {s.difficulty} · {t("questions", { count: s.totalQuestions })}
                         </p>
@@ -493,7 +471,10 @@ export default async function DashboardPage({
                         className="flex items-center justify-between rounded-lg border border-border-subtle/60 bg-surface-highest/40 px-4 py-2.5 transition hover:border-primary/30 hover:bg-surface-highest/70"
                       >
                         <div>
-                          <p className="text-sm font-medium capitalize">{s.category.replace("_", " ")}</p>
+                          <p className="text-sm font-medium capitalize">
+                            {s.category.replace("_", " ")}
+                            {s.targetStack.length > 0 && ` · ${s.targetStack.join(", ")}`}
+                          </p>
                           <p className="font-mono text-xs text-text-secondary">
                             {new Date(s.completedAt!).toLocaleDateString(locale)} · {s.difficulty}
                           </p>

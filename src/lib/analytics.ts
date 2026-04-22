@@ -8,6 +8,125 @@ import {
   startOfDay
 } from "date-fns";
 
+export function calculateStreak(dates: Date[]): number {
+  if (dates.length === 0) return 0;
+
+  const dayKey = (d: Date) => format(d, "yyyy-MM-dd");
+  const uniqueDays = new Set(dates.map((d) => dayKey(d)));
+  
+  const today = startOfDay(new Date());
+  let streak = 0;
+  const check = new Date(today);
+
+  // If didn't practice today, check if practiced yesterday to keep streak alive
+  if (!uniqueDays.has(dayKey(check))) {
+    check.setDate(check.getDate() - 1);
+    if (!uniqueDays.has(dayKey(check))) return 0;
+  }
+
+  while (uniqueDays.has(dayKey(check))) {
+    streak++;
+    check.setDate(check.getDate() - 1);
+  }
+  return streak;
+}
+
+export async function getGlobalStats(userId: string) {
+  const now = new Date();
+  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+  const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
+
+  const [
+    totalCount,
+    globalStats,
+    currentPeriodSessions,
+    prevPeriodSessions,
+    allCompletedSessions,
+    allMessages
+  ] = await Promise.all([
+    prisma.session.count({ where: { userId, isDemo: false } }),
+    prisma.session.aggregate({
+      where: { userId, isDemo: false, completedAt: { not: null } },
+      _avg: { score: true },
+      _sum: { duration: true },
+    }),
+    prisma.session.findMany({
+      where: { userId, isDemo: false, createdAt: { gte: thirtyDaysAgo } },
+      select: { score: true, completedAt: true, duration: true },
+    }),
+    prisma.session.findMany({
+      where: { userId, isDemo: false, createdAt: { gte: sixtyDaysAgo, lt: thirtyDaysAgo } },
+      select: { score: true, completedAt: true, duration: true },
+    }),
+    prisma.session.findMany({
+      where: { userId, isDemo: false, completedAt: { not: null } },
+      select: { completedAt: true },
+      orderBy: { completedAt: "desc" },
+    }),
+    prisma.sessionMessage.findMany({
+      where: {
+        session: { userId, isDemo: false, completedAt: { not: null } },
+        messageType: "evaluation",
+        score: { not: null }
+      },
+      take: 50, // Get messages from roughly the last 10-15 sessions
+      orderBy: { createdAt: "desc" },
+      select: { criteria: true }
+    })
+  ]);
+
+  const avgScore = globalStats._avg.score ?? 0;
+  const totalMinutes = Math.round((globalStats._sum.duration ?? 0) / 60);
+
+  const calcDelta = (current: number, prev: number): number | null => {
+    if (prev === 0) return null;
+    return Math.round(((current - prev) / prev) * 100);
+  };
+
+  const sessionsDelta = calcDelta(currentPeriodSessions.length, prevPeriodSessions.length);
+  
+  const currentCompleted = currentPeriodSessions.filter((s) => s.completedAt);
+  const currentMinutes = Math.round(
+    currentCompleted.reduce((sum, s) => sum + (s.duration ?? 0), 0) / 60,
+  );
+
+  const scorePercentile = avgScore > 0 ? Math.max(1, Math.round((1 - avgScore / 100) * 100)) : null;
+  const streak = calculateStreak(allCompletedSessions.map(s => s.completedAt!));
+
+  // Calculate weak criteria from last messages
+  const criteriaTotals = new Map<string, { total: number; count: number }>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (allMessages || []).forEach((m: any) => {
+    const criteria = m.criteria as Record<string, number> | null;
+    if (criteria) {
+      Object.entries(criteria).forEach(([key, val]) => {
+        const current = criteriaTotals.get(key) || { total: 0, count: 0 };
+        criteriaTotals.set(key, { total: current.total + val, count: current.count + 1 });
+      });
+    }
+  });
+
+  const weakCriteria = Array.from(criteriaTotals.entries())
+    .map(([key, data]) => ({
+      key,
+      avg: Math.round(data.total / data.count)
+    }))
+    .filter(c => c.avg < 70) // only include weak ones
+    .sort((a, b) => a.avg - b.avg)
+    .slice(0, 3);
+
+  return {
+    totalSessions: totalCount,
+    avgScore,
+    totalMinutes,
+    sessionsDelta: sessionsDelta ?? 0,
+    currentMinutes,
+    scorePercentile,
+    streak,
+    weakCriteria
+  };
+}
+
 export async function getAnalyticsData(userId: string, range: AnalyticsRange): Promise<AnalyticsData> {
   const now = new Date();
   let limit: number | undefined;
@@ -207,33 +326,7 @@ export async function getAnalyticsData(userId: string, range: AnalyticsRange): P
   const weak = allTopics.filter((t) => t.avgScore < 60 && t.sampleCount >= 2).sort((a, b) => a.avgScore - b.avgScore);
   const strong = allTopics.filter((t) => t.avgScore >= 75 && t.sampleCount >= 2).sort((a, b) => b.avgScore - a.avgScore);
 
-  // 5. Streak Algorithm (Independent of range)
-  const allCompletedSessions = await prisma.session.findMany({
-    where: { userId, isDemo: false, completedAt: { not: null } },
-    select: { completedAt: true },
-    orderBy: { completedAt: "desc" },
-  });
-
-  const uniqueDates = Array.from(
-    new Set(allCompletedSessions.map((s) => format(s.completedAt!, "yyyy-MM-dd")))
-  ).map((d) => new Date(d));
-
-  if (uniqueDates.length > 0) {
-    const today = startOfDay(new Date());
-    const lastActive = uniqueDates[0];
-    const diff = differenceInDays(today, lastActive);
-
-    if (diff <= 1) { 
-      overview.currentStreak = 1;
-      for (let i = 0; i < uniqueDates.length - 1; i++) {
-        if (differenceInDays(uniqueDates[i], uniqueDates[i + 1]) === 1) {
-          overview.currentStreak++;
-        } else {
-          break;
-        }
-      }
-    }
-  }
+  overview.currentStreak = calculateStreak(uniqueDates);
 
   return {
     overview,
