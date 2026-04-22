@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "@/navigation";
 import { useTranslations } from "next-intl";
 import {
@@ -20,6 +20,8 @@ import {
   Server,
   Network,
   Braces,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { clsx } from "clsx";
@@ -103,7 +105,7 @@ const ROADMAPS: {
     labelKey: "roadmapAngularLabel",
     tagKey: "roadmapAngularTag",
     color: "from-[#DD0031]/10 to-transparent",
-    config: { tech: "Angular", interviewMode: "technical", difficulty: "junior", language: "es", durationMinutes: 15 },
+    config: { tech: "Angular", interviewMode: "technical", difficulty: "mid", language: "es", durationMinutes: 15 },
   },
   {
     id: "spring",
@@ -177,6 +179,44 @@ export function SessionConfigForm({ settings }: SessionConfigFormProps) {
   const [timerEnabled, setTimerEnabled] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Scroll discovery logic
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const checkScroll = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 5);
+    }
+  };
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) {
+      el.addEventListener("scroll", checkScroll);
+      // Check initially after render
+      checkScroll();
+      // Also check on resize
+      window.addEventListener("resize", checkScroll);
+      return () => {
+        el.removeEventListener("scroll", checkScroll);
+        window.removeEventListener("resize", checkScroll);
+      };
+    }
+  }, []);
+
+  const scroll = (direction: "left" | "right") => {
+    if (scrollRef.current) {
+      const scrollAmount = 300;
+      scrollRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
 
   const estimatedQuestions = questionCountOverride ?? calcQuestions(interviewMode, difficulty, durationMinutes);
 
@@ -261,41 +301,106 @@ export function SessionConfigForm({ settings }: SessionConfigFormProps) {
         </div>
 
         {/* Roadmap Quick-Start */}
-        <div className="mb-10">
-          <p className="text-[10px] font-mono uppercase tracking-widest text-white/30 mb-3">
-            {t("roadmapLabel")}
-          </p>
-          <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1">
-            {ROADMAPS.map((r) => (
+        <div className="mb-12 relative group/roadmaps">
+          <div className="flex items-center justify-between mb-4 px-1">
+            <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">
+              {t("roadmapLabel")}
+            </p>
+            <div className="flex gap-2 opacity-0 group-hover/roadmaps:opacity-100 transition-opacity">
               <button
-                key={r.id}
                 type="button"
-                onClick={() => applyRoadmap(r)}
+                onClick={() => scroll("left")}
+                disabled={!canScrollLeft}
                 className={clsx(
-                  "flex-none flex flex-col gap-1.5 px-4 py-3.5 rounded-xl border transition-all text-left min-w-[170px] relative overflow-hidden group",
-                  activeRoadmap === r.id
-                    ? "bg-surface-highest border-primary/50 shadow-[0_0_25px_rgba(210,187,255,0.12)] -translate-y-1"
-                    : "bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10 hover:-translate-y-0.5"
+                  "flex h-6 w-6 items-center justify-center rounded-full bg-surface-highest border border-white/10 text-text-secondary transition hover:text-white disabled:opacity-30",
                 )}
               >
-                {/* Visual Accent Gradient */}
-                <div className={clsx(
-                  "absolute inset-0 bg-gradient-to-br transition-opacity duration-500 pointer-events-none",
-                  r.color,
-                  activeRoadmap === r.id ? "opacity-100" : "opacity-0 group-hover:opacity-60"
-                )}></div>
-
-                <span className="text-xl leading-none relative z-10 drop-shadow-sm">{r.emoji}</span>
-                <span className={clsx(
-                  "text-xs font-bold leading-tight mt-1 relative z-10",
-                  activeRoadmap === r.id ? "text-primary" : "text-white/80"
-                )}>
-                  {t(r.labelKey)}
-                </span>
-                <span className="text-[10px] font-mono text-white/30 leading-tight relative z-10 font-medium">{t(r.tagKey)}</span>
+                <ChevronLeft className="h-3 w-3" />
               </button>
-            ))}
+              <button
+                type="button"
+                onClick={() => scroll("right")}
+                disabled={!canScrollRight}
+                className={clsx(
+                  "flex h-6 w-6 items-center justify-center rounded-full bg-surface-highest border border-white/10 text-text-secondary transition hover:text-white disabled:opacity-30",
+                )}
+              >
+                <ChevronRight className="h-3 w-3" />
+              </button>
+            </div>
+          </div>
+          
+          <div className="relative">
+            {/* Left Fade & Button */}
+            <div 
+              className={clsx(
+                "absolute left-0 top-0 bottom-4 w-20 bg-gradient-to-r from-background via-background/80 to-transparent z-20 pointer-events-none transition-opacity duration-300 flex items-center justify-start pl-2",
+                canScrollLeft ? "opacity-100" : "opacity-0"
+              )}
+            >
+              <button 
+                onClick={() => scroll("left")}
+                className="pointer-events-auto h-10 w-10 rounded-full bg-surface-highest/80 border border-white/10 flex items-center justify-center text-white shadow-xl hover:bg-primary hover:text-[#25005a] transition-all"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </button>
+            </div>
 
+            {/* Right Fade & Button */}
+            <div 
+              className={clsx(
+                "absolute right-0 top-0 bottom-4 w-20 bg-gradient-to-l from-background via-background/80 to-transparent z-20 pointer-events-none transition-opacity duration-300 flex items-center justify-end pr-2",
+                canScrollRight ? "opacity-100" : "opacity-0"
+              )}
+            >
+              <button 
+                onClick={() => scroll("right")}
+                className="pointer-events-auto h-10 w-10 rounded-full bg-surface-highest/80 border border-white/10 flex items-center justify-center text-white shadow-xl hover:bg-primary hover:text-[#25005a] transition-all"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </button>
+            </div>
+            
+            <div 
+              ref={scrollRef}
+              className="flex gap-4 overflow-x-auto pb-4 scrollbar-none -mx-4 px-4 mask-fade-right"
+              onLoad={checkScroll} // Just in case
+            >
+              {ROADMAPS.map((r) => (
+                <button
+                  key={r.id}
+                  type="button"
+                  onClick={() => applyRoadmap(r)}
+                  className={clsx(
+                    "flex-none flex flex-col gap-1.5 px-5 py-4 rounded-xl border transition-all text-left min-w-[190px] relative overflow-hidden group/roadmap",
+                    activeRoadmap === r.id
+                      ? "bg-surface-highest border-primary/50 shadow-[0_0_25px_rgba(210,187,255,0.12)] -translate-y-1"
+                      : "bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10 hover:-translate-y-0.5"
+                  )}
+                >
+                  {/* Visual Accent Gradient */}
+                  <div className={clsx(
+                    "absolute inset-0 bg-gradient-to-br transition-opacity duration-500 pointer-events-none",
+                    r.color,
+                    activeRoadmap === r.id ? "opacity-100" : "opacity-0 group-hover/roadmap:opacity-60"
+                  )}></div>
+
+                  <span className="text-2xl leading-none relative z-10 drop-shadow-sm">{r.emoji}</span>
+                  <div className="relative z-10 flex flex-col gap-0.5 mt-1.5">
+                    <h4 className={clsx(
+                      "text-sm font-black transition-colors line-clamp-1",
+                      activeRoadmap === r.id ? "text-primary" : "text-white group-hover/roadmap:text-primary"
+                    )}>
+                      {t(r.labelKey)}
+                    </h4>
+                    <span className="text-[10px] font-mono text-white/40 leading-tight uppercase tracking-wider">{t(r.tagKey)}</span>
+                  </div>
+                </button>
+              ))}
+              
+              {/* Spacer for scroll end */}
+              <div className="flex-none w-8"></div>
+            </div>
           </div>
         </div>
 

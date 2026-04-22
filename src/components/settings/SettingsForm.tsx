@@ -89,6 +89,7 @@ export function SettingsForm({
     animations: initialSettings.animations ?? true,
     darkMode: initialSettings.darkMode ?? true,
     feedbackMode: initialSettings.feedbackMode ?? "live",
+    outputModality: initialSettings.outputModality ?? "text",
   });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -430,6 +431,54 @@ export function SettingsForm({
             </div>
           </div>
 
+          <div className="md:col-span-12">
+            <h4 className="text-[11px] font-bold text-primary opacity-80 mb-6 uppercase tracking-[0.3em] flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary-container shadow-glow" />
+              {t("outputModality")}
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <button
+                onClick={() => setSettings(s => ({ ...s, outputModality: "text" }))}
+                className={clsx(
+                  "px-6 py-5 rounded-xl text-sm font-black transition-all border flex items-center justify-between group/mod",
+                  settings.outputModality === "text"
+                    ? "bg-surface-highest/30 border-primary/50 text-white shadow-[0_0_20px_rgba(249,115,22,0.05)]"
+                    : "bg-surface-lowest/60 border-border-subtle/50 text-text-secondary/50 hover:bg-surface-lowest hover:border-border-subtle"
+                )}
+              >
+                Text Only
+                <div className={clsx(
+                  "w-6 h-6 rounded-lg border transition-all flex items-center justify-center",
+                  settings.outputModality === "text"
+                    ? "bg-primary-container border-primary"
+                    : "bg-surface-lowest border-border-subtle"
+                )}>
+                  {settings.outputModality === "text" && <Check className="w-3.5 h-3.5 text-white stroke-[3]" />}
+                </div>
+              </button>
+
+              <button
+                onClick={() => setSettings(s => ({ ...s, outputModality: "voice" }))}
+                className={clsx(
+                  "px-6 py-5 rounded-xl text-sm font-black transition-all border flex items-center justify-between group/mod",
+                  settings.outputModality === "voice"
+                    ? "bg-surface-highest/30 border-primary/50 text-white shadow-[0_0_20px_rgba(249,115,22,0.05)]"
+                    : "bg-surface-lowest/60 border-border-subtle/50 text-text-secondary/50 hover:bg-surface-lowest hover:border-border-subtle"
+                )}
+              >
+                Voice Only
+                <div className={clsx(
+                  "w-6 h-6 rounded-lg border transition-all flex items-center justify-center",
+                  settings.outputModality === "voice"
+                    ? "bg-primary-container border-primary"
+                    : "bg-surface-lowest border-border-subtle"
+                )}>
+                  {settings.outputModality === "voice" && <Check className="w-3.5 h-3.5 text-white stroke-[3]" />}
+                </div>
+              </button>
+            </div>
+          </div>
+
           <div className="md:col-span-7">
              <h4 className="text-[11px] font-bold text-primary opacity-80 mb-6 uppercase tracking-[0.3em] flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-primary-container shadow-glow" />
@@ -461,7 +510,7 @@ export function SettingsForm({
             </div>
             <div className="mt-8 p-4 rounded-xl bg-primary-container/5 border border-primary/10">
                <p className="text-[11px] text-primary/60 leading-relaxed font-mono">
-                 [SYSTEM_LOG]: Estas preferencias se usarán automáticamente al iniciar sesiones rápidas desde el panel principal.
+                 {t("sectionCategoriesNote")}
                </p>
             </div>
           </div>
