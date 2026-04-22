@@ -197,15 +197,15 @@
     "comingSoon": "Próximamente",
     "roadmapLabel": "Acceso Rápido — Roadmap",
     "roadmapAngularLabel": "Angular Avanzado",
-    "roadmapAngularTag": "Señales · RxJS · NgRx · Junior",
+    "roadmapAngularTag": "Señales · RxJS · NgRx · Mid",
     "roadmapSpringLabel": "Spring Boot + Kotlin",
     "roadmapSpringTag": "JPA · Security · Kotlin · Mid",
     "roadmapPatternsLabel": "Patrones de Diseño",
     "roadmapPatternsTag": "Arquitectura · Senior",
     "roadmapAlgorithmsLabel": "Algoritmos JS",
     "roadmapAlgorithmsTag": "Live Coding · JS · Senior",
-    "roadmapFridayLabel": "Simulación Completa",
-    "roadmapFridayTag": "Mixed · EN · 10q · Senior"
+    "roadmapFridayLabel": "Simulación Viernes",
+    "roadmapFridayTag": "Mixed · Senior · 10q"
   },
   "Settings": {
     "title": "Configuración de la Cuenta",
@@ -246,7 +246,8 @@
     "feedbackLive": "Retroalimentación en Vivo",
     "feedbackLiveDesc": "Ve tu puntaje y evaluación después de cada respuesta. Ideal para aprender y practicar activamente.",
     "feedbackSilent": "Examen Silencioso",
-    "feedbackSilentDesc": "Responde todas las preguntas primero, luego ve los resultados al final. Simula un entorno de examen real."
+    "feedbackSilentDesc": "Responde todas las preguntas primero, luego ve los resultados al final. Simula un entorno de examen real.",
+    "sectionCategoriesNote": "Estas preferencias se usarán automáticamente al iniciar sesiones rápidas desde el panel principal."
   },
   "Bookmarks": {
     "title": "Marcadores",
@@ -308,6 +309,7 @@
     "next": "Siguiente",
     "searchPlaceholder": "Buscar por título...",
     "searchButton": "Buscar",
+    "SEARCHBUTTON": "Buscar",
     "viewFeedback": "Ver Feedback",
     "deleteSession": "Eliminar sesión",
     "deleteConfirmTitle": "¿Eliminar sesión?",
@@ -319,5 +321,8 @@
     "sessionDuration": "Sesión de {duration} min",
     "questionsCount": "{count} preguntas",
     "scoreLabel": "/100"
+  },
+  "Results": {
+    "autoBookmarked": "Auto-marcada para repaso"
   }
 }

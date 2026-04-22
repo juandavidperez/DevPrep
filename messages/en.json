@@ -196,16 +196,16 @@
     "modeMixed": "Mixed",
     "comingSoon": "Coming soon",
     "roadmapLabel": "Quick Start — Roadmap",
-    "roadmapAngularLabel": "Advanced Angular",
-    "roadmapAngularTag": "Signals · RxJS · NgRx · Junior",
+    "roadmapAngularLabel": "Angular Advanced",
+    "roadmapAngularTag": "Signals · RxJS · NgRx · Mid",
     "roadmapSpringLabel": "Spring Boot + Kotlin",
     "roadmapSpringTag": "JPA · Security · Kotlin · Mid",
     "roadmapPatternsLabel": "Design Patterns",
     "roadmapPatternsTag": "Architecture · Senior",
-    "roadmapAlgorithmsLabel": "JS Algorithms",
+    "roadmapAlgorithmsLabel": "Algorithms JS",
     "roadmapAlgorithmsTag": "Live Coding · JS · Senior",
-    "roadmapFridayLabel": "Full Simulation",
-    "roadmapFridayTag": "Mixed · EN · 10q · Senior"
+    "roadmapFridayLabel": "Friday Simulation",
+    "roadmapFridayTag": "Mixed · Senior · 10q"
   },
   "Settings": {
     "title": "Account Configuration",
@@ -246,7 +246,8 @@
     "feedbackLive": "Live Feedback",
     "feedbackLiveDesc": "See your score and evaluation after each answer. Best for learning and active practice.",
     "feedbackSilent": "Silent Exam",
-    "feedbackSilentDesc": "Answer all questions first, then see results at the end. Simulates a real exam environment."
+    "feedbackSilentDesc": "Answer all questions first, then see results at the end. Simulates a real exam environment.",
+    "sectionCategoriesNote": "These preferences will be used automatically when starting quick sessions from the main dashboard."
   },
   "Bookmarks": {
     "title": "Bookmarks",
@@ -308,6 +309,7 @@
     "next": "Next",
     "searchPlaceholder": "Search by title...",
     "searchButton": "Search",
+    "SEARCHBUTTON": "Search",
     "viewFeedback": "View Feedback",
     "deleteSession": "Delete Session",
     "deleteConfirmTitle": "Delete session?",
@@ -319,5 +321,8 @@
     "sessionDuration": "{duration} min session",
     "questionsCount": "{count} questions",
     "scoreLabel": "/100"
+  },
+  "Results": {
+    "autoBookmarked": "Auto-bookmarked for review"
   }
 }

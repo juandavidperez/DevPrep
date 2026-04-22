@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/navigation";
 import { clsx } from "clsx";
 import {
@@ -63,6 +64,7 @@ function formatDuration(seconds: number | null): string {
 }
 
 function QuestionCard({ question }: { question: QuestionResult }) {
+  const t = useTranslations("Results");
   const [expanded, setExpanded] = useState(false);
   const [showModelAnswer, setShowModelAnswer] = useState(false);
   const [bookmarkId, setBookmarkId] = useState<string | null>(question.bookmarkId);
@@ -191,7 +193,7 @@ function QuestionCard({ question }: { question: QuestionResult }) {
                 </span>
                 {question.score < 70 && (
                   <span className="ml-2 text-[0.65rem] font-bold uppercase tracking-wider text-red-400/80">
-                    Auto-marcada para repaso
+                    {t("autoBookmarked")}
                   </span>
                 )}
               </div>
