@@ -151,6 +151,7 @@ export async function POST(
           content: nextQuestion.text,
           messageType: "question",
           questionIndex: currentQuestionIndex + 1,
+          timeEstimate: nextQuestion.timeEstimate,
         },
       });
 
@@ -335,6 +336,7 @@ export async function POST(
         content: nextQuestion.text,
         messageType: "question",
         questionIndex: currentQuestionIndex + 1,
+        timeEstimate: nextQuestion.timeEstimate,
       },
     });
 

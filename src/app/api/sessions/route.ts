@@ -12,7 +12,7 @@ const DEMO_MAX_QUESTIONS = 3;
 
 export async function POST(request: Request) {
   const body: CreateSessionRequest & { isDemo?: boolean } = await request.json();
-  const { category, difficulty, totalQuestions, language = "en", feedbackMode = "live", targetStack, outputModality, isDemo = false } = body;
+  const { category, difficulty, totalQuestions, language = "en", feedbackMode = "live", timerEnabled = true, targetStack, outputModality, isDemo = false } = body;
 
   // Auth: required for regular sessions, skipped for demo
   let userId: string | undefined;
@@ -50,6 +50,7 @@ export async function POST(request: Request) {
         totalQuestions: resolvedQuestions,
         language,
         feedbackMode: ["live", "silent"].includes(feedbackMode) ? feedbackMode : "live",
+        timerEnabled,
         inputModality: outputModality === "voice" ? "voice" : "text",
         targetStack: targetStack?.length ? targetStack : ["angular", "spring_boot", "postgresql"],
       },
@@ -70,6 +71,7 @@ export async function POST(request: Request) {
         content: firstQuestion.text,
         messageType: "question",
         questionIndex: 1,
+        timeEstimate: firstQuestion.timeEstimate,
       },
     });
 

@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { getAIProvider } from "@/lib/ai";
 import type { Question, QuestionCategory, Difficulty, SessionConfig } from "@/lib/ai/types";
+import { getDefaultTimeEstimate } from "./constants";
 
 export interface SelectQuestionOptions {
   category: QuestionCategory | "mixed";
@@ -153,6 +154,7 @@ async function selectFromBank(
     modelAnswer: question.modelAnswer ?? undefined,
     codeTemplate: question.codeTemplate ?? undefined,
     codeLanguage: question.codeLanguage ?? undefined,
+    timeEstimate: question.timeEstimate || getDefaultTimeEstimate(question.category, question.difficulty),
   };
 }
 
@@ -169,13 +171,12 @@ async function selectFromAI(options: SelectQuestionOptions): Promise<Question> {
   const ai = getAIProvider();
   const questions = await ai.generateQuestions(config);
 
-  if (!questions || questions.length === 0 || !questions[0]?.text) {
-    throw new Error(
-      `AI provider returned no questions for category="${options.category}" difficulty="${options.difficulty}". Is the AI provider running?`
-    );
+  const question = questions[0];
+  if (question && !question.timeEstimate) {
+    question.timeEstimate = getDefaultTimeEstimate(question.category, question.difficulty);
   }
 
-  return questions[0];
+  return question;
 }
 
 /**
