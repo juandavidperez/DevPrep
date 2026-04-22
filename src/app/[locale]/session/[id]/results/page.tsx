@@ -71,10 +71,11 @@ function computeStrengthsWeaknesses(questions: QuestionResult[]): {
   for (const q of questions) {
     if (!q.criteria) continue;
     for (const [key, value] of Object.entries(q.criteria)) {
-      if (typeof value !== "number") continue;
+      const numericValue = Number(value);
+      if (isNaN(numericValue)) continue;
       const normalized = key.toLowerCase();
       const entry = sums.get(normalized) ?? { total: 0, count: 0 };
-      entry.total += value;
+      entry.total += numericValue;
       entry.count += 1;
       sums.set(normalized, entry);
     }
@@ -84,7 +85,8 @@ function computeStrengthsWeaknesses(questions: QuestionResult[]): {
   const sorted: CriterionScore[] = [];
 
   for (const [criterion, { total, count }] of sums) {
-    const avg = Math.round(total / count);
+    const avg = count > 0 ? Math.round(total / count) : 0;
+    if (isNaN(avg)) continue;
     averages[criterion] = avg;
     sorted.push({ criterion, avgScore: avg });
   }
@@ -94,19 +96,24 @@ function computeStrengthsWeaknesses(questions: QuestionResult[]): {
   const strengths = sorted.slice(0, 3).filter((s) => s.avgScore >= 60);
   const weaknesses = sorted
     .slice(-3)
-    .filter((s) => s.avgScore < sorted[0]?.avgScore)
+    .filter((s) => sorted.length > 1 ? s.avgScore < (sorted[0]?.avgScore ?? 101) : true)
     .reverse();
 
-  return { strengths, weaknesses: weaknesses.reverse(), criteriaAverages: averages };
+  return { strengths, weaknesses, criteriaAverages: averages };
 }
 
 export default async function ResultsPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; locale?: string }>;
 }) {
-  const { id } = await params;
+  const resolvedParams = await params;
+  const id = resolvedParams?.id;
   const session = await auth();
+
+  if (!id) {
+    redirect("/dashboard");
+  }
 
   if (!session?.user?.id) {
     redirect("/auth/signin");
@@ -139,8 +146,10 @@ export default async function ResultsPage({
     category: interviewSession.category,
     difficulty: interviewSession.difficulty,
     totalQuestions: interviewSession.totalQuestions,
-    completedAt: interviewSession.completedAt.toISOString(),
-    overallScore: interviewSession.score ?? 0,
+    completedAt: interviewSession.completedAt instanceof Date 
+      ? interviewSession.completedAt.toISOString() 
+      : new Date(interviewSession.completedAt).toISOString(),
+    overallScore: Math.round(interviewSession.score || 0),
     duration: interviewSession.duration,
     questions,
     strengths,
