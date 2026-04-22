@@ -217,13 +217,21 @@ export function BookmarksClient({ bookmarks: initial }: { bookmarks: BookmarkIte
 
   const now = new Date();
 
-  const isDue = (b: BookmarkItem) =>
-    b.nextReviewAt === null || new Date(b.nextReviewAt).getTime() <= now.getTime();
+  const isDue = (b: BookmarkItem) => {
+    const dueTime = b.nextReviewAt === null || new Date(b.nextReviewAt).getTime() <= now.getTime();
+    const isWeak = b.score === null || b.score < 85;
+    return dueTime && isWeak;
+  };
 
   const filtered = bookmarks
     .filter((b) => (tab === "due" ? isDue(b) : true))
     .filter((b) => category === "all" || b.message.session.category === category)
     .filter((b) => difficulty === "all" || b.message.session.difficulty === difficulty);
+
+  // In the "due" tab, prioritize lower scores
+  if (tab === "due") {
+    filtered.sort((a, b) => (a.score ?? 100) - (b.score ?? 100));
+  }
 
   const dueCount = bookmarks.filter(isDue).length;
 
