@@ -103,12 +103,6 @@ const DEFAULT_PRACTICE = [
 
 // ── Analytics sub-components ──────────────────────────────────────────────────
 
-const CATEGORY_SHORT: Record<string, string> = {
-  technical: "Tech",
-  coding: "Code",
-  system_design: "Sys",
-  behavioral: "Beh",
-};
 
 const CATEGORY_LABEL: Record<string, string> = {
   technical: "Technical",
