@@ -80,7 +80,7 @@ export function HistoryFilters({ category, difficulty, status, sort, query }: Pr
           type="text"
           defaultValue={query === "all" ? "" : query}
           placeholder={t("searchPlaceholder")}
-          className="w-full rounded-xl border border-white/5 bg-surface-highest/30 py-3 pl-11 pr-4 text-sm font-medium text-white outline-none transition-all placeholder:text-white/20 focus:border-primary/50 focus:bg-surface-highest/50"
+          className="w-full rounded-xl border border-white/5 bg-surface-lowest py-3 pl-11 pr-4 text-sm font-medium text-white outline-none transition-all placeholder:text-white/20 focus:border-primary/50 focus:bg-surface-container"
         />
         <button
           type="submit"
