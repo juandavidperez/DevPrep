@@ -243,6 +243,26 @@ export async function POST(
         if (q) updateQuestionBankScore(q.content, result.evaluation.score).catch(() => {});
       });
 
+      // ── Auto-bookmarking for weak points ──────────────────────────────────
+      if (interviewSession.userId) {
+        const weakEvals = evalMessages.filter(m => m && m.score !== null && m.score < 70);
+        if (weakEvals.length > 0) {
+          try {
+            await prisma.bookmark.createMany({
+              data: weakEvals.map(m => ({
+                userId: interviewSession.userId!,
+                messageId: m!.id,
+                notes: "Auto-bookmark: Weak point detected (< 70%)"
+              })),
+              skipDuplicates: true
+            });
+            console.log(`[Auto-Bookmark] Created ${weakEvals.length} bookmarks for session ${id}`);
+          } catch (err) {
+            console.error("[Auto-Bookmark] Failed to create bookmarks:", err);
+          }
+        }
+      }
+
       return NextResponse.json({
         messages: [...newMessages, ...validEvals],
         isComplete: true,
@@ -312,6 +332,30 @@ export async function POST(
       });
 
       console.log(`[Session Completion] Successfully updated session ${id}`);
+
+      // ── Auto-bookmarking for weak points ──────────────────────────────────
+      if (interviewSession.userId) {
+        const allEvals = await prisma.sessionMessage.findMany({
+          where: { sessionId: id, messageType: "evaluation", score: { lt: 70 } },
+          select: { id: true }
+        });
+        
+        if (allEvals.length > 0) {
+          try {
+            await prisma.bookmark.createMany({
+              data: allEvals.map(m => ({
+                userId: interviewSession.userId!,
+                messageId: m.id,
+                notes: "Auto-bookmark: Weak point detected (< 70%)"
+              })),
+              skipDuplicates: true
+            });
+            console.log(`[Auto-Bookmark] Created ${allEvals.length} bookmarks for session ${id}`);
+          } catch (err) {
+            console.error("[Auto-Bookmark] Failed to create bookmarks:", err);
+          }
+        }
+      }
 
       return NextResponse.json({
         messages: newMessages,
