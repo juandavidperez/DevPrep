@@ -12,26 +12,21 @@ Users must be able to see if they're actually improving — score trends and cat
 
 ### Validated
 
-- ✓ Text-based chat interview with AI evaluation (score 0–100, criteria breakdown, feedback, model answer) — Phase 1
+- ✓ Text-based chat interview with AI evaluation — Phase 1
 - ✓ Voice interaction (STT/TTS) alongside text — Phase 2
-- ✓ Session history with filters and pagination (`/history`) — Phase 1
-- ✓ Bookmarks + spaced repetition queue (`/bookmarks`) — Phase 1
-- ✓ Dashboard with stats + recent sessions (`/dashboard`) — Phase 1
-- ✓ 320-question bank (EN + ES, 4 categories, 3 difficulty levels) — Phase 1
+- ✓ Session history with filters and pagination — Phase 1
+- ✓ Bookmarks + spaced repetition queue — Phase 1
+- ✓ Dashboard with stats + recent sessions — Phase 1
+- ✓ 320-question bank (EN + ES) — Phase 1
 - ✓ i18n (en/es), Google OAuth, user settings — Phase 1
-- ✓ Guest demo mode (no login required) — Phase 2
+- ✓ Guest demo mode — Phase 2
+- ✓ **Analytics Dashboard** (KPIs, Charts, Topics, Streak) — v1.1 (Phase 6)
+- ✓ **Shared Analytics Foundation** (Consolidated stats logic) — v1.1 (UAT)
+- ✓ **Auto-bookmarking** (Spaced repetition for < 70 score) — v1.1 (UAT)
 
 ### Active
 
-- [ ] **NAV-01**: Tab "Analíticas" in dashboard navigates to `/analytics` route
-- [ ] **CHART-01**: Line chart — score promedio por sesión en el tiempo (filtrable 7d / 30d / todo)
-- [ ] **CHART-02**: Category breakdown — score promedio por categoría (Technical, Coding, Behavioral, System Design) as bar or radar chart
-- [ ] **CARD-01**: KPI cards — score promedio global, sesiones totales, categoría más fuerte, categoría más débil
-- [ ] **WEAK-01**: Weak/strong topics surface — top 3 preguntas con score más bajo y más alto
-- [ ] **STREAK-01**: Streak and frequency — días consecutivos de práctica + sesiones en período seleccionado
-- [ ] **FILTER-01**: Time range selector — 7 días / 30 días / todo el historial, persiste en la URL
-- [ ] **API-01**: `/api/analytics` endpoint that aggregates session + message data from Supabase for current user
-- [ ] **I18N-01**: Analytics page and all labels translated in `messages/en.json` and `messages/es.json`
+- [ ] *No active requirements — Milestone 1.1 Complete*
 
 ### Out of Scope
 
