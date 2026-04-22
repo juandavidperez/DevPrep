@@ -17,6 +17,7 @@ export interface Question {
   modelAnswer?: string;
   codeTemplate?: string;
   codeLanguage?: string;
+  timeEstimate?: number;
 }
 
 export interface SessionConfig {

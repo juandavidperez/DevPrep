@@ -75,6 +75,7 @@ model Session {
   language       String            @default("en")
   inputModality  String            @default("text")   // "text" | "voice"
   feedbackMode   String            @default("live")   // "live" | "silent"
+  timerEnabled   Boolean           @default(true)
   totalQuestions  Int
   completedAt    DateTime?
   score          Float?
@@ -100,6 +101,7 @@ model SessionMessage {
   modelAnswer   String?   @db.Text
   audioUrl      String?                        // Phase 2: stored audio
   aiLatencyMs   Int?                           // ms from AI call start to response
+  timeEstimate  Int?                           // seconds for this question
   createdAt     DateTime  @default(now())
 
   bookmark      Bookmark?

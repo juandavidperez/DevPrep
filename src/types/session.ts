@@ -4,6 +4,7 @@ export interface CreateSessionRequest {
   totalQuestions: number;
   language: string;
   feedbackMode?: string;
+  timerEnabled?: boolean;
   targetStack?: string[];
   outputModality?: string; // Phase 2: "text" | "voice"
 }
@@ -34,6 +35,7 @@ export interface SessionMessageDTO {
   modelAnswer: string | null;
   createdAt: string;
   bookmarkId?: string | null;
+  timeEstimate?: number | null;
 }
 
 export interface SendMessageResponse {
