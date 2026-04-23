@@ -171,7 +171,7 @@ export function SessionConfigForm({ settings }: SessionConfigFormProps) {
   const [difficulty, setDifficulty] = useState(settings?.defaultDifficulty || "mid");
   const [language, setLanguage] = useState(settings?.questionLanguage || "es");
   const [durationMinutes, setDurationMinutes] = useState(15);
-  const [outputModality, setOutputModality] = useState(settings?.outputModality || "text");
+  const [outputModality, setOutputModality] = useState("text"); // Hard-default to text as per user request
   const [interviewMode, setInterviewMode] = useState("technical");
   const [activeRoadmap, setActiveRoadmap] = useState<string | null>(null);
   const [questionCountOverride, setQuestionCountOverride] = useState<number | null>(null);
@@ -334,13 +334,13 @@ export function SessionConfigForm({ settings }: SessionConfigFormProps) {
             {/* Left Fade & Button */}
             <div 
               className={clsx(
-                "absolute left-0 top-0 bottom-4 w-20 bg-gradient-to-r from-background via-background/80 to-transparent z-20 pointer-events-none transition-opacity duration-300 flex items-center justify-start pl-2",
+                "absolute left-0 top-0 bottom-4 w-20 bg-gradient-to-r from-background via-background/90 to-transparent z-20 pointer-events-none transition-opacity duration-300 flex items-center justify-start pl-2",
                 canScrollLeft ? "opacity-100" : "opacity-0"
               )}
             >
               <button 
                 onClick={() => scroll("left")}
-                className="pointer-events-auto h-10 w-10 rounded-full bg-surface-highest/80 border border-white/10 flex items-center justify-center text-white shadow-xl hover:bg-primary hover:text-[#25005a] transition-all"
+                className="pointer-events-auto h-12 w-12 rounded-full bg-surface-highest/90 border border-white/20 flex items-center justify-center text-white shadow-2xl hover:bg-primary hover:text-[#25005a] transition-all scale-110"
               >
                 <ChevronLeft className="h-6 w-6" />
               </button>
@@ -349,13 +349,13 @@ export function SessionConfigForm({ settings }: SessionConfigFormProps) {
             {/* Right Fade & Button */}
             <div 
               className={clsx(
-                "absolute right-0 top-0 bottom-4 w-20 bg-gradient-to-l from-background via-background/80 to-transparent z-20 pointer-events-none transition-opacity duration-300 flex items-center justify-end pr-2",
+                "absolute right-0 top-0 bottom-4 w-24 bg-gradient-to-l from-background via-background/90 to-transparent z-20 pointer-events-none transition-opacity duration-300 flex items-center justify-end pr-2",
                 canScrollRight ? "opacity-100" : "opacity-0"
               )}
             >
               <button 
                 onClick={() => scroll("right")}
-                className="pointer-events-auto h-10 w-10 rounded-full bg-surface-highest/80 border border-white/10 flex items-center justify-center text-white shadow-xl hover:bg-primary hover:text-[#25005a] transition-all"
+                className="pointer-events-auto h-12 w-12 rounded-full bg-surface-highest/90 border border-white/20 flex items-center justify-center text-white shadow-2xl hover:bg-primary hover:text-[#25005a] transition-all scale-110"
               >
                 <ChevronRight className="h-6 w-6" />
               </button>
@@ -372,7 +372,7 @@ export function SessionConfigForm({ settings }: SessionConfigFormProps) {
                   type="button"
                   onClick={() => applyRoadmap(r)}
                   className={clsx(
-                    "flex-none flex flex-col gap-1.5 px-5 py-4 rounded-xl border transition-all text-left min-w-[190px] relative overflow-hidden group/roadmap",
+                    "flex-none flex flex-col gap-1.5 px-5 py-4 rounded-xl border transition-all text-left min-w-[210px] relative overflow-hidden group/roadmap",
                     activeRoadmap === r.id
                       ? "bg-surface-highest border-primary/50 shadow-[0_0_25px_rgba(210,187,255,0.12)] -translate-y-1"
                       : "bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10 hover:-translate-y-0.5"

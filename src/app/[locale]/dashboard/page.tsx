@@ -83,6 +83,30 @@ const CRITERIA_PRACTICE_MAP: Record<string, { title: string, desc: string, tag: 
     tag: "MINDSET",
     image: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&auto=format&fit=crop"
   },
+  completeness: {
+    title: "Sistemas Completos",
+    desc: "Asegura que tu diseño cubre todos los requisitos funcionales.",
+    tag: "ARQUITECTURA",
+    image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&auto=format&fit=crop"
+  },
+  communication: {
+    title: "Elocuencia Técnica",
+    desc: "Mejora la forma en que explicas diagramas y flujos complejos.",
+    tag: "SOFT SKILLS",
+    image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&auto=format&fit=crop"
+  },
+  specificity: {
+    title: "Historias Detalladas",
+    desc: "Añade datos y métricas específicas a tus respuestas STAR.",
+    tag: "NARRATIVA",
+    image: "https://images.unsplash.com/photo-1454165833767-027ffea7025c?w=800&auto=format&fit=crop"
+  },
+  relevance: {
+    title: "Alineación Cultural",
+    desc: "Conecta tus experiencias con los valores de la empresa.",
+    tag: "VALORES",
+    image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop"
+  },
 };
 
 const DEFAULT_PRACTICE = [
@@ -134,27 +158,32 @@ function ScoreTrendChart({
   }
 
   return (
-    <div className="flex h-24 items-stretch gap-1.5 px-1">
+    <div className="flex h-32 items-stretch gap-2 px-1">
       {data.map((s, i) => {
         const score = Math.round(s.score!);
         const barColor =
           score >= 70
-            ? "bg-emerald-400/60 group-hover:bg-emerald-400"
+            ? "bg-emerald-400/60 group-hover:bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.2)]"
             : score >= 40
-              ? "bg-yellow-400/60 group-hover:bg-yellow-400"
-              : "bg-red-400/60 group-hover:bg-red-400";
+              ? "bg-yellow-400/60 group-hover:bg-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.2)]"
+              : "bg-red-400/60 group-hover:bg-red-400 shadow-[0_0_10px_rgba(248,113,113,0.2)]";
         return (
-          <div key={i} className="group relative flex h-full flex-1 flex-col items-center justify-end gap-1">
-            <span className="pointer-events-none absolute -top-5 hidden rounded bg-surface-highest px-1.5 py-0.5 font-mono text-[10px] text-text-primary group-hover:block">
-              {score}
+          <div key={i} className="group relative flex h-full flex-1 flex-col items-center justify-end gap-2">
+            <span className="pointer-events-none absolute -top-6 hidden rounded bg-surface-highest border border-white/10 px-2 py-1 font-mono text-[10px] text-text-primary group-hover:block z-30">
+              {score}%
             </span>
             <div
-              style={{ height: `${Math.max(score, 4)}%` }}
-              className={`w-full rounded-t-sm transition-colors ${barColor}`}
+              style={{ height: `${Math.max(score, 8)}%` }}
+              className={`w-full rounded-t-md transition-all duration-500 group-hover:scale-x-105 ${barColor}`}
             />
-            <span className="text-[10px] text-text-secondary font-mono mt-1">
-              {new Date(s.completedAt!).toLocaleDateString(locale === "es" ? "es-ES" : "en-US", { day: "numeric", month: "short" })}
-            </span>
+            <div className="flex flex-col items-center gap-0.5 mt-1">
+              <span className="text-[9px] text-text-secondary font-mono leading-none">
+                {new Date(s.completedAt!).toLocaleDateString(locale === "es" ? "es-ES" : "en-US", { day: "2-digit" })}
+              </span>
+              <span className="text-[8px] text-text-secondary/40 font-mono uppercase leading-none">
+                {new Date(s.completedAt!).toLocaleDateString(locale === "es" ? "es-ES" : "en-US", { month: "short" })}
+              </span>
+            </div>
           </div>
         );
       })}
@@ -453,36 +482,38 @@ export default async function DashboardPage({
             <div className="mt-8">
               <h2 className="mb-4 text-lg font-semibold">{t("suggestedPractice")}</h2>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {(weakCriteria && weakCriteria.length > 0
-                  ? weakCriteria
-                      .map((c: { key: string }) => CRITERIA_PRACTICE_MAP[c.key])
-                      .filter(Boolean)
-                  : DEFAULT_PRACTICE
-                ).map((card, idx) => (
-                  <Link
-                    key={`${card.title}-${idx}`}
-                    href="/session/new"
-                    className="group relative flex h-48 flex-col justify-end overflow-hidden rounded-xl border border-border-subtle shadow-[0_20px_40px_rgba(0,0,0,0.4)] transition hover:border-primary/30"
-                  >
-                    <Image
-                      src={card.image}
-                      alt={card.title}
-                      fill
-                      className="object-cover transition duration-300 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                    <div className="relative z-10 p-4">
-                      <span className="rounded-full border border-white/20 bg-black/30 px-2 py-0.5 text-[10px] font-medium text-white/70 backdrop-blur-sm">
-                        {card.tag}
-                      </span>
-                      <p className="mt-2 text-sm font-semibold text-white">{card.title}</p>
-                      <p className="mt-0.5 text-xs leading-relaxed text-white/60">{card.desc}</p>
-                      <div className="mt-2 flex items-center gap-1 text-xs text-primary opacity-0 transition group-hover:opacity-100">
-                        {t("practice")} <ArrowRight className="h-3 w-3" />
+                {(() => {
+                  const suggested = (weakCriteria || [])
+                    .map((c: { key: string }) => CRITERIA_PRACTICE_MAP[c.key])
+                    .filter(Boolean);
+                  const displayCards = suggested.length > 0 ? suggested : DEFAULT_PRACTICE;
+                  
+                  return displayCards.map((card, idx) => (
+                    <Link
+                      key={`${card.title}-${idx}`}
+                      href="/session/new"
+                      className="group relative flex h-48 flex-col justify-end overflow-hidden rounded-xl border border-border-subtle shadow-[0_20px_40px_rgba(0,0,0,0.4)] transition hover:border-primary/30"
+                    >
+                      <Image
+                        src={card.image}
+                        alt={card.title}
+                        fill
+                        className="object-cover transition duration-300 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                      <div className="relative z-10 p-4">
+                        <span className="rounded-full border border-white/20 bg-black/30 px-2 py-0.5 text-[10px] font-medium text-white/70 backdrop-blur-sm">
+                          {card.tag}
+                        </span>
+                        <p className="mt-2 text-sm font-semibold text-white">{card.title}</p>
+                        <p className="mt-0.5 text-xs leading-relaxed text-white/60">{card.desc}</p>
+                        <div className="mt-2 flex items-center gap-1 text-xs text-primary opacity-0 transition group-hover:opacity-100">
+                          {t("practice")} <ArrowRight className="h-3 w-3" />
+                        </div>
                       </div>
-                    </div>
-                  </Link>
-                ))}
+                    </Link>
+                  ));
+                })()}
               </div>
             </div>
           </>
